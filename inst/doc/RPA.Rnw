@@ -1,0 +1,317 @@
+%\VignetteIndexEntry{RPA}
+%The above line is needed to remove a warning in R CMD check
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+\usepackage{Sweave}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\def\muj{\mathbf{\mu}_j}
+\def\mujs{\{\mathbf{\mu}_j\}}
+
+\def\s{\{\mathbf{s}\}}
+\def\st{\mathbf{s}^t}
+\def\sj{\mathbf{s}_j}
+\def\sij{s_{ij}}
+\def\sjs{\mathbf{s}_{j=1}^J}
+\def\sjt{\mathbf{s}_j^t}
+\def\stj{s_{tj}}
+\def\scj{s_{cj}}
+\def\stjs{\{s_{tj}\}_t}
+\def\sjI{\mathbf{s}_j^1}
+\def\sjT{\mathbf{s}_j^T}
+
+\def\m{\mathbf{m}}
+\def\mj{\mathbf{m}_j}
+\def\mjs{\{\mathbf{m}_j\}}
+\def\mtj{m_{tj}}
+
+\def\gj{\{\mathbf{g}_j\}}
+\def\gi{g_i}
+\def\gt{g_t}
+\def\gc{g_c}
+\def\g{\mathbf{g}}
+
+\def\d{\mathbf{d}}
+\def\dt{d_t}
+\def\djt{\mathbf{d}_j^t}
+\def\djr{\mathbf{s}_{j}}
+
+\def\TauSq{\boldsymbol{\tau}^2}
+\def\tauj{\mathbf{\tau}_j}
+\def\taus{\{\tau_j^2\}}
+\def\taujSq{\mathbf{\tau}_j^2}
+\def\tauOneSq{\mathbf{\tau}_1^2}
+\def\tauPSq{\mathbf{\tau}_J^2}
+
+\def\epsilonj{\varepsilon_j}
+\def\epsilonij{\mathbf{\varepsilon}_{ij}}
+\def\epsiloncj{\varepsilon_{cj}}
+\def\epsilontj{\varepsilon_{tj}}
+\def\epsilontjs{\{\varepsilon_{tj}\}_t}
+\def\epsiloncjs{\{\varepsilon_{cj}\}_j}
+\def\Epsilonj{\boldsymbol{\varepsilon}_j}
+\def\Epsiloncj{\boldsymbol{\varepsilon}_{cj}}
+
+\def\alphaj{\alpha_j}
+\def\betaj{\beta_j}
+\def\alphahatj{\hat{\alpha}_j}
+\def\betahatj{\hat{\beta}_j}
+
+\def\zi{z_i}
+\def\j{\mathbf{j}}
+\def\sigmaj{\sigma_j}
+\def\lambdaj{\lambda_j}
+
+\author{Leo Lahti\\Department of Information and Computer Science\\TKK Helsinki University of Technology\\{\tt leo.lahti@tkk.fi}}
+
+\begin{document}
+\title{Description of RPA (1.1.2)}
+
+
+\maketitle 
+
+\section{Introduction}
+
+The \Rpackage{RPA}
+package\footnote{\url{http://www.cis.hut.fi/projects/mi/software/RPA/}}
+(Robust Probabilistic Averaging) provides tools for the analysis of
+probe reliability and differential gene expression on Affymetrix
+oligonucleotide arrays.
+
+RPA estimates the reliability of individual probes on short
+oligonucletide arrays based on a probabilistic model for probe-level
+measurements described in \cite{Lahti09tcbb}. Estimation probe reliability
+is directly based on probe-level observations, and independent of
+external information. RPA also gives a probeset-level estimate of
+differential gene expression between a user-specified control array
+and the other arrays in the data set, which makes the method
+applicable for preprocessing purposes for differential gene expression
+analysis.
+
+A probe-level observation of differential gene expression for probe
+\(j\) is modeled as a sum of probeset-level differential gene
+expression vector \(\d\) over the arrays, and probe-specific zero-mean
+Gaussian noise with variance \(\taujSq\). In practice, \(\d\) and the
+probe-specific variances \(\{\tau_j\}_{j=1}^P\) for the \(P\) probes
+within the probeset are estimated simultaneously using an iterative
+optimization scheme. The probe-specific inverse variance
+\(1/\taujSq\) provides a measure of probe reliability.
+
+Probabilistic formulation of the model allows incorporation of prior
+information concerning probe reliability into the analysis. With large
+sample sizes the solution converges to estimating the mean of the
+probe-level observations, weighted by probe reliability.
+
+Emphasis on probe reliability analysis distinguishes RPA from
+probe-level preprocessing methods such as dChip's MBEI
+\citep{Li01pnas}, RMA \citep{Irizarry03rma}, or FARMS
+\cite{Hochreiter06}. The RPA model and its relationship to other
+probe-level preprocessing methods is described in more detail in
+\cite{Lahti09tcbb}. A key feature of RPA is that is utilizes
+probe-level measurements of differential expression to avoid the need
+to model unidentifiable probe affinities, the key probe-specific
+parameter in many preprocessing methods.
+
+The \Rpackage{RPA} package utilizes the \Rpackage{affy} package
+\cite{Gautier04a} to handle probe-level data.  For details about short
+oligonucleotide arrays and the design of the Affymetrix GeneChip
+arrays, we refer to the Appendix of the Affymetrix MAS manual
+\cite{affy5}.
+
+\section{Using RPA to analyze probe reliability}
+
+In this example we use the \Robject{Dilution} dataset provided by
+\Rpackage{affydata} package. Note that this is a toy example with
+artificially small dataset for probe reliability analysis (4 arrays).
+A larger sample size is recommended for practical applications. 
+
+Start the analysis by loading the data:
+
+
+<<startchunk,results=hide>>=
+require(affy)
+require(affydata)
+data(Dilution)
+@
+
+
+{\it RPA.pointestimate} is the main function for performing RPA
+analysis. Let us perform the analysis for particular probesets in the
+Dilution data using the first array (\(cind=1\)) as the control for
+calculating differential expression values for the other arrays.
+
+<<RPA.pointestimate,results=hide>>=
+require(RPA)
+sets <- geneNames(Dilution)[1:5]
+rpa.results <- RPA.pointestimate(Dilution,sets,cind=1)
+@
+
+
+Probe reliability and differential gene expression analysis can be
+performed for the whole data set with the following command. Note that
+this may take for a long time, depending on the size of the data set.
+
+<<rpa.res,results=hide, eval=FALSE>>=
+rpa.results <- RPA.pointestimate(Dilution,cind=1)
+@
+
+The results for one of the probe sets can be retrieved and visualized with
+
+<<visu,fig=FALSE,echo=TRUE,print=FALSE>>=
+set <- rownames(rpa.results$d)[[1]]
+d <- rpa.results[[set]]$d
+s2 <- rpa.results[[set]]$sigma2
+plot(rpa.results[set,])
+@
+
+
+\begin{figure}[htbp]
+\begin{center}
+<<barplots,fig=TRUE,echo=FALSE,print=FALSE>>=
+plot(rpa.results[set,])
+@
+\caption{Estimates of probe-specific variances and differential gene expression for one of the probe sets.}
+\label{fig:illustration}
+\end{center}
+\end{figure}
+
+The output is shown in Figure~\ref{fig:illustration}.
+
+\subsection{Manual analysis of a single probe set}
+
+Individual probe sets can be analyzed with the function {\it
+RPA.iteration}. However, the data needs to be preprocessed before the
+analysis:
+
+<<Smat,results=hide>>=
+Smat <- RPA.preprocess(Dilution,cind=1)
+@
+
+Now we can pick probe-level data for the probe set '1000\_at':
+
+<<results=hide>>=
+set = "1000_at"
+S <- t(Smat$fcmat[pmindex(Dilution, set)[[1]], ])
+@
+
+
+Estimate probeset-level signal and probe-specific
+variances. Initialize by setting equal variance for the probes.
+
+<<results=hide>>=
+res <- RPA.iteration(S, sigma2.guess = rep(1,ncol(S)))
+@
+
+\subsection{Including probe-specific priors}
+
+The package allows user-specified priors for the probe-specific
+variances through the shape (alpha) and scale (beta) parameters for
+inverse Gamma distribution, which is the conjugate prior for the
+variances. By default, noninformative priors are assumed.
+
+To include priors, start by creating a template for prior
+parameters. This sets default priors for the specified probesets:
+
+<<results=hide>>=
+my.priors = initialize.priors(Dilution, sets, alpha = 1e-6, beta = 1e-6)
+@
+
+Modify the prior template to set user-specified priors the probes.
+High values imply unreliable probes. Here we modify the priors for
+only one of the probes:
+
+<<results=hide>>=
+set = "1000_at"
+probe.idx = 5 # set priors for this probe within the probeset
+my.priors[[set]]$beta[[probe.idx]]  = 10
+my.priors[[set]]$alpha[[probe.idx]] = 10
+@
+
+
+Run RPA using the predefined priors. Note that priors are only used
+with sigma2.method = "basic"
+
+<<results=hide>>=
+rpa.results <- RPA.pointestimate(Dilution,sets,
+                                 priors=my.priors,
+                                 sigma2.method = "basic",
+                                 d.method = "basic")
+@
+
+This toy example would show the probe reliability values for the
+probeset where the user-specified prior was set for one of the probes:
+
+<<results=hide>>=
+barplot(rpa.results[[set]]$sigma2)
+@
+
+
+\section{Differential gene expression analysis}
+
+
+RPA provides probeset-level estimates of differential gene expression
+between a user-specified control array and the other arrays in the
+data set. This makes RPA applicable for preprocessing purposes for
+differential gene expression analysis. The function 'rpa2eset' can be
+used to coerce an rpa object into an ExpressionSet object to allow
+downstream analysis of the results using standard R/BioC tools for
+gene expression data.
+
+<<results=hide>>=
+eset = rpa2eset(rpa.results)
+@
+
+
+\section{General usage}
+
+While the main functionality of the package is designed for gene
+expression studies, the general functions are potentially useful also in
+other applications. Let us demonstrate the usage with toy
+data. Consider a set of 300 observations (arrays; \(d\)), measured
+using 11 probes with varying performance (i.e. having different
+variances \(sigma2\)).
+
+<<results=hide>>=
+set.seed(24)
+d.true <- rnorm(300,mean=0,sd=4)
+sigma2.true <- c(1,1,1,1,2,2,3,3,3,4,6)
+S <- NULL
+for (s2 in sigma2.true) {S <- cbind(S,rnorm(length(d.true),mean=d.true,sd=sqrt(s2)))}
+@
+
+Then fit the model on the toy data in \(S\):
+
+<<results=hide>>=
+set.seed(234)
+res <- RPA.iteration(S, sigma2.guess = rep(1,ncol(S)))
+@
+
+Visual comparison of the true and estimated parameters can be obtained with
+
+<<results=hide, eval=FALSE>>=
+par(mfrow=c(2,2))
+plot(res$d,d.true,main="True vs. estimated d")
+plot(res$sigma2,sigma2.true, ,main="True vs. estimated sigma2")
+@
+
+Note that the method is meant to be used with large sample sizes; with
+small sample sizes it is prone to local optima. The solution can be
+regularized by setting user-specified priors.
+
+
+\bibliographystyle{plainnat}
+\bibliography{RPA}
+
+\end{document}

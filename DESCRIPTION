@@ -1,0 +1,15 @@
+Package: RPA
+Type: Package
+Title: RPA: probe reliability and differential gene expression analysis
+Version: 1.1.2
+Date: 2009-07-09
+Author: Leo Lahti <leo.lahti@tkk.fi>
+Maintainer: Leo Lahti <leo.lahti@tkk.fi>
+Depends: R (>= 2.10.0), affy, affydata, methods
+biocViews: GeneExpression, Microarray, Preprocessing, QualityControl
+Description: Method for analysing probe reliability and differential
+	     gene expression on short oligonucleotide arrays as
+	     described in Lahti et al. TCBB/IEEE, to appear.
+License:  GNU GPL version 2 or, at your option, any later version
+LazyLoad: yes
+

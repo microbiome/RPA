@@ -1,7 +1,7 @@
 Package: RPA
 Type: Package
 Title: RPA: probe reliability and differential gene expression analysis
-Version: 1.1.3
+Version: 1.2.0
 Date: 2009-07-09
 Author: Leo Lahti <leo.lahti@tkk.fi>
 Maintainer: Leo Lahti <leo.lahti@tkk.fi>

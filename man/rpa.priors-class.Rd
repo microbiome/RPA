@@ -27,25 +27,23 @@ An extended list with elements alpha, beta, d.
 \item{d }{Not implemented. Can be later used to set priors for d.}
 }
 }
-\section{Slots}{
-	 \describe{
-    \item{\code{.Data}:}{Object of class \code{"list"} ~~ }
-  }
-}
+%\section{Slots}{
+%	 \describe{
+%    \item{\code{.Data}:}{Object of class \code{"list"} ~~ }
+%  }
+%}
 \section{Extends}{
 Class \code{"\linkS4class{list}"}, from data part.
 Class \code{"\linkS4class{vector}"}, by class "list", distance 2.
 }
-\section{Methods}{
-No methods defined with class "rpa.priors" in the signature.
-}
+\section{Methods}{No methods defined with class "rpa.priors" in the signature.}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, to appear. See
+al., TCBB/IEEE. See
 http://www.cis.hut.fi/projects/mi/software/RPA/}
 
-\author{Leo Lahti <leo.lahti@tkk.fi>}
+\author{Leo Lahti <leo.lahti@iki.fi>}
 
 \examples{showClass("rpa.priors")}
 \keyword{classes}

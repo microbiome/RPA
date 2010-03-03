@@ -15,26 +15,24 @@
 # GNU General Public License 2 for more details.
 # 
 
-RPA.pointestimate <- function (abatch,
-                                 sets = NULL,
-                               myseed = 101, 
-                               priors = NULL,
-                              epsilon = 1e-2, 
-                                 cind = 1,
-                        sigma2.method = "robust",
-                             d.method = "fast",
-                              verbose = TRUE,
-                            bg.method = "rma",
-                 normalization.method = "quantiles.robust",
-                                  cdf = NULL,
-                                alpha = NULL,
-                                 beta = NULL)                                      
+rpa <- function (abatch,
+                    sets = NULL,
+                  myseed = 101, 
+                  priors = NULL,
+                 epsilon = 1e-2, 
+                    cind = 1,
+           sigma2.method = "robust",
+                d.method = "fast",
+                 verbose = FALSE,
+               bg.method = "rma",
+    normalization.method = "quantiles.robust",
+                     cdf = NULL,
+                   alpha = NULL,
+                    beta = NULL) 
 {
 
 #
-# Find posterior mode for RPA model parameters d (mean) and sigma2 (variances)
-#
-# rpa.results <- RPA.pointestimate(abatch)
+# RPA for preprocessing only. Does not store probe-specific parameters.
 #
 
   #################################################################
@@ -48,12 +46,13 @@ RPA.pointestimate <- function (abatch,
 
   # Set alternative CDF environment if given
   if (!is.null(cdf)) { abatch@cdfName <- cdf }
-      
+  
   # Preprocessing
-  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)			   
-  fcmat <- preproc$fcmat  # probe-level differential expressions
-   cind <- preproc$cind   # index of the control array
-  set.inds <- preproc$set.inds   # index of the control array
+  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)	
+  # Pick the necessary objects
+      fcmat <- preproc$fcmat      # probe-level differential expressions
+       cind <- preproc$cind       # index of the control array
+   set.inds <- preproc$set.inds   # index of the control array
 
   #################################################################
 
@@ -61,32 +60,25 @@ RPA.pointestimate <- function (abatch,
 
   #################################################################
 
+  message("Calculating Expression")
+  
   # Number of arrays except control
-  T <- ncol(fcmat)
+  T <- ncol( fcmat )
 
   # Check names and number for the investigated probesets
   # if my.sets not specified, take all sets in abatch
   if (is.null(sets)) { sets <- geneNames(abatch) } 
+  Nsets <- length( sets ) 
 
-  if (!all(sets %in% probeNames(abatch))) {
-    warning("Warning: not all probesets are included in the abatch object. Running the test only for included probesets!")
-    sets <- sets[sets %in% probeNames(abatch)]
-  } else {}
-  
-  Nsets <- length(sets) 
-
-  ## Matrices for storing the results
+  ## Matrices to store results
   d.results <- array(NA, dim = c(Nsets, T))
   rownames(d.results) <- sets
   colnames(d.results) <- colnames(fcmat)
 
-  sigma2.results <- vector(length = Nsets, mode = "list")
-  names(sigma2.results) <- sets
-
   if (!is.null(priors) && (!is.null(alpha) || !is.null(beta))) {
     stop("Specify either priors OR alpha, beta- both cannot be specified at the same time!")
   }
-  
+
   for (i in 1:Nsets) {
 
     set <- sets[[i]]
@@ -94,32 +86,32 @@ RPA.pointestimate <- function (abatch,
     if (verbose) {message(paste("Computing probeset", set, ":", i, "/", Nsets, "...\n"))}
 
     # Find probe (pm) indices for this set
-    pmindices <- set.inds[[set]]
-    
+    pmindices <- set.inds[[set]] #pmindex(abatch, set)[[1]]
+  
     # Number of probes for this probeset
     P <- length(pmindices)
-    
+
     # Get chips x probes matrix of probe-wise fold-changes
+    #S <- t(fcmat[pmindices, ])
     S <- t(fcmat[pmindices, ])
     
-    # Pick the priors for this set (gives NULL if no prior has been defined)
+    # Pick the priors for this set
     if (!is.null(priors)) {
       alpha <- priors[[set]]$alpha 
       beta  <- priors[[set]]$beta
-    }
-    
+    } else {}
+        
+    # Calculate RPA 
     res <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
-                         
-    #Store results
+                                                  
+    # Store the results (only mean parameter)
     d.results[i, ] <- res$d
-    sigma2.results[[i]] <- res$sigma2
   
   }
 
-  # Create new class instance
-  rpa.res <- new("rpa", list(d = d.results, sigma2 = sigma2.results, cind = cind, sets = sets, data = fcmat, cdf = cdf, abatch = abatch))
-
-  # return result class
-  rpa.res
+  # Coerce expression values in the rpa object into an ExpressionSet object
+  # and return expression set
+  return( new("ExpressionSet", assayData = list(exprs = d.results)) )
+  
 }
 

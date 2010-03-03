@@ -1,16 +1,18 @@
 import(affy)
 
-
 ##export everything that does not start with a .
 ##exportPattern("^[^\\.]")
 export(RPA.pointestimate,
 RPA.iteration,
 RPA.preprocess,
-RPA.sigma2.update,
-initialize.priors,
+#RPA.sigma2.update,
+#initialize.priors,
+set.priors,
 rpa2eset,
 RPA.dcost,
-d.update.fast
+#d.update.fast,
+rpa,
+rpa.plot
 )
 
 exportClasses("rpa",
@@ -18,9 +20,9 @@ exportClasses("rpa",
 "rpa.list"
 )
 
-importFrom(methods,show)
+importFrom(methods, show)
 
-S3method(plot,rpa.list)
+S3method(plot, rpa.list)
 
 exportMethods(
 "[", 

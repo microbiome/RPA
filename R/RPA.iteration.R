@@ -1,86 +1,115 @@
-RPA.iteration <-
-function(S, sigma2.guess, epsilon = 10^(-3), alpha=NULL, beta=NULL, sigma2.method = "var", d.method = "fast") {
-	# sigma2.guess : initial guess for probe-specific variances
-	# epsilon : convergence threshold
-	# S : data; arrays x probes matrix of probe-wise fold-changes
-	# alpha,beta : priors for the inverse Gamma distribution
-	# 	       used only when sigma2.method = "basic"
-	#	       These are vectors (each element corresponds to one probe)
-	# sigma2.method: optimization method for sigma2
-	# 		 "basic": optimization with any priors
-	# 		 "var":   uses the fact that the cost function converges
-	#		 	  to variance with larger sample sizes
-	# d.method: "fast": weighted mean 
-	# 	    	    over the probes, weighted by probe variances
-	#		    The solution converges to this with large sample size
-	# 	     "basic": optimization scheme to find a mode
-	#	     	      used in the original publication; slow
+#
+# This file is a part of the RPA program (Robust Probabilistic
+# Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
+#
+# Copyright (C) 2008-2010 Leo Lahti (leo.lahti@iki.fi)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License 2 for more details.
+# 
 
+RPA.iteration <- function(S,
+                          epsilon = 1e-3,
+                            alpha = NULL,
+                             beta = NULL,
+                    sigma2.method = "robust",
+                         d.method = "fast",
+                          maxloop = 1e6)
+{
 
-	# if no prior has been given, use noninformative default priors
-	P = length(sigma2.guess) # number of probes
-	if (length(alpha)==0) {alpha = rep(1e-6,P)}
-	if (length(beta)==0) {beta = rep(1e-6,P)}
+  # if no prior has been given, use noninformative default priors
+  P <- ncol(S) # number of probes
+  T <- nrow(S) # Number of arrays (except control)
+  S.means <- rowMeans(S)
+  St <- t(S)
+  
+  # initialize with equal weight for all probes
+  sigma2 <- rep.int(1, P)
 
-	T <- nrow(S) # Number of arrays (except control)
-	alphahat <- T/2 + alpha
+  # uninformative priors for sigma2.methods mean, mode, var;
+  # informative for 'robust'
 
-	if (d.method == "fast") {converged = TRUE} else {converged = FALSE}
+  # if alpha is scalar, set identical prior for all probes with this value
+  if (is.null(alpha) && !sigma2.method == "robust") {
+    alpha <- rep.int(1e-6, P)
+  } else if (is.null(alpha) && sigma2.method == "robust") {
+    alpha <- rep.int(2, P)
+  } else if (length(alpha) == 1) {
+    alpha <- rep.int(alpha, P)
+  } else {}
 
-	#print(" Alternate optimization of d and sigma2 until convergence")
-	sigma2 <- sigma2.guess #This initial value is actually used in the iterations
-	#This initial value is not used in computation, just for checking convergence at first iteration
-	sigma2.old <- sigma2.guess + 1000*epsilon 
+  # if beta is scalar, set identical prior for all probes with this value
+  if (is.null(beta) && !sigma2.method == "robust") {
+    beta <- rep.int(1e-6, P)
+  } else if (is.null(beta) && sigma2.method == "robust") {
+    beta <- rep.int(1, P)
+  } else if (length(beta) == 1) {
+    beta <- rep.int(beta, P)
+  } else {}
 
-	d<-rep(max(S),T) #This initial value is not used in computation, just for checking convergence at first iteration
-	d.old<-(-d) #This initial value is not used in computation, just for checking convergence at first iteration
-	d.init<-rep(0,T) #initial value for d in the optimization 
+  # prior (note: set here after all alpha checks)
+  alphahat <- T/2 + alpha
+  
+  # Confirm that sigma2.method is valid for these parameters
+  if (sigma2.method == "mean") {
+    ifelse(all(alphahat > 1), TRUE, stop("alpha > 1-nrow(S)/2 required for sigma2.method = mean"))
+  } else {}
+    
+  # not used in computation,
+  # just to check convergence at first iteration
+  sigma2.old <- rep.int(1e3*epsilon, P)
 
-	cnt<-0
+  # These initial values not used in computation,
+  # just to check convergence at first iteration
+  d <- rep.int(max(S), T) 
+  d.old <- (-d) 
+  d.init <- rep.int(0,T) 
 
-	# optimize until convergence
-	loopcnt = 0
-	while ((max(abs(c(sigma2-sigma2.old,d-d.old)))>epsilon | !converged) && loopcnt < 1e6) {
-		cnt<-cnt+1	
-		#print(cnt)	
+  # optimize until convergence
+  loopcnt <- 0
 
-		d.old<-d
-		sigma2.old<-sigma2
+  if (d.method == "fast") {
+    while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
 
-		# optimize d
-		# start optimization from zero signal at each iteration
-		# (alternatively, from d.old i.e. the previous estimate)
-		if (d.method == "basic") {
-		  res <- optim(d.init,fn=RPA.dcost,method="BFGS",sigma2=sigma2,S=S)
+      d.old <- d
+      sigma2.old <- sigma2
 
-		  # Check convergence at this round
-		  converged = (res$convergence==0)
+      # update d
+      d <- d.update.fast(St, sigma2)
 
-    		  if (converged) {
-			# update d
-			d<-res$par
-		  } else {
-			# following iteration count to avoid 
-			# 	potentially infinite loops
-		    	loopcnt = loopcnt + 1 
+      # update sigma2	
+      sigma2 <- RPA.sigma2.update(d, S, alphahat, beta, sigma2.method)
 
-			# If convergence problems occur, initialize with the mean signal of the probes
-			# also do some random perturation in case we would end up here twice
-			# This is very rare according to our experience, occuring less than in 1 / 50000 
-			# analyzed probesets 
-			d.init<-rowMeans(S)
-			d.init <- rnorm(length(d.init),mean = d.init, sd = sd(d.init))
-			print("Initialized d with perturbed probeset mean")
+      # follow iteration count to avoid potentially infinite loops
+      loopcnt <- loopcnt + 1 
+    }
+   } else if (d.method == "basic") {
 
-		}
-	       } else if (d.method == "fast") {
-	       	 d <- d.update.fast(S, sigma2)
-	       }
+      while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
 
-		#update sigma2
-		sigma2 <- RPA.sigma2.update(d,S=S,alphahat=alphahat,beta=beta, sigma2.method)
-	}
+        # separate while loops for d.methods to avoid logical comparisons 
+        # during iteration	
+        d.old <- d
+        sigma2.old <- sigma2
 
-	list(d=d,sigma2=sigma2)
+        # update d
+        d <- optim(d.init, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
+
+        # update sigma2
+        sigma2 <- RPA.sigma2.update(d, S, alphahat, beta, sigma2.method)
+
+        # follow iteration count to avoid potentially infinite loops
+        loopcnt <- loopcnt + 1 
+
+      }
+   } 
+
+  list(d = d, sigma2 = sigma2)
 }
-

@@ -6,40 +6,55 @@
 
 \title{Preprocess AffyBatch object for RPA.}
 
-\description{Quantile normalizes and log2-transforms the probe-level raw
-data in abatch. Then probe-level differential expression is computed
-between the specified 'control' array (cind) and the other arrays.}
+\description{Background correction, quantile normalization and
+  log2-transformation for probe-level raw data in abatch. Then
+  probe-level differential expression is computed between the specified
+  'control' array (cind) and the other arrays.}
 
-\usage{RPA.preprocess(abatch, cind)}
+\usage{RPA.preprocess(abatch, cind = 1, bg.method = "rma",
+                      normalization.method = "quantiles.robust", cdf = NULL)}
+                            
 
 \arguments{
 
-  \item{abatch}{An AffyBatch object.}
+  \item{abatch }{An AffyBatch object.}
   
-  \item{cind}{Specifies which of the arrays in abatch is used as a
-  control in computing probe-level differential expression.}
+  \item{cind }{Specify which of the arrays in abatch is used as a
+  control for computing probe-level differential expression.}
+
+  \item{bg.method }{Specify background correction method. See
+  bgcorrect.methods(abatch) for options.}
   
+  \item{normalization.method }{Specify normalization method. See
+  normalize.methods(abatch) for options.}
+
+  \item{cdf }{The CDF environment used in the analysis.}
+
 }
 
-\details{The probe-specific variance estimates are robust against the
-choice of cind; cind can be selected at random.}
+\details{Probe-specific variance estimates are robust against the choice
+of control array.}
 
 \value{
   
   \item{fcmat }{Probes x arrays preprocessed differential expression matrix.}
 
   \item{cind }{Specifies which array in abatch was selected as a control
-  for computing probe-level differential expression.}
-  
+               in calculating probe-level differential expression.}
+
+  \item{cdf }{The CDF environment used in the analysis.}
+
+  \item{set.inds }{Indices for probes in each probeset, corresponding to
+                   the rows of fcmat.}
+
 }
 
-
-\references{Probabilistic Analysis of Probe Reliability in Differential
-Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, to appear. See
+\references{Probabilistic Analysis of Probe Reliability in
+Differential Gene Expression Studies with Short Oligonucleotide
+Arrays. Lahti et al., TCBB/IEEE. See
 http://www.cis.hut.fi/projects/mi/software/RPA/ }
 
-\author{Leo Lahti <leo.lahti@tkk.fi>}
+\author{Leo Lahti <leo.lahti@iki.fi>}
 
 \seealso{AffyBatch}
 

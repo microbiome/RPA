@@ -12,29 +12,35 @@ of the results using standard R/BioC tools for gene expression data.}
 \usage{rpa2eset(x)}
 
 \arguments{
-  \item{x}{An instance of the rpa class.}
-}
+  \item{x}{An instance of the rpa class (obtained as output from
+	   RPA.pointestimate)} }
 
 \value{An 'ExpressionSet' object.}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, to appear. See
+al., TCBB/IEEE. See
 http://www.cis.hut.fi/projects/mi/software/RPA/}
 
-\author{Leo Lahti <leo.lahti@tkk.fi>}
+\author{Leo Lahti <leo.lahti@iki.fi>}
 
 \examples{
-require(RPA)
-require(affy)
-require(affydata)
-data(Dilution)
-# Compute RPA for specific probesets
-sets = geneNames(Dilution)[1:5]             
-rpa.results <- RPA.pointestimate(Dilution,sets)
-# Coerce the rpa object into an ExpressionSet
-eset = rpa2eset(rpa.results)
+
+# Not run:
+
+#require(RPA)
+#require(affy)
+#require(affydata)
+#data(Dilution)
+
+## Compute RPA for specific probesets
+#sets <- geneNames(Dilution)[1:2]    
+#rpa.results <- RPA.pointestimate(Dilution,sets)
+
+## Coerce the rpa object into an ExpressionSet
+#eset <- rpa2eset(rpa.results)
+
 }
 
-\keyword{ methods }
+\keyword{ utilities }
 

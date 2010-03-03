@@ -1,4 +1,3 @@
-#
 # This file is a part of the RPA program (Robust Probabilistic
 # Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
 #
@@ -13,22 +12,21 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License 2 for more details.
-# 
 
 
-RPA.dcost <- function (d, sigma2, S) {
+set.priors <- function (abatch, set, 
+			alpha, beta, priors = NULL, 
+			alpha.template = 1e-6, beta.template = 1e-6) {
 
-  #
-  # S : observed probe-level signals, T x P i.e. arrays x probes
-  #
-  # d : assumed "real" signal for which this is a cost function
-  #
-  # sigma2 : probe-specific variances
+  if (is.null(priors)) {
+    priors <- initialize.priors(abatch,
+                                 sets = geneNames(abatch),
+                                alpha = alpha.template,
+                                 beta = beta.template)
+  }
 
-  
-  M <- S - d
+  priors[[set]]$alpha <- alpha
+   priors[[set]]$beta <- beta
 
-  -sum((1/(2*sigma2))*((colSums(M)^2)/(nrow(S)+1) - colSums(M^2)))
-
+  priors
 }
-

@@ -18,47 +18,43 @@ expression.}
   \tabular{ll}{
 Package: \tab RPA\cr
 Type: \tab Package\cr
-Version: \tab 1.1.2\cr
-Date: \tab 2009-07-22\cr
+Version: \tab 1.3.2\cr
+Date: \tab 2010-03-02\cr
 License: \tab GNU GPL 2 or any later version (at your option)\cr
 LazyLoad: \tab yes\cr
 }
-RPA.pointestimate computes probe reliability and differential expression
-estimates: 'rpa.results <- RPA.pointestimate(affybatch)'. The other
-functions are provided for users who wish to investigate the details of
-the algorithm more closely.
+RPA.pointestimate is used to calculate probe reliability and
+differential expression estimates: 'rpa.results <-
+RPA.pointestimate(affybatch)'. The other functions are provided for
+users who wish to investigate the details of the algorithm more
+closely.
 }
-\author{Leo Lahti <leo.lahti@tkk.fi>}
+\author{Leo Lahti <leo.lahti@iki.fi>}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, to appear. See
+al., TCBB/IEEE. See
 http://www.cis.hut.fi/projects/mi/software/RPA/ }
 
 
 \keyword{ package }
 
 \examples{
-        ## Load example data set (Dilution affybatch).
-        ## This is a toy example with a small example dataset
-        ## for probe reliability analysis (4 arrays).
-	## For practical applications, a larger sample size is
-        ## recommended.
 
-        require(affy)
-        require(affydata)
-        data(Dilution)
+  ## Not run:
 
-        ## Run RPA analysis
-	## Compute RPA for the whole data set
-	## Slow, not executed here
-	##rpa.results <- RPA.pointestimate(Dilution)
+  ## Load example data set (Dilution affybatch).
+  ## This is a toy example with a small example dataset
+  ## for probe reliability analysis (4 arrays).
+  ## For practical applications, a larger sample size is
+  ## recommended.
 
-	# Compute RPA for specific probesets only
-	sets = geneNames(Dilution)[1:5]
-	rpa.results <- RPA.pointestimate(Dilution,sets)
+  #require(affy)
+  #require(affydata)
+  #data(Dilution)
 
-	## Visualize the results for one of the probe sets
-	plot(rpa.results[sets[[1]],])
-	
+  ## Compute RPA for whole data set
+  ## ... slow, not executed here
+  #rpa.results <- RPA.pointestimate(Dilution)
+
 }

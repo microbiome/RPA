@@ -20,15 +20,15 @@ An extended list. Contains the following information for one probeset.
 
     \item{d }{A vector (probeset x arrays). Specifies the estimated
 	      'true' underlying differential gene expression signal over
-	      the arrays (vs. the control array 'cind') for the
-	      investigated probeset. Note that the control array is not
+	      the arrays (vs. the reference array 'cind') for the
+	      investigated probeset. Note that the reference array is not
 	      included.}
 	    
     \item{sigma2 }{Contains a vector that gives the estimated variance
 	           for each probe in the investigated probeset.}
 		 
-    \item{cind }{Specifies which of the arrays in abatch was used as a
-	         control in computing probe-level differential
+    \item{cind }{Specifies which of the arrays in abatch was used as the
+	         reference for computing probe-level differential
 	         expression.}
 
     \item{set }{Probeset name.}

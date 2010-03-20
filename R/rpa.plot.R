@@ -53,7 +53,7 @@ rpa.plot <- function (set, rpa.object, highlight.probes = NULL, pcol = "darkgrey
        ylab = "Signal log-ratio",
        cex.lab = cex.lab,
        cex.axis = cex.axis,
-       main = paste(set,"/ Probe-level values and estimated d"),
+       main = paste(set,"/ Probe-level signals and the summary d"),
        las = 1, xaxt = 'n')
   axis(1, at = 1:3, labels = colnames(rpa.object$data))
 

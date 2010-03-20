@@ -105,7 +105,7 @@ http://www.cis.hut.fi/projects/mi/software/RPA/}
 ## Not run:
 
 ## Preprocess probe-level data
-## cind determines the 'control' array
+## cind determines the 'reference' array
 #Smat <- RPA.preprocess(Dilution, cind = 1)
 
 ## Pick probe-level data for one probe set

@@ -23,15 +23,15 @@ Objects can be created by calls of the form \code{new("rpa", ...)}.
 
    \item{d }{A matrix of probesets x arrays. Specifies the estimated
   	'true' underlying differential gene expression signal over the
-  	arrays (vs. the control array 'cind') for each investigated
-  	probeset. Note that the control array is not included.}
+  	arrays (vs. the reference array 'cind') for each investigated
+  	probeset. Note that the reference array is not included.}
        
   \item{sigma2 }{A list. Each element corresponds to a probeset, and
 		 contains a vector that gives the estimated variance
 		 for each probe in that probeset.}
     
    \item{cind }{Specifies which of the arrays in abatch was used as a
-		control in computing probe-level differential
+		reference for computing probe-level differential
 		expression.}
 	
    \item{sets }{A character vector listing the investigated

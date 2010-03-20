@@ -15,6 +15,11 @@
 # GNU General Public License 2 for more details.
 # 
 
+# Changelog:
+
+# 6.3.2010 S.means and St removed (not used). alpha check added for
+#          sigma2.method "robust" (alpha > 1-nrow(S)/2)
+
 RPA.iteration <- function(S,
                           epsilon = 1e-3,
                             alpha = NULL,
@@ -24,11 +29,8 @@ RPA.iteration <- function(S,
                           maxloop = 1e6)
 {
 
-  # if no prior has been given, use noninformative default priors
   P <- ncol(S) # number of probes
   T <- nrow(S) # Number of arrays (except control)
-  S.means <- rowMeans(S)
-  St <- t(S)
   
   # initialize with equal weight for all probes
   sigma2 <- rep.int(1, P)
@@ -58,7 +60,7 @@ RPA.iteration <- function(S,
   alphahat <- T/2 + alpha
   
   # Confirm that sigma2.method is valid for these parameters
-  if (sigma2.method == "mean") {
+  if (sigma2.method == "mean" || sigma2.method == "robust") {
     ifelse(all(alphahat > 1), TRUE, stop("alpha > 1-nrow(S)/2 required for sigma2.method = mean"))
   } else {}
     
@@ -82,7 +84,7 @@ RPA.iteration <- function(S,
       sigma2.old <- sigma2
 
       # update d
-      d <- d.update.fast(St, sigma2)
+      d <- d.update.fast(t(S), sigma2)
 
       # update sigma2	
       sigma2 <- RPA.sigma2.update(d, S, alphahat, beta, sigma2.method)

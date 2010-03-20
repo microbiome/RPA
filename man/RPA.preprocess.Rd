@@ -9,7 +9,7 @@
 \description{Background correction, quantile normalization and
   log2-transformation for probe-level raw data in abatch. Then
   probe-level differential expression is computed between the specified
-  'control' array (cind) and the other arrays.}
+  'reference' array (cind) and the other arrays.}
 
 \usage{RPA.preprocess(abatch, cind = 1, bg.method = "rma",
                       normalization.method = "quantiles.robust", cdf = NULL)}
@@ -20,7 +20,7 @@
   \item{abatch }{An AffyBatch object.}
   
   \item{cind }{Specify which of the arrays in abatch is used as a
-  control for computing probe-level differential expression.}
+  reference for computing probe-level differential expression.}
 
   \item{bg.method }{Specify background correction method. See
   bgcorrect.methods(abatch) for options.}
@@ -33,13 +33,13 @@
 }
 
 \details{Probe-specific variance estimates are robust against the choice
-of control array.}
+of reference array.}
 
 \value{
   
   \item{fcmat }{Probes x arrays preprocessed differential expression matrix.}
 
-  \item{cind }{Specifies which array in abatch was selected as a control
+  \item{cind }{Specifies which array in abatch was selected as a reference
                in calculating probe-level differential expression.}
 
   \item{cdf }{The CDF environment used in the analysis.}

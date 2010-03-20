@@ -2,22 +2,24 @@ import(affy)
 
 ##export everything that does not start with a .
 ##exportPattern("^[^\\.]")
-export(RPA.pointestimate,
-RPA.iteration,
-RPA.preprocess,
-#RPA.sigma2.update,
-#initialize.priors,
-set.priors,
-rpa2eset,
-RPA.dcost,
-#d.update.fast,
-rpa,
-rpa.plot
+export(get.probe.noise.estimates,
+       rpa,
+       RPA.dcost,
+       rpa2eset,
+       RPA.iteration,
+       rpa.plot,
+       RPA.pointestimate,
+       RPA.preprocess,
+       set.priors
 )
+#RPA.sigma2.update,              
+#initialize.priors,                                        
+#d.update.fast,
 
-exportClasses("rpa",
-"rpa.priors",
-"rpa.list"
+exportClasses(
+"rpa",
+"rpa.list",
+"rpa.priors"
 )
 
 importFrom(methods, show)

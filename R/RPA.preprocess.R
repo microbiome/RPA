@@ -30,11 +30,11 @@ RPA.preprocess <- function (abatch, cind = 1,
   }
 
   message("Background correcting")
-  abatch2 <- bg.correct(abatch, bg.method)
+  abatch2 <- bg.correct(abatch, bg.method, destructive = TRUE)
 
-  message("Normalizing") 
+  #message("Normalizing") 
   abatch2 <- normalize(abatch2, method = normalization.method)
-
+  
   # Log transformation
   #pmindex(Dilution, sets[[1]])[[1]]
   #q <- log2(exprs(abatch2)) 

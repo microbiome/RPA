@@ -8,7 +8,7 @@
 
 \description{Returns an expressionSet object preprocessed with RPA. If
   'cind' is not specified, uses the first array of affybatch as the
-  control.}
+  reference.}
 
 \usage{rpa( abatch,
                     sets = NULL,
@@ -23,7 +23,8 @@
     normalization.method = "quantiles.robust",
                      cdf = NULL,
                    alpha = NULL,
-                    beta = NULL) 
+                    beta = NULL,
+ exclude.reference.array = FALSE) 
 }
 
 \arguments{
@@ -42,8 +43,13 @@
   \item{epsilon }{Convergence tolerance. The iteration is deemed converged 
 		  when the change in all parameters is < epsilon.}
   
-  \item{cind }{Specify control array for computing probe-level differential
-    	       expression. Default: cind = 1.}
+  \item{cind }{Specify reference array for computing probe-level
+    	       differential expression. Default: cind = 1. Note that if
+    	       exclude.reference.array = TRUE the expression value for
+    	       the reference array (cind) will be excluded in the
+    	       output. Note that all values of the reference array are 0
+    	       since they indicate the differential expression of the
+    	       reference array against itself.}
 
   \item{sigma2.method }{
 
@@ -106,6 +112,12 @@
       solution. Probe-specific priors can be set with the 'priors'
       parameter.}
 
+    \item{exclude.reference.array }{Logical indicating whether the
+      values for the reference array will be excluded in the final
+      differential gene expression matrix. Note that all values of the
+      reference array will be 0 since they indicate differential
+      expression of the reference array against itself.}
+    
 }
 
 \details{Used for RPA preprocessing. Estimates the probeset-level mean

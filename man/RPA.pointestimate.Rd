@@ -32,7 +32,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 		  is < epsilon.}
   
   \item{cind }{Specifies which array in abatch is used as a
-	       control in computing probe-level differential
+	       reference in computing probe-level differential
 	       expression.}
 
   \item{sigma2.method }{
@@ -100,7 +100,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 }
 
 \details{Calculates RPA estimates of probe reliability and differential
-  expression between the user-specified control array (cind) and the
+  expression between the user-specified reference array (cind) and the
   other arrays in the data set. The model assumes P observations for
   each transcript target (i.e. a probeset) with Gaussian noise which is
   specific for each probe (variance is specified by sigma2). The mean
@@ -117,8 +117,8 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 
   \item{d }{A matrix of probesets x arrays. Specifies the estimated
             'true' underlying differential gene expression signal over
-	    the arrays (vs. the control array 'cind') for each 
-	    investigated probeset. Note that the control array is 
+	    the arrays (vs. the reference array 'cind') for each 
+	    investigated probeset. Note that the reference array is 
 	    not included.}
   
   \item{sigma2 }{A list. Each element corresponds to a probeset, and
@@ -127,7 +127,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
   
   \item{cind }{Specifies which of the arrays in the abatch (the
 	       affybatch object to be analyzed) has been used as the 
-	       control for computing probe-level differential
+	       reference for computing probe-level differential
 	       expression.}
 
   \item{sets }{A character vector listing the investigated probesets.}

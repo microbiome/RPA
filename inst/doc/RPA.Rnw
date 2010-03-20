@@ -90,12 +90,12 @@
 
 \Rpackage{RPA} (Robust Probabilistic Averaging)
 package\footnote{\url{http://www.cis.hut.fi/projects/mi/software/RPA/}}
-provides tools to analyze probe reliability and differential gene
-expression on Affymetrix short oligonucleotide arrays. 
+provides tools for analyzing probe reliability and differential gene
+expression on Affymetrix short oligonucleotide arrays.
 
 RPA provides explicit estimates probe reliability, and a
 probeset-level estimate of differential gene expression between a
-user-specified control array and the other arrays. Probabilistic
+user-specified reference array and the other arrays. Probabilistic
 formulation allows incorporation of prior information concerning probe
 reliability into gene expression analysis within a principled
 framework.  The underlying probabilistic model for probe-level
@@ -132,18 +132,18 @@ provides a measure of probe reliability.
 The mean parameter \(\muj\) of the noise model describes systematic
 probe affinity effect but it is unidentifiable. In RPA, these
 parameters cancel out when the signal log-ratio between a
-user-specified 'control' array and the remaining arrays is computed
+user-specified 'reference' array and the remaining arrays is computed
 for each probe: the differential expression signal between arrays \(t
-= \{1, \dots, T\} \) and the control array \(c\) for probe \(j\) is
+= \{1, \dots, T\} \) and the reference array \(c\) for probe \(j\) is
 given by \(\mtj = \stj - \scj = \gt - \gc + \epsilontj - \epsiloncj =
 \dt + \epsilontj - \epsiloncj\). In vector notation the differential
 gene expression profile of probe \(j\) across the arrays can be
 written as \(\mj = \d + \Epsilonj\). In practice, \(\d\) and the
 probe-specific variances \(\{\tau_j\}_{j=1}^P\) for the \(P\) probes
-within the probeset are estimated simultaneously. With large sample
-sizes the solution converges to estimating the mean of the probe-level
-observations, weighted by probe reliability. The method is robust
-against choice of the control array.
+within the probeset are estimated simultaneously based on the
+probabilistic model. With large sample sizes the solution will
+converge to estimating the mean of the probe-level observations
+weighted by probe reliability. 
 
 The probe-level data is background corrected, normalized, and
 log2-transformed before the analysis. By default, RPA uses the
@@ -154,11 +154,11 @@ For details about short oligonucleotide arrays and the design of the
 Affymetrix GeneChip arrays, see the Affymetrix MAS manual
 \cite{affy5}.
 
-\section{Probe reliability analysis with RPA}
+\section{Probe reliability analysis}
 
 RPA operates on affybatch objects. An affybatch can be created from
 Affymetrix CEL files using the ReadAffy function of the BioConductor
-\Rpackage{affy} package \cite{Gautier04a}. This contains the
+\Rpackage{affy} package \cite{Gautier04a}. An affybatch contains the
 probe-level data of Affymetrix arrays. Our toy examples use the
 \Robject{Dilution} dataset provided by \Rpackage{affydata}
 package. Load example data (the 'Dilution' affybatch):
@@ -171,8 +171,8 @@ data(Dilution)
 
 {\it RPA.pointestimate} is the main function. Let us perform the
 analysis for particular probesets in the Dilution data using the first
-array (\(cind=1\)) as the control for calculating differential
-expression values for the other arrays.
+array (\(cind = 1\)) as the reference for calculating differential
+expression values of the other arrays.
 
 <<RPA.pointestimate, results = hide>>=
 require(RPA)
@@ -180,26 +180,28 @@ sets <- geneNames(Dilution)[1:2]
 rpa.results <- RPA.pointestimate(Dilution, sets, cind = 1)
 @
 
-Probe reliability and differential gene expression analysis can be
-performed on the whole data set as follows (note that this may be
-slow). 
+Probe reliability and differential gene expression analysis is
+performed on the whole data set as follows (potentially slow).
 
 <<rpa.res, results = hide, eval = FALSE>>=
 rpa.results <- RPA.pointestimate(Dilution, cind = 1)
 @
 
-The function 'rpa2eset' can be used to coerce the probeset-level
-summary values (d) into an ExpressionSet object. This allows
-downstream analysis of the results using standard R/BioC tools for
-gene expression data. The results for a particular probeset are
-visualized with
+
+The 'rpa2eset' function coerces the probeset-level differential
+expression estimates (d) into an ExpressionSet object that can be
+analyzed using standard R/BioC tools for gene expression. The results
+for a particular probeset are visualized with
 
 <<visu, fig = FALSE, echo = TRUE, print = FALSE, results = hide, eval = FALSE>>=
 rpa.plot("1000_at", rpa.results)
 @
 
-The output is shown in Figure \ref{fig:illustration}. See function
-'rpa.plot' for details.
+The output is shown in Figure \ref{fig:illustration}. See
+help('rpa.plot') for details.
+
+
+
 
 \begin{figure}[htbp]
 \begin{center}
@@ -210,6 +212,21 @@ rpa.plot("1000_at", rpa.results)
 \label{fig:illustration}
 \end{center}
 \end{figure}
+
+\subsection{Measuring probe-specific noise}
+
+RPA provides an estimate of the noise level of each individual probe
+by the probe-specific variance parameter (\(\taujSq\)). Fetch the
+probe variances (or normalized variants; see
+help(get.probe.noise.estimates)) with
+
+<<noise,results=hide>>=
+noise <- get.probe.noise.estimates(rpa.results)
+@ 
+
+The more noisy the probe is (the higher the variance \(\taujSq\)), the
+less reliable it is considered. Inverse of the variance,
+\(\frac{1}{\taujSq}\), can be used to quantitate probe reliability.
 
 \subsection{Manual analysis of an individual probe set}
 
@@ -231,15 +248,14 @@ Estimate probeset-level signal and probe-specific variances:
 res <- RPA.iteration(S)
 @
 
-\subsection{Including probe-specific priors}
+\subsection{Setting probe-specific priors}
 
 Prior information of probe reliability can be set by tuning the shape
 (alpha) and scale (beta) parameters of the model. These are inverse
 Gamma distribution parameters, which is the conjugate prior for the
-variances.
-
-Set priors for a particular probeset. If the 'priors' parameter is not
-given, non-informative priors will be given for the other probesets:
+variances. Set priors for a particular probeset. If the 'priors'
+parameter is not given, non-informative priors will be given for the
+other probesets:
 
 <<setpriors, results = hide>>=
 alpha <- beta <- rep(1, 16)
@@ -249,7 +265,7 @@ beta[[probe.index]] <- 1
 priors <- set.priors(Dilution, set = "1000_at", alpha, beta)
 @
 
-Run RPA with the predefined priors:
+Run RPA with priors:
 
 <<pe, results=hide, eval = FALSE>>=
 rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
@@ -257,22 +273,24 @@ rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
 
 \section{Differential gene expression analysis}
 
-Use a wrapper for preprocessing purposes.  Support for alternative CDF
-environments is also provided (see function documentation for
-details).
+RPA provides a wrapper ('rpa') for robust preprocessing of gene
+expression data in differential gene expression studies. Note that one
+of the arrays is used as the reference against which the differential
+expression values are calculated; RPA expression values are
+log\(_2\)-ratios related to the reference array. RPA supports
+alternative CDF environments (see function documentation for details).
 
 <<rpa, results = hide, eval = FALSE>>=
-eset <- rpa(Dilution)
+eset <- rpa(Dilution, cind = 1)
 @
 
 The output is an ExpressionSet object, which allows downstream
 analysis of the results using standard R/BioC tools for gene
 expression data.
 
-\section{Citing RPA package}
+\section{Citing RPA}
 
-When using the package in publications, please cite
-\cite{Lahti09tcbb}.
+Please cite \cite{Lahti09tcbb} when using the package.
 
 \section{Details}
 

@@ -18,9 +18,9 @@ expression.}
   \tabular{ll}{
 Package: \tab RPA\cr
 Type: \tab Package\cr
-Version: \tab 1.3.2\cr
-Date: \tab 2010-03-02\cr
-License: \tab GNU GPL 2 or any later version (at your option)\cr
+Version: \tab 1.3.4\cr
+Date: \tab 2010-03-06\cr
+License: \tab GPL >=2\cr
 LazyLoad: \tab yes\cr
 }
 RPA.pointestimate is used to calculate probe reliability and

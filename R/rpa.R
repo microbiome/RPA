@@ -1,4 +1,5 @@
-#
+
+                                        #
 # This file is a part of the RPA program (Robust Probabilistic
 # Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
 #
@@ -28,31 +29,27 @@ rpa <- function (abatch,
     normalization.method = "quantiles.robust",
                      cdf = NULL,
                    alpha = NULL,
-                    beta = NULL) 
+                    beta = NULL,
+                 exclude.reference.array = FALSE) 
 {
 
 #
-# RPA for preprocessing only. Does not store probe-specific parameters.
+# RPA for preprocessing only
 #
-
-  #################################################################
-
-  # PREPROCESSING
-
-  #################################################################
 
   #Set random seed
   set.seed( myseed )
 
   # Set alternative CDF environment if given
   if (!is.null(cdf)) { abatch@cdfName <- cdf }
-  
+
   # Preprocessing
   preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)	
+  
   # Pick the necessary objects
       fcmat <- preproc$fcmat      # probe-level differential expressions
        cind <- preproc$cind       # index of the control array
-   set.inds <- preproc$set.inds   # index of the control array
+   set.inds <- preproc$set.inds   
 
   #################################################################
 
@@ -106,12 +103,26 @@ rpa <- function (abatch,
                                                   
     # Store the results (only mean parameter)
     d.results[i, ] <- res$d
-  
+    
   }
 
+  # Exclude reference array. All values are zero since this gives the
+  # differential expression of the reference array against itself.
+  if (exclude.reference.array) {
+    d.ref <- rep.int(0, nrow(d.results))
+    dat <- cbind(d.ref, d.results)
+    colnames(dat) <- c(sampleNames(abatch@phenoData)[[cind]], colnames(d.results))
+    rownames(dat) <- rownames(d.results)
+
+    # Order samples to the same order as in original affybatch
+    dat <- dat[,sampleNames(abatch@phenoData)]
+    
+  } else {dat <- d.results}
+  
+  
   # Coerce expression values in the rpa object into an ExpressionSet object
   # and return expression set
-  return( new("ExpressionSet", assayData = list(exprs = d.results)) )
+  return( new("ExpressionSet", assayData = list(exprs = dat)) )
   
 }
 

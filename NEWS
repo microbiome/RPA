@@ -1,3 +1,8 @@
+Changes in 1.3.6 (2010-03-28)
+
+BUG FIXES
+  o added documentation on 'get.probe.noise.estimates' function
+
 Changes in 1.3.5 (2010-03-18)
 
 USER-VISIBLE CHANGES

@@ -16,9 +16,8 @@ Description: Probabilistic analysis of probe reliability and
 	     (http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38)
 License: GPL (>= 2)
 Note: This program is distributed 'as is' in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Your feedback and
-contributions are appreciated.
+useful, but WITHOUT ANY WARRANTY, either expressed or implied. Your
+feedback and contributions are appreciated.
 LazyLoad: yes
 
 

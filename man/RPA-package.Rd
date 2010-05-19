@@ -18,8 +18,8 @@ expression.}
   \tabular{ll}{
 Package: \tab RPA\cr
 Type: \tab Package\cr
-Version: \tab 1.3.7\cr
-Date: \tab 2010-04-02\cr
+Version: \tab 1.5.2\cr
+Date: \tab 2010-05-19\cr
 License: \tab GPL >=2\cr
 LazyLoad: \tab yes\cr
 }

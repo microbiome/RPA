@@ -122,8 +122,9 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 	    not included.}
   
   \item{sigma2 }{A list. Each element corresponds to a probeset, and
-                 contains a vector that gives the estimated variance 
-		for each probe in that probeset.}
+                 contains a vector that gives the estimated variance for
+                 each probe in that probeset. This corresponds to the
+                 parameter tau^2 in the vignette and manuscript.}
   
   \item{cind }{Specifies which of the arrays in the abatch (the
 	       affybatch object to be analyzed) has been used as the 
@@ -144,7 +145,7 @@ http://www.cis.hut.fi/projects/mi/software/RPA/ }
 recommended. With small sample size and informative priors, d.method =
 "basic" may be preferable.}
 
-\seealso{rpa.plot, rpa, set.priors, RPA.preprocess, AffyBatch}
+\seealso{rpa.plot, rpa, set.priors, rpa2eset, RPA.preprocess, AffyBatch}
 
 \examples{
 

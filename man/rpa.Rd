@@ -53,7 +53,8 @@
 
   \item{sigma2.method }{
 
-    Optimization method for sigma2 (probe-specific variances).
+    Optimization method for sigma2 (probe-specific variances). This
+    parameter is denoted by tau^2 in the vignette and manuscript.
 
 	"robust": (default) update sigma2 by posterior mean,
 		regularized by informative priors that are identical
@@ -120,8 +121,9 @@
     
 }
 
-\details{Used for RPA preprocessing. Estimates the probeset-level mean
-  parameter d of the RPA model. Returns an expressionSet object.}
+\details{RPA preprocessing function. Gives an estimate of the
+  probeset-level mean parameter d of the RPA model, and returns these in
+  an expressionSet object.}
 
 \value{
   An instance of the 'expressionSet' class.

@@ -12,8 +12,8 @@ Description: Probabilistic analysis of probe reliability and
 	     arrays as described in Leo Lahti et al. "Probabilistic
 	     Analysis of Probe Reliability in Differential Gene
 	     Expression Studies with Short Oligonucleotide Arrays",
-	     TCBB/IEEE
-	     (http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38)
+	     TCBB/IEEE, to appear. See
+	     http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
 License: GPL (>= 2)
 LazyLoad: yes
 

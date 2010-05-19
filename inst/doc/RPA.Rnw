@@ -81,8 +81,8 @@
     leo.lahti@iki.fi}}
 
 \begin{document}
-\title{Description of RPA}
-
+\title{RPA: analysis of probe reliability and differential gene
+  expression on short oligonucleotide arrays.}
 
 \maketitle 
 
@@ -100,6 +100,8 @@ incorporation of prior information concerning probe reliability into
 gene expression analysis within a principled framework.  The
 underlying probabilistic model for probe-level observations is
 described in \cite{Lahti09tcbb}.
+
+Your comments and contributions are welcome.
 
 \subsection{Relation to other probe-level models}
 
@@ -231,7 +233,7 @@ normalized versions of the noise estimates.
 
 \subsection{Manual analysis of an individual probe set}
 
-Preprocess data set before the analysis:
+Preprocess data before the analysis:
 
 <<Smat,results=hide, eval = FALSE>>=
 Smat <- RPA.preprocess(Dilution, cind = 1)

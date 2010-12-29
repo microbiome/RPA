@@ -89,7 +89,7 @@
 \section{Introduction}
 
 \Rpackage{RPA} (Robust Probabilistic Averaging)
-package\footnote{\url{http://www.cis.hut.fi/projects/mi/software/RPA/}}
+package\footnote{\url{http://bioconductor.org/packages/release/bioc/html/RPA.html}}
 provides tools for analyzing probe reliability and differential gene
 expression on Affymetrix short oligonucleotide arrays.
 
@@ -99,7 +99,7 @@ reference array and the other arrays. Probabilistic formulation allows
 incorporation of prior information concerning probe reliability into
 gene expression analysis within a principled framework.  The
 underlying probabilistic model for probe-level observations is
-described in \cite{Lahti09tcbb}.
+described in \cite{Lahti11}.
 
 Your comments and contributions are welcome.
 
@@ -116,7 +116,7 @@ probeset-level summaries but have not been used to investigate probe
 performance. However, in addition to probe reliability analysis RPA
 can be used for preprocessing in differential gene expression studies,
 where it has been shown to outperform other popular preprocessing
-methods. For details, see \cite{Lahti09tcbb}.
+methods. For details, see \cite{Lahti11}.
 
 \subsection{Summary of RPA model}
 
@@ -294,7 +294,7 @@ expression data.
 
 \section{Citing RPA}
 
-Please cite \cite{Lahti09tcbb} when using the package.
+Please cite \cite{Lahti11} when using the package.
 
 \section{Details}
 

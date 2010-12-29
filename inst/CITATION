@@ -10,14 +10,17 @@ citEntry(entry="article",
 	 	person(first ="Samuel", last="Kaski")
 	 	  ),
 	 journal = "TCBB/IEEE",
-	 year = "2010",
-         note         = "(To appear; See http://www.cis.hut.fi/projects/mi/software/RPA/)",
+	 year = "2011",
+	 volume = "8",
+	 issue = "1",
+	 pages = "217--225",
+         note         = "R/BioC: http://www.cis.hut.fi/projects/mi/software/RPA/)",
          url          = "http://www.computer.org/portal/web/csdl/doi/10.1109/TCBB.2009.38.",
 
          textVersion =
          paste("Leo Lahti et al. ",
-               "Analysis of Probe Reliability in Differential Gene Expression Studies with Short Oligonucleotide Arrays ",
-               "TCBB/IEEE, to appear. ",
+               "Analysis of Probe Reliability in Differential Gene Expression Studies with Short Oligonucleotide Arrays.",
+               "TCBB/IEEE 8(1):217-225, 2011. ",
                "See http://www.computer.org/portal/web/csdl/doi/10.1109/TCBB.2009.38",
                sep="")
          )

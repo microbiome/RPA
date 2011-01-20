@@ -109,9 +109,12 @@ rpa <- function (abatch,
     
   }
 
-  # Exclude reference array. All values are zero since this gives the
-  # differential expression of the reference array against itself.
-  if (exclude.reference.array) {
+  # Excluding reference array (if set so). All values are zero since #
+  #the method gives differential expression of the reference array #
+  #against itself. Shifting the reference this way does not affect the
+  #relative differences # between the arrays.
+
+  if (!exclude.reference.array) {
     d.ref <- rep.int(0, nrow(d.results))
     dat <- cbind(d.ref, d.results)
     colnames(dat) <- c(sampleNames(abatch@phenoData)[[cind]], colnames(d.results))

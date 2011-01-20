@@ -1,6 +1,18 @@
-Changes in 1.7.1 (2010-12-30)
+Changes in 1.7.3 (2011-01-20)
+
+BUG FIXES
+
+  o in 'rpa' wrapper function the exclude.reference.array option was
+    interpreted in the opposite way than intended. Now the
+    reference.control.array = TRUE excludes the reference array from
+    output. Default is FALSE, i.e. reference array is included.
+
+Changes in 1.7.2 (2011-01-14)
 
   o updated citation
+  o moved license from GPL>=2 into FreeBSD since that is less
+  restrictive open license. OK since all copyrights of the GPL>=2
+  version are with the package author.
 
 Changes in 1.5.2 (2010-05-19)
 

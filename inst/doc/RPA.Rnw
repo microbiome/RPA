@@ -76,8 +76,7 @@
 
 \author{Leo Lahti\\Helsinki Institute for Information Technology HIIT\\
   and Adaptive Informatics Research Centre,\\Department of Information
-  and Computer Science,\\Aalto University School of Science and
-  Technology,\\P.O. Box 15400, FI-00076 Aalto, Finland\\{\tt
+  and Computer Science,\\Aalto University P.O. Box 15400, FI-00076 Aalto, Finland\\{\tt
     leo.lahti@iki.fi}}
 
 \begin{document}
@@ -95,13 +94,17 @@ expression on Affymetrix short oligonucleotide arrays.
 
 RPA provides estimates of probe reliability, and a probeset-level
 estimate of differential gene expression between a user-specified
-reference array and the other arrays. Probabilistic formulation allows
-incorporation of prior information concerning probe reliability into
-gene expression analysis within a principled framework.  The
+reference array and the other arrays. The reference array can be
+selected at random; choice of the reference array does not affect the
+relative differences between the samples. Probabilistic formulation
+allows incorporation of prior information concerning probe reliability
+into gene expression analysis within a principled framework.  The
 underlying probabilistic model for probe-level observations is
-described in \cite{Lahti11}.
+described in \cite{Lahti10thesis, Lahti11}.
 
-Your comments and contributions are welcome.
+The source code is licensed under FreeBSD license; this is one of the
+least restrictive open licenses. Your comments and contributions are
+welcome.\footnote{leo.lahti@iki.fi}
 
 \subsection{Relation to other probe-level models}
 

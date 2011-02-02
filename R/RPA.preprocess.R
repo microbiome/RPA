@@ -32,16 +32,17 @@ RPA.preprocess <- function (abatch, cind = 1,
   message("Background correcting")
   abatch2 <- bg.correct(abatch, bg.method, destructive = TRUE)
 
-  #message("Normalizing") 
+  message("Normalizing") 
   abatch2 <- normalize(abatch2, method = normalization.method)
   
   # Log transformation
   #pmindex(Dilution, sets[[1]])[[1]]
   #q <- log2(exprs(abatch2)) 
   #fcmat[pmindices, ]
+  message("Logging PM values")
   q <- log2(pm(abatch2))
 
-  # Pick probe name table.
+  message("Pick probe name table")
   # The indices correspond to the output of pm()
   pN <- probeNames(abatch2)
   set.inds <- split(1:length(pN), pN) # pNList

@@ -20,9 +20,9 @@ of the results using standard R/BioC tools for gene expression data.}
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
 al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/}
+http://bioconductor.org/packages/release/bioc/html/RPA.html}
 
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \examples{
 

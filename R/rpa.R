@@ -1,23 +1,16 @@
+# This file is a part of the RPA program
+# (Robust Probabilistic Averaging) 
+# http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-#                                        
-# This file is a part of the RPA program (Robust Probabilistic
-# Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
-#
-# Copyright (C) 2008-2010 Leo Lahti (leo.lahti@iki.fi)
-#
+# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2, or (at your option)
-# any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License 2 for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>
-#
+# it under the terms of the FreeBSD License.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
   
 rpa <- function (abatch,
                     sets = NULL,
@@ -33,7 +26,7 @@ rpa <- function (abatch,
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
-                 exclude.reference.array = FALSE) 
+                 affinity.method = "rpa") 
 {
 
 #
@@ -50,9 +43,9 @@ rpa <- function (abatch,
   preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)	
   
   # Pick the necessary objects
-      fcmat <- preproc$fcmat      # probe-level differential expressions
-       cind <- preproc$cind       # index of the control array
-   set.inds <- preproc$set.inds   
+  #    fcmat <- preproc$fcmat      # probe-level differential expressions
+  #     cind <- preproc$cind       # index of the control array
+  # set.inds <- preproc$set.inds   
 
   #################################################################
 
@@ -63,7 +56,7 @@ rpa <- function (abatch,
   message("Calculating Expression")
   
   # Number of arrays except control
-  T <- ncol( fcmat )
+  T <- ncol( preproc$q )
 
   # Check names and number for the investigated probesets
   # if my.sets not specified, take all sets in abatch
@@ -71,9 +64,9 @@ rpa <- function (abatch,
   Nsets <- length( sets ) 
 
   ## Matrices to store results
-  d.results <- array(NA, dim = c(Nsets, T))
-  rownames(d.results) <- sets
-  colnames(d.results) <- colnames(fcmat)
+  mu.results <- array(NA, dim = c(Nsets, T))
+  rownames(mu.results) <- sets
+  colnames(mu.results) <- colnames(preproc$q)
 
   if (!is.null(priors) && (!is.null(alpha) || !is.null(beta))) {
     stop("Specify either priors OR alpha, beta- both cannot be specified at the same time!")
@@ -86,27 +79,28 @@ rpa <- function (abatch,
     if (verbose) {message(paste("Computing probeset", set, ":", i, "/", Nsets, "...\n"))}
 
     # Find probe (pm) indices for this set
-    pmindices <- set.inds[[set]] #pmindex(abatch, set)[[1]]
+    pmindices <- preproc$set.inds[[set]] #pmindex(abatch, set)[[1]]
   
     # Number of probes for this probeset
     P <- length(pmindices)
 
     # Get chips x probes matrix of probe-wise fold-changes
     #S <- t(fcmat[pmindices, ])
-    S <- t(fcmat[pmindices, ])
     
     # Pick the priors for this set
     if (!is.null(priors)) {
       alpha <- priors[[set]]$alpha 
       beta  <- priors[[set]]$beta
     } else {}
-        
-    # Calculate RPA 
-    res <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
-                                                  
-    # Store the results (only mean parameter)
-    d.results[i, ] <- res$d
     
+    # Calculate RPA 
+    #res <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
+    dat <- preproc$q[pmindices,]
+    res <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)
+
+    # Store the results (only mean parameter and in the original data domain)
+    mu.results[i, ] <- res$mu
+     
   }
 
   # Excluding reference array (if set so). All values are zero since #
@@ -114,21 +108,20 @@ rpa <- function (abatch,
   #against itself. Shifting the reference this way does not affect the
   #relative differences # between the arrays.
 
-  if (!exclude.reference.array) {
-    d.ref <- rep.int(0, nrow(d.results))
-    dat <- cbind(d.ref, d.results)
-    colnames(dat) <- c(sampleNames(abatch@phenoData)[[cind]], colnames(d.results))
-    rownames(dat) <- rownames(d.results)
-
-    # Order samples to the same order as in original affybatch
-    dat <- dat[,sampleNames(abatch@phenoData)]
-    
-  } else {dat <- d.results}
-  
+  #if (!exclude.reference.array) {
+  #  d.ref <- rep.int(0, nrow(mu.results))
+  #  dat <- cbind(d.ref, mu.results)
+  #  colnames(dat) <- c(sampleNames(abatch@phenoData)[[cind]], colnames(mu.results))
+  #  rownames(dat) <- rownames(mu.results)#
+  #
+  #  # Order samples to the same order as in original affybatch
+  #  dat <- dat[,sampleNames(abatch@phenoData)]
+  #  
+  #} else {dat <- mu.results}
   
   # Coerce expression values in the rpa object into an ExpressionSet object
   # and return expression set
-  return( new("ExpressionSet", assayData = list(exprs = dat)) )
+  return( new("ExpressionSet", assayData = list(exprs = mu.results)) )
   
 }
 

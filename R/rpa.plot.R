@@ -1,79 +1,83 @@
-#
-# This file is a part of the RPA program (Robust Probabilistic
-# Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
-#
-# Copyright (C) 2008-2010 Leo Lahti (leo.lahti@iki.fi)
-#
+# This file is a part of the RPA program
+# (Robust Probabilistic Averaging) 
+# http://bioconductor.org/packages/release/bioc/html/RPA.html
+
+# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
+# it under the terms of the FreeBSD License.
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License 2 for more details.
-# 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-rpa.plot <- function (set, rpa.object, highlight.probes = NULL, pcol = "darkgrey", dcol = "black", cex.lab = 1.5, cex.axis = 1) {
+rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, external.signal = NULL, main = "", plots = "all") {
 
-  # get the associated affybatch
-  abatch <- rpa.object$abatch
-  
-  # Use alternative CDF environment if given                                        
-  if (!is.null(rpa.object$cdf)) { abatch@cdfName <- rpa.object$cdf }
-
-     d <- rpa.object[[set]]$d
-    s2 <- rpa.object[[set]]$sigma2
-  cind <- rpa.object[[set]]$cind
-   dat <- rpa.object$data
-  
-  # Find probe (pm) indices for this set
-  #pmindices <- pmindex(abatch, set)[[1]]
-  pN <- probeNames(abatch, set)
-  set.inds <- split(1:length(pN), pN) # pNList
-  pmindices <- set.inds[[set]]
-  
-  # Get probes x chips matrix of probe-wise fold-changes
-  S <- dat[pmindices, ]
+  # If no model given, calculate fit a new model on the data
+  if (is.null(rpa.fit.object)) { rpa.fit.object <- rpa.fit(dat) }
+  # Override given data with the one in rpa.fit object
+  dat <- rpa.fit.object$data
   
   # number of probes
-  Np <- length(pmindices)
+  Np <- nrow(dat)
 
+  mu <- rpa.fit.object$mu
+  s2 <- rpa.fit.object$sigma2
+  af <- rpa.fit.object$affinity
+  
   # image limits
-  ylims <- range(c(as.vector(S), d))
+  ylims <- range(c(as.vector(dat), mu))
 
-  par(mfrow = c(2, 1))
-
+  if (plots == "all") {
+    par(mfrow = c(3, 1))
+  }
+  
   # expression figure
   plot(c(1,2,3), type = 'n',
-       xlim = c(1, ncol(S)),
+       xlim = c(1, ncol(dat)),
        ylim = ylims,
        xlab = "Samples",
-       ylab = "Signal log-ratio",
+       ylab = "Signal",
        cex.lab = cex.lab,
        cex.axis = cex.axis,
-       main = paste(set,"/ Probe-level signals and the summary d"),
+       main = main,
        las = 1, xaxt = 'n')
-  axis(1, at = 1:3, labels = colnames(rpa.object$data))
+  axis(1, at = 1:ncol(dat), labels = colnames(dat))
 
-  for (i in 1:Np) {
-    lines(S[i, ], col = pcol, lwd = 2)
-  }
+  for (i in 1:Np) { lines(dat[i, ], col = pcol, lwd = 2) }
 
   if (!is.null(highlight.probes)) {
-    lines(S[highlight.probes, ], lty = 2, lwd = 2) 
+    lines(dat[highlight.probes, ], lty = 2, lwd = 2) 
   }
 
-  lines(d, col = dcol, lwd = 2)
+  # Plot the summary
+  lines(mu, col = mucol, lwd = 2)
 
-  # probe variances
-  barplot(s2, main = paste(set,"/ Probe-specific variances (sigma2)"),
+  # Plot external signal
+  if (!is.null(external.signal)) {
+    lines(external.signal, col = ecol, lwd = 2)
+  }
+
+  if (plots == "all") {
+  
+    # Plot probe variances
+    barplot(s2, main = "Probe variances",
           ylab = "Variance", xlab = "Probe index",
-          #names.arg = paste(set,seq(length(s2))), las = 2)
           names.arg = 1:length(s2),
           las = 1,
           cex.lab = cex.lab,
           cex.axis = cex.axis)
+
+    # Plot probe affinities
+    barplot(af, main = "Probe affinities",
+          ylab = "Affinity", xlab = "Probe index",
+          names.arg = 1:length(af),
+          las = 1,
+          cex.lab = cex.lab,
+          cex.axis = cex.axis)  
+
+  }
+  
+  rpa.fit.object
 
 }

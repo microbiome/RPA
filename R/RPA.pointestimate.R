@@ -1,19 +1,16 @@
-#
-# This file is a part of the RPA program (Robust Probabilistic
-# Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
-#
-# Copyright (C) 2008-2010 Leo Lahti (leo.lahti@iki.fi)
-#
+# This file is a part of the RPA program
+# (Robust Probabilistic Averaging) 
+# http://bioconductor.org/packages/release/bioc/html/RPA.html
+
+# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
+# it under the terms of the FreeBSD License.
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License 2 for more details.
-# 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
 
 RPA.pointestimate <- function (abatch,
                                  sets = NULL,
@@ -28,14 +25,14 @@ RPA.pointestimate <- function (abatch,
                  normalization.method = "quantiles.robust",
                                   cdf = NULL,
                                 alpha = NULL,
-                                 beta = NULL)                                      
+                                 beta = NULL,
+                      affinity.method = "rpa"
+				 )                                      
 {
 
-#
+
 # Find posterior mode for RPA model parameters d (mean) and sigma2 (variances)
-#
-# rpa.results <- RPA.pointestimate(abatch)
-#
+# and then estimate also probe affinities.
 
   #################################################################
 
@@ -50,76 +47,82 @@ RPA.pointestimate <- function (abatch,
   if (!is.null(cdf)) { abatch@cdfName <- cdf }
       
   # Preprocessing
-  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)			   
-  fcmat <- preproc$fcmat  # probe-level differential expressions
-   cind <- preproc$cind   # index of the control array
-  set.inds <- preproc$set.inds   # index of the control array
-
+  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)
+  
   #################################################################
 
   # ESTIMATE PROBE RELIABILITY AND DIFFERENTIAL GENE EXPRESSION
 
   #################################################################
 
-  # Number of arrays except control
-  T <- ncol(fcmat)
+  # Number of arrays 
+  T <- ncol(exprs(abatch))
 
   # Check names and number for the investigated probesets
   # if my.sets not specified, take all sets in abatch
-  if (is.null(sets)) { sets <- geneNames(abatch) } 
+  if ( is.null(sets) ) { sets <- geneNames(abatch) } 
 
   if (!all(sets %in% probeNames(abatch))) {
-    warning("Warning: not all probesets are included in the abatch object. Running the test only for included probesets!")
+    warning("some probesets (sets) not available in abatch!")
     sets <- sets[sets %in% probeNames(abatch)]
   } else {}
   
   Nsets <- length(sets) 
 
-  ## Matrices for storing the results
+  ## Matrices to store the results
   d.results <- array(NA, dim = c(Nsets, T))
   rownames(d.results) <- sets
-  colnames(d.results) <- colnames(fcmat)
+  colnames(d.results) <- colnames(exprs(abatch))
 
-  sigma2.results <- vector(length = Nsets, mode = "list")
+  sigma2.results <- vector(length = Nsets, mode = "list")  
   names(sigma2.results) <- sets
 
+  affinity.results <- vector(length = Nsets, mode = "list")  
+  names(affinity.results) <- sets
+
+  mu.real <- vector(length = Nsets, mode = "list")  
+  names(mu.real) <- sets    
+
   if (!is.null(priors) && (!is.null(alpha) || !is.null(beta))) {
-    stop("Specify either priors OR alpha, beta- both cannot be specified at the same time!")
+    alpha <- beta <- NULL
+    warning("priors parameter is overriding alpha, beta when both are provided in the function input")
   }
-  
+
   for (i in 1:Nsets) {
 
     set <- sets[[i]]
   
-    if (verbose) {message(paste("Computing probeset", set, ":", i, "/", Nsets, "...\n"))}
+    if (verbose) {message(paste("Summarizing probeset", set, ":", i, "/", Nsets, "...\n"))}
 
     # Find probe (pm) indices for this set
-    pmindices <- set.inds[[set]]
+    pmindices <- preproc$set.inds[[set]]
     
-    # Number of probes for this probeset
+    # Number of probes in this probeset
     P <- length(pmindices)
-    
-    # Get chips x probes matrix of probe-wise fold-changes
-    S <- t(fcmat[pmindices, ])
-    
+
     # Pick the priors for this set (gives NULL if no prior has been defined)
     if (!is.null(priors)) {
       alpha <- priors[[set]]$alpha 
       beta  <- priors[[set]]$beta
     }
+
+    res <- rpa.fit(preproc$q[pmindices,], cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)
     
-    res <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
-                         
     #Store results
-    d.results[i, ] <- res$d
+    d.results[i, ] <- res$mu # note this returns signal in original data domain
     sigma2.results[[i]] <- res$sigma2
-  
+    affinity.results[[i]] <- res$affinity
+    mu.real[[i]] <- res$mu.real
+    # mu.real can be estimated afterwards since
+    # res$mu = mu.real + d and by definition d[[reference.sample]] = 0.
   }
 
   # Create new class instance
-  rpa.res <- new("rpa", list(d = d.results, sigma2 = sigma2.results, cind = cind, sets = sets, data = fcmat, cdf = cdf, abatch = abatch))
+  # FIXME: with large data sets it exhaustive to store both abatch and preproc$q as these
+  # are redundant. Even abatch is unnecessary as it is available from the input list already.
+  rpa.res <- new("rpa", list(d = d.results, mu.real = mu.real, sigma2 = sigma2.results, affinity = affinity.results, cind = cind, sets = sets, data = preproc$q, cdf = cdf, abatch = abatch))
 
-  # return result class
+  # return result object
   rpa.res
 }
 

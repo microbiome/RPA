@@ -24,7 +24,7 @@
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
- exclude.reference.array = FALSE) 
+         affinity.method = "rpa") 
 }
 
 \arguments{
@@ -113,12 +113,28 @@
       solution. Probe-specific priors can be set with the 'priors'
       parameter.}
 
-    \item{exclude.reference.array }{Logical indicating whether the
-      values for the reference array will be excluded in the final
-      differential gene expression matrix. Note that all values of the
-      reference array will be 0 since they indicate differential
-      expression of the reference array against itself.}
-    
+    %\item{exclude.reference.array }{Logical indicating whether the
+    %  values for the reference array will be excluded in the final
+    %  differential gene expression matrix. Note that all values of the
+    %  reference array will be 0 since they indicate differential
+    %  expression of the reference array against itself.}
+
+    \item{affinity.method}{
+      For model details, see 'help(estimate.affinities)'.
+      
+      "rpa": Assuming affinity parameters are zero on average, and the
+      deviation from zero is determined by estimated probe-level noise
+      parameters. This gives higher weight (smaller affinity) for more
+      reliable probes also in affinity estimation. Heuristic solution,
+      which aims to fit probe-level signal in real data domain as close
+      to the reliable probes as possible.
+
+      "zeromean": assumes that probe affinities sum to zero. Analogous
+      to model assumptions in RMA. Gives equal weights for all probes in
+      affinity estimation. We expect this to be less optimal than
+      weighting probes by their general reliability.
+      
+    }
 }
 
 \details{RPA preprocessing function. Gives an estimate of the
@@ -134,13 +150,14 @@ Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
 al., TCBB/IEEE. See
 http://www.cis.hut.fi/projects/mi/software/RPA/ }
 
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \note{sigma2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative prior, d.method =
 "basic" may be preferable.}
 
-\seealso{RPA.pointestimate, set.priors, AffyBatch, ExpressionSet}
+\seealso{RPA.pointestimate, set.priors, AffyBatch, ExpressionSet,
+  estimate.affinities, rpa.fit}
 
 \examples{
 
@@ -152,6 +169,7 @@ recommended. With small sample size and informative prior, d.method =
 
 ## Compute RPA for specific probesets
 #sets <- geneNames(Dilution)[1:2]	
+#set <- "33572_at"
 #eset <- rpa(Dilution, sets)
 
 ## Compute RPA for whole data set	

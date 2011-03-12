@@ -2,12 +2,15 @@ import(affy)
 
 ##export everything that does not start with a .
 ##exportPattern("^[^\\.]")
-export(get.probe.noise.estimates,
+export(estimate.affinities,
+       get.probe.noise.estimates,
        rpa,
+       rpa.fit,       
        RPA.dcost,
        rpa2eset,
        RPA.iteration,
        rpa.plot,
+       plot.rpa,       
        RPA.pointestimate,
        RPA.preprocess,
        set.priors
@@ -18,6 +21,7 @@ export(get.probe.noise.estimates,
 
 exportClasses(
 "rpa",
+"rpa.fit",
 "rpa.list",
 "rpa.priors"
 )

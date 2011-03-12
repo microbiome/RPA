@@ -8,7 +8,7 @@
 
 \docType{package}
 
-\title{RPA: probe reliability and differential expression analysis}
+\title{RPA: probabilistic analysis of probe reliability and gene expression}
 
 \description{RPA estimates probe-specific variances and differential
 gene expression using probe-level observations of differential gene
@@ -18,9 +18,9 @@ expression.}
   \tabular{ll}{
 Package: \tab RPA\cr
 Type: \tab Package\cr
-Version: \tab 1.5.2\cr
-Date: \tab 2010-05-19\cr
-License: \tab GPL >=2\cr
+Version: \tab 1.7.32\cr
+Date: \tab 2011-03-12\cr
+License: \tab FreeBSD\cr
 LazyLoad: \tab yes\cr
 }
 RPA.pointestimate is used to calculate probe reliability and
@@ -29,13 +29,11 @@ RPA.pointestimate(affybatch)'. The other functions are provided for
 users who wish to investigate the details of the algorithm more
 closely.
 }
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/ }
-
+al., TCBB/IEEE 2011.}
 
 \keyword{ package }
 

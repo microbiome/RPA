@@ -1,19 +1,18 @@
-#
-# This file is a part of the RPA program (Robust Probabilistic
-# Averaging), see http://www.cis.hut.fi/projects/mi/software/RPA/
-#
-# Copyright (C) 2008-2010 Leo Lahti (leo.lahti@iki.fi)
-#
+
+
+# This file is a part of the RPA program
+# (Robust Probabilistic Averaging) 
+# http://bioconductor.org/packages/release/bioc/html/RPA.html
+
+# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-#
+# it under the terms of the FreeBSD License.
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License 2 for more details.
-# 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
 
 RPA.preprocess <- function (abatch, cind = 1,
                             bg.method = "rma",
@@ -21,35 +20,29 @@ RPA.preprocess <- function (abatch, cind = 1,
                             cdf = NULL)
 {
 
-  message("Preprocessing affybatch:")
+  message("Preprocessing affybatch...")
 
   # Set alternative CDF environment if given
   if (!is.null(cdf)) {
 	abatch@cdfName <- cdf
-	message(paste("Using alternative CDF environment:", cdf))
+	message(paste("Setting alternative CDF", cdf))
   }
 
-  message("Background correcting")
+  message("Background correcting...")
   abatch2 <- bg.correct(abatch, bg.method, destructive = TRUE)
 
-  message("Normalizing") 
+  message("Normalizing...") 
   abatch2 <- normalize(abatch2, method = normalization.method)
   
   # Log transformation
-  #pmindex(Dilution, sets[[1]])[[1]]
-  #q <- log2(exprs(abatch2)) 
-  #fcmat[pmindices, ]
-  message("Logging PM values")
+  message("Logging PM values...")
   q <- log2(pm(abatch2))
 
-  message("Pick probe name table")
+  message("Retrieving probe positions...")
   # The indices correspond to the output of pm()
   pN <- probeNames(abatch2)
   set.inds <- split(1:length(pN), pN) # pNList
   
-  message(paste("Setting control array: ", cind, " (", colnames(q)[[cind]], ")",sep=""))
-  fcmat <- q[, -cind] - q[, cind]
-  colnames(fcmat) <- colnames(q)[-cind]
+  return(list(q = q, set.inds = set.inds, cdf = cdf))
 
-  return(list(fcmat = fcmat, cind = cind, cdf = cdf, set.inds = set.inds))
 }

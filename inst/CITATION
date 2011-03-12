@@ -14,7 +14,7 @@ citEntry(entry="article",
 	 volume = "8",
 	 issue = "1",
 	 pages = "217--225",
-         note         = "R/BioC: http://www.cis.hut.fi/projects/mi/software/RPA/)",
+         note         = "R/BioC: http://bioconductor.org/packages/release/bioc/html/RPA.html",
          url          = "http://www.computer.org/portal/web/csdl/doi/10.1109/TCBB.2009.38.",
 
          textVersion =

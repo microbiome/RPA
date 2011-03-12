@@ -26,6 +26,12 @@ An extended list. Contains the following information for one probeset.
 	    
     \item{sigma2 }{Contains a vector that gives the estimated variance
 	           for each probe in the investigated probeset.}
+
+
+  \item{affinity}{A list. Each element corresponds to a
+		 probeset, and contains a vector that gives the
+		 estimated affinity effect for each probe in that
+		 probeset.}
 		 
     \item{cind }{Specifies which of the arrays in abatch was used as the
 	         reference for computing probe-level differential
@@ -50,8 +56,7 @@ Class \code{"\linkS4class{vector}"}, by class "list", distance 2.
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/}
+al., TCBB/IEEE 2011.}
 
 \author{Leo Lahti <leo.lahti@iki.fi>}
 

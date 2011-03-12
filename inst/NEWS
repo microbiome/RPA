@@ -1,3 +1,20 @@
+Changes in 1.7.32 (2011-03-12)
+
+SIGNIFICANT USER-VISIBLE CHANGES 
+
+  o added estimation of probe affinities in rpa and RPA.pointestimate
+  functions. Now returning expression values in the original data
+  domain, i.e. in 'absolute' expression levels. Provides options for
+  affinity estimation through affinity.method field in certain functions.
+  o added 'affinity' field in rpa-class and rpa.list-class
+  o added estimate.affinities function
+  o removed exclude reference array option
+  o added rpa.fit class (S3) to provide storage for an individual model
+  o rpa.fit function now fits the model (including affinities) for
+    given data. This is a generic function to calculate an individual
+    model instance for any data following the distributional
+    assumptions of the model. See tests/rpa.fit.test.R for an example. 
+
 Changes in 1.7.3 (2011-01-20)
 
 BUG FIXES

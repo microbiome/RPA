@@ -12,7 +12,7 @@ sets.}
 \usage{RPA.pointestimate(abatch, sets = NULL, myseed = 101, priors =
 NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 "fast", verbose = TRUE, bg.method = "rma", normalization.method =
-"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL)}
+"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, affinity.method = "rpa")}
 
 \arguments{
 
@@ -43,7 +43,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 		regularized by informative priors that are identical
 		for all probes (user-specified by
 		setting scalar values for alpha, beta). This
-		regularizes the solution, and avoids overfitting where
+		regularizes the solution and avoids overfitting where
 		a single probe obtains infinite reliability. This is a
 	        potential problem in the other sigma2 update
 	        methods with non-informative variance priors. The
@@ -96,6 +96,23 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
       prior for all probes, which regularizes the
       solution. Probe-specific priors can be set with the 'priors'
       parameter.}
+
+    \item{affinity.method}{
+      Model details for affinity estimation explained in function source code.
+      
+      "rpa": Assuming affinity parameters are zero on average, and the
+      deviation from zero is determined by estimated probe-level noise
+      parameters. This gives higher weight (smaller affinity) for more
+      reliable probes also in affinity estimation. Heuristic solution,
+      which aims to fit probe-level signal in real data domain as close
+      to the reliable probes as possible.
+
+      "zeromean": assumes that probe affinities sum to zero. Analogous
+      to model assumptions in RMA. Gives equal weights for all probes in
+      affinity estimation. We expect this to be less optimal than
+      weighting probes by their general reliability.
+      
+    }    
     
 }
 
@@ -131,21 +148,23 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 	       reference for computing probe-level differential
 	       expression.}
 
+  \item{affinity}{Probe affinity effects.}
+	     
   \item{sets }{A character vector listing the investigated probesets.}
 }
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, to appear. See
-http://www.cis.hut.fi/projects/mi/software/RPA/ }
+al., TCBB/IEEE, 2011. See citation("RPA") for details.}
 
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \note{sigma2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative priors, d.method =
 "basic" may be preferable.}
 
-\seealso{rpa.plot, rpa, set.priors, rpa2eset, RPA.preprocess, AffyBatch}
+\seealso{rpa.plot, rpa, set.priors, rpa2eset, RPA.preprocess, AffyBatch,
+rpa.fit, estimate.affinities}
 
 \examples{
 

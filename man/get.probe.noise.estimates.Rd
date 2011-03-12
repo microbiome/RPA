@@ -61,12 +61,12 @@
   object). The element lists noise estimates for each probe within the
   probeset.}
 
-\references{Probabilistic Analysis of Probe Reliability in
-Differential Gene Expression Studies with Short Oligonucleotide
-Arrays. Lahti et al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/ }
+\references{Probabilistic Analysis of Probe Reliability in Differential
+Gene Expression Studies with Short Oligonucleotide Arrays. Lahti et al.,
+TCBB/IEEE 2011. See
+http://bioconductor.org/packages/release/bioc/html/RPA.html}
 
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \seealso{RPA.pointestimate}
 

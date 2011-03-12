@@ -58,7 +58,7 @@ Class \code{"\linkS4class{vector}"}, by class "list", distance 2.
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
 al., TCBB/IEEE 2011.}
 
-\author{Leo Lahti <leo.lahti@iki.fi>}
+\author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \examples{showClass("rpa.list")}
 \keyword{classes}

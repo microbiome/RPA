@@ -111,17 +111,36 @@ information concerning probe reliability into gene expression analysis
 
 \section{Preprocessing gene expression data with RPA}
 
-RPA provides a wrapper ('rpa') for gene expression preprocessing
-purposes. Alternative CDF environments are supported (see help(rpa)
-for details).
+RPA provides a wrapper ('rpa') for convenient preprocessing of
+Affymetrix arrays. Alternative CDF environments are also supported
+(see help(rpa) for details). Here is a preprocessing example with an
+example data set:
 
 <<rpa, results = hide, eval = FALSE>>=
-eset <- rpa(Dilution, cind = 1)
+library(affydata)
+data(Dilution)
+eset <- rpa(Dilution)
 @
 
-The output is an ExpressionSet object, which allows downstream
-analysis of the results using standard R/BioC tools for gene
-expression data.
+The input is an AffyBatch object. CEL files can be read in as
+affybatch with the ReadAffy function of the affy package. The output
+is an ExpressionSet object, which allows downstream analysis of the
+results using standard R/BioC tools for gene expression data.
+
+\subsection{AffyComp results}
+
+RPA was systematically compared to a number of other preprocessing
+methods through the AffyComp
+website\footnote{http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html as
+  of March 13, 2011} that provides the standard for comparing
+alternative preprocessing methods with various performance statistics
+\cite{Cope04}. Measured by the average ranking of the methods in the
+different tests (14 tests), RPA was ranked as 1/65 and 3/95 with hgu95
+and hgu133 spike-in data sets, respectively (March 13, 2011). These
+results confirm the favourable preprocessing performance of RPA
+(Robust Probabilistic Averaging) on short oligonucleotide array
+studies. Note that in addition to preprocessing, RPA provides tools
+for investigating probe performance.
 
 
 \section{Probe reliability analysis}
@@ -163,7 +182,7 @@ help('rpa.plot') for details.
 \begin{figure}[htbp]
 \begin{center}
 <<barplots, fig = TRUE, echo = FALSE, print = FALSE, results = hide>>=
-dat <- plot.rpa(rpa.results, set = "1000_at")
+dat <- plot(rpa.results, set = "1000_at")
 @
 \caption{Estimated probe-specific variances and gene expression signal
   for an example probe set.}

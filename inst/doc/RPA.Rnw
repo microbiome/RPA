@@ -132,15 +132,20 @@ results using standard R/BioC tools for gene expression data.
 RPA was systematically compared to a number of other preprocessing
 methods through the AffyComp
 website\footnote{http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html as
-  of March 13, 2011} that provides the standard for comparing
+of March 13, 2011} that provides the standard for comparing
 alternative preprocessing methods with various performance statistics
 \cite{Cope04}. Measured by the average ranking of the methods in the
-different tests (14 tests), RPA was ranked as 1/65 and 3/95 with hgu95
-and hgu133 spike-in data sets, respectively (March 13, 2011). These
-results confirm the favourable preprocessing performance of RPA
-(Robust Probabilistic Averaging) on short oligonucleotide array
-studies. Note that in addition to preprocessing, RPA provides tools
-for investigating probe performance.
+different tests (14 tests), RPA was ranked as 1/65 and 4/95 with hgu95
+and hgu133 spike-in data sets, respectively (March 13, 2011). The
+highest average ranks on hgu133 data were obtained by the three 'NLF'
+methods but results for these methods were not available for hgu95
+(the NLF95 which has a similar name ranked 6/95). This confirms that
+RPA has the best generalizability across different data sets and has
+superior preprocessing performance in short oligonucleotide array
+studies.  However, RPA does not only provide excellent preprocessing
+performance, it also provides explicit quantitative estimates of
+uncertainty in individual probes.
+
 
 
 \section{Probe reliability analysis}

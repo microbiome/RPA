@@ -30,7 +30,9 @@ RPA.preprocess <- function (abatch, cind = 1,
 
   message("Background correcting...")
   abatch2 <- bg.correct(abatch, bg.method, destructive = TRUE)
-
+  # FIXME: here the abatch values for some reason are set to NaNs!
+  # for defected affybatch
+  
   message("Normalizing...") 
   abatch2 <- normalize(abatch2, method = normalization.method)
   

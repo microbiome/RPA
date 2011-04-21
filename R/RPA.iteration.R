@@ -15,6 +15,7 @@
 
 # Changelog:
 
+# 21.4.2011 added NaN/NA check for values after erroneous affybatch crashed RPA
 # 6.3.2010 S.means and St removed (not used). alpha check added for
 #          sigma2.method "robust" (alpha > 1-nrow(S)/2)
 
@@ -27,8 +28,13 @@ RPA.iteration <- function(S,
                           maxloop = 1e6)
 {
 
+
   P <- ncol(S) # number of probes
   T <- nrow(S) # Number of arrays (except control)
+
+  # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
+  if (all(is.nan(S) | is.na(S))) { 
+    return(list(d = rep(NA, T), sigma2 = rep(NA, P))) }
   
   # initialize with equal weight for all probes
   sigma2 <- rep.int(1, P)
@@ -59,7 +65,7 @@ RPA.iteration <- function(S,
   
   # Confirm that sigma2.method is valid for these parameters
   if (sigma2.method == "mean" || sigma2.method == "robust") {
-    ifelse(all(alphahat > 1), TRUE, stop("alpha > 1-nrow(S)/2 required for sigma2.method = mean"))
+    ifelse(all(alphahat > 1), TRUE, stop("alpha > 1 - nrow(S) / 2 required for sigma2.method = mean"))
   } else {}
     
   # not used in computation,
@@ -70,7 +76,7 @@ RPA.iteration <- function(S,
   # just to check convergence at first iteration
   d <- rep.int(max(S), T) 
   d.old <- (-d) 
-  d.init <- rep.int(0,T) 
+  d.init <- rep.int(0, T) 
 
   # optimize until convergence
   loopcnt <- 0
@@ -90,7 +96,7 @@ RPA.iteration <- function(S,
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
     }
-   } else if (d.method == "basic") {
+  } else if (d.method == "basic") {
 
       while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
 

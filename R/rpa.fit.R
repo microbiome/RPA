@@ -1,6 +1,4 @@
-
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
+# This file is a part of the RPA (Robust Probabilistic Averaging)
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
 # Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
@@ -11,7 +9,6 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
  
 rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast", affinity.method = "rpa") {
 
@@ -23,7 +20,6 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
 
   # Extract reference sample  
   # Get samples x probes matrix of probe-wise fold-changes
-  #S <- t(fcmat[pmindices, ])
   if (is.null(colnames(dat))) {colnames(dat) <- 1:ncol(dat)}
   S <- t(dat[, -cind] - dat[, cind])
 

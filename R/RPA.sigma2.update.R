@@ -14,9 +14,7 @@
 
 RPA.sigma2.update <- function (d, S = S, alphahat, beta, sigma2.method = "robust") {
 
-  #
   # S: arrays x probes matrix; observations vs. estimated real signal
-  #
   
   R <- S - d 
 
@@ -26,7 +24,8 @@ RPA.sigma2.update <- function (d, S = S, alphahat, beta, sigma2.method = "robust
     # assuming alpha, beta(hat) are given
     r.colsums <- colSums(R)
     r2.colsums <- colSums(R^2)
-    betahat <- .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))
+    betahat <- betahat.c(beta, r2.colsums, r.colsums, S)
+    #betahat <- .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))    
 
     # update betahat by posterior mean (sigma2.method 'mean' and
     # 'robust') or mode ('mode')
@@ -37,6 +36,7 @@ RPA.sigma2.update <- function (d, S = S, alphahat, beta, sigma2.method = "robust
     if (!sigma2.method == "mode") {
       s2 <- betahat / (alphahat - 1)
     } else {s2 <- betahat / (alphahat + 1)}
+
   } else if (sigma2.method == "var") {
     # Assume uninformative priors alpha, beta -> 0	  
     # NOTE: RPA converges to variance with large sample size
@@ -47,3 +47,9 @@ RPA.sigma2.update <- function (d, S = S, alphahat, beta, sigma2.method = "robust
   s2
 }
 
+
+# Provide compiled version of betahat, about 1.5-fold speedup seen
+betahat.f <- function (beta, r2.colsums, r.colsums, S) {
+    .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))
+}
+betahat.c <- cmpfun(betahat.f)

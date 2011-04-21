@@ -29,9 +29,7 @@ rpa <- function (abatch,
                  affinity.method = "rpa") 
 {
 
-#
-# RPA for preprocessing only
-#
+  # RPA preprocessing wrapper
 
   #Set random seed
   set.seed( myseed )
@@ -42,14 +40,9 @@ rpa <- function (abatch,
   # Preprocessing
   preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)	
   
-  # Pick the necessary objects
-  #    fcmat <- preproc$fcmat      # probe-level differential expressions
-  #     cind <- preproc$cind       # index of the control array
-  # set.inds <- preproc$set.inds   
-
   #################################################################
 
-  # ESTIMATE PROBE RELIABILITY AND DIFFERENTIAL GENE EXPRESSION
+  # ESTIMATE PROBE RELIABILITY AND DIFFERENTIAL EXPRESSION
 
   #################################################################
 
@@ -76,16 +69,13 @@ rpa <- function (abatch,
 
     set <- sets[[i]]
   
-    if (verbose) {message(paste("Computing probeset", set, ":", i, "/", Nsets, "...\n"))}
+    if (verbose) { message(paste("Summarizing probeset", set, ":", i, "/", Nsets, "...\n")) }
 
     # Find probe (pm) indices for this set
     pmindices <- preproc$set.inds[[set]] #pmindex(abatch, set)[[1]]
   
     # Number of probes for this probeset
     P <- length(pmindices)
-
-    # Get chips x probes matrix of probe-wise fold-changes
-    #S <- t(fcmat[pmindices, ])
     
     # Pick the priors for this set
     if (!is.null(priors)) {
@@ -94,34 +84,15 @@ rpa <- function (abatch,
     } else {}
     
     # Calculate RPA 
-    #res <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
-    dat <- preproc$q[pmindices,]
-    res <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)
-
-    # Store the results (only mean parameter and in the original data domain)
-    mu.results[i, ] <- res$mu
+    dat <- matrix(preproc$q[pmindices,], P)
+    mu.results[i, ] <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)$mu
+    # Store the results (only mean parameter and in the original data domain)    
      
   }
 
-  # Excluding reference array (if set so). All values are zero since #
-  #the method gives differential expression of the reference array #
-  #against itself. Shifting the reference this way does not affect the
-  #relative differences # between the arrays.
-
-  #if (!exclude.reference.array) {
-  #  d.ref <- rep.int(0, nrow(mu.results))
-  #  dat <- cbind(d.ref, mu.results)
-  #  colnames(dat) <- c(sampleNames(abatch@phenoData)[[cind]], colnames(mu.results))
-  #  rownames(dat) <- rownames(mu.results)#
-  #
-  #  # Order samples to the same order as in original affybatch
-  #  dat <- dat[,sampleNames(abatch@phenoData)]
-  #  
-  #} else {dat <- mu.results}
-  
   # Coerce expression values in the rpa object into an ExpressionSet object
   # and return expression set
-  return( new("ExpressionSet", assayData = list(exprs = mu.results)) )
+  new("ExpressionSet", assayData = list(exprs = mu.results)) 
   
 }
 

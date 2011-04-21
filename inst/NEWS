@@ -1,3 +1,10 @@
+Changes in 1.9.02 (2011-04-21)
+
+  o added compiler to betahat in RPA.sigma2.update.R to speed up
+
+  o added NA/NaN check to RPA.iteration after a defected affybatch
+    with NA values was found to cause crash
+
 Changes in 1.7.34 (2011-03-14)
 
   o added note on AffyComp results in the Vignette

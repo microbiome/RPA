@@ -74,15 +74,10 @@
 \def\sigmaj{\sigma_j}
 \def\lambdaj{\lambda_j}
 
-\author{Leo Lahti\footnote{http://www.iki.fi/Leo.Lahti}\\leo.lahti@iki.fi}
+\author{Leo Lahti\footnote{http://www.iki.fi/Leo.Lahti}\\University of Helsinki\\leo.lahti@iki.fi}
   
-%  \\Helsinki Institute for Information Technology HIIT\\
-%  and Adaptive Informatics Research Centre,\\Department of Information
-%  and Computer Science,\\Aalto University P.O. Box 15400, FI-00076 Aalto, Finland\\{\tt
-%    leo.lahti@iki.fi}}
-
 \begin{document}
-\title{RPA: analysis of probe reliability and gene expression on short
+\title{Robust Probabilistic Averaging for probe reliability analysis and preprocessing on short
   oligonucleotide arrays}
 
 \maketitle 
@@ -96,14 +91,16 @@ preprocessing for (Affymetrix) short oligonucleotide arrays. It can
 also be used more generally to summarize multivariate observations
 that target the same objects with varying degree of reliability.
 
-RPA can be used for standard preprocessing tasks in gene expression
-studies; it has been shown to outperform other popular preprocessing
-methods in differential gene expression analysis. In addition, the
-method provides explicit, data-driven estimates of probe reliability;
-poorly performing probes are downweighted in the model, which yields
-more accurate estimates of gene expression and can reveal noisy probes
-independently of the error source. The noise estimates have been
-validated by comparisons to known probe-level error sources. The
+RPA can be used for probe-level analysis of microarray data. The
+method provides explicit data-driven estimates of probe performance,
+i.e. affinity and probe-specific noise level. Affinities are taken
+into account in summarizing the probes and noisy probes are
+downweighted, which yields more accurate estimates of gene
+expression. The model can reveal noisy probes independently of the
+error source noise; noise estimates have been validated by comparisons
+to known probe-level error sources \cite{Lahti11}. RPA has been
+shown to outperform other popular preprocessing methods in
+cross-platform studies and spike-in data sets (see below). The
 probabilistic formulation allows also incorporation of prior
 information concerning probe reliability into gene expression analysis
 \cite{Lahti11}.
@@ -146,8 +143,6 @@ studies.  However, RPA does not only provide excellent preprocessing
 performance, it also provides explicit quantitative estimates of
 uncertainty in individual probes.
 
-
-
 \section{Probe reliability analysis}
 
 RPA operates on affybatch objects \cite{Gautier04a}. An affybatch
@@ -172,13 +167,12 @@ rpa.results <- RPA.pointestimate(Dilution, sets)
 @
 
 The 'rpa2eset' function can be used to coerce the probeset-level
-expression estimates into an ExpressionSet object. 
-
-
-The results for a particular probeset are visualized with
+expression estimates into an ExpressionSet object.  The results for a
+particular probeset can be visualized with
 
 <<visu, fig = FALSE, echo = TRUE, print = FALSE, results = hide, eval = FALSE>>=
-plot(rpa.results, set = "1000_at")
+plot(rpa.results, set = "1000_at", plots = "all")
+#plot(rpa.results, set = set, plots = "data")
 @
 
 The output is shown in Figure \ref{fig:illustration}. See
@@ -187,10 +181,9 @@ help('rpa.plot') for details.
 \begin{figure}[htbp]
 \begin{center}
 <<barplots, fig = TRUE, echo = FALSE, print = FALSE, results = hide>>=
-dat <- plot(rpa.results, set = "1000_at")
+dat <- plot(rpa.results, set = "1000_at", plots = "all")
 @
-\caption{Estimated probe-specific variances and gene expression signal
-  for an example probe set.}
+\caption{Estimated probe affinities, probe-specific noise level (standard deviation) and probeset-level summary estimate for an example probe set.}
 \label{fig:illustration}
 \end{center}
 \end{figure}
@@ -240,8 +233,9 @@ rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
 
 \subsection{General usage}
 
-RPA can be used more generally to summarize multivariate observations
-of the same object with varying noise levels, see function rpa.fit:
+Robust Probabilistic Averaging can be used to summarize any
+multivariate observations concerning the same object and having
+varying (Gaussian) affinities and noise levels, see function rpa.fit:
 
 <<iter, results=hide, eval = FALSE>>=
 res <- rpa.fit(S)
@@ -309,14 +303,16 @@ expression profile of probe \(j\) across the arrays can be written as
 \(\mj = \d + \Epsilonj\). In practice, \(\d\) and the probe-specific
 variances \(\{\tau_j\}_{j=1}^P\) for the \(P\) probes within the
 probeset are estimated simultaneously based on the probabilistic
-model. With large sample sizes the solution will converge to
-estimating the mean of the probe-level observations weighted by probe
-reliability.  Note that the algorithm is robust to choice of the
-reference array since the reference effect is marginalized out in the
-probabilistic treatment; our experiments confirm that the probe-level
-noise estimates are not affected by the choice of the reference array.
+model.
 
-\subsubsection{Estimation of probe affinity terms}
+With large sample sizes the solution will converge to estimating the
+mean of the probe-level observations weighted by probe reliability.
+The algorithm is robust to choice of the reference array since the
+reference effect is marginalized out in the probabilistic treatment;
+our experiments confirm that the probe-level noise estimates are not
+affected by the choice of the reference array.
+
+\subsubsection{Probe affinity estimation}
 
 Probe affinity terms and the original signal level are estimated after
 summarizing the probe-level differential gene expression estimates.
@@ -356,12 +352,6 @@ on the signal shape (i.e. are very noisy and likely to be contaminated
 by many unrelated signals) should also contribute less to the absolute
 signal estimate. The probe affinities are expected to sum to zero but
 the model allows some flexibility.
-
-%Note that in contrast to the other prepreprocessing methods, the
-%differential expression levels between the conditions are estimated
-%first, based on probe-level analysis. Probeset-level summarization and
-%estimation of probe-specific affinities and the original signal level
-%is performed in the second step.
 
 
 \section{Citing RPA}

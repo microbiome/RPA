@@ -7,7 +7,7 @@ setClass("rpa.fit",
 	 contains = "list")
 
 setClass("rpa.list",
-         representation(d = "array", sigma2 = "list", affinity = "list", cind = "numeric", set = "character", data="array"), 
+         representation(d = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", cind = "numeric", set = "character", data="array"), 
 	 contains = "list")
 
 setClass("rpa.priors",

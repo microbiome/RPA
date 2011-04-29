@@ -6,20 +6,20 @@
 
 plot.rpa.list <- function (x, y, ...) {
 
-      set <- x$set
-        d <- x$mu
-       s2 <- x$sigma2		 
+      set <- x$set # probe set
+       mu <- x$d # 'Absolute' expression level
+       sd <- sqrt(x$sigma2) # probe standard deviation	 
 
       par(mfrow = c(2,1))
-      barplot(s2, main = paste(set,"/ Probe-specific variances (sigma2)"),
-              ylab = "Variance", xlab = "Probes", names.arg = 1:length(s2), las = 2)              
-      #barplot(d, main = paste(set,"/ Differential expression estimate (d)"),
-      barplot(d, main = paste(set,"/ Expression estimate"),
-              ylab = "Signal", xlab = "Arrays", las = 2)	      
+      barplot(sd, main = paste(set,"/ Probe noise (standard deviation)"),
+              ylab = "Standard deviation", xlab = "Probes", names.arg = 1:length(sd), las = 2)
+
+      barplot(mu, main = paste(set,"/ expression "),
+              ylab = "Expression signal", xlab = "Arrays", las = 1) 
 
 }
 
-plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, external.signal = NULL, main = NULL, ...) {
+plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, external.signal = NULL, main = NULL, plots = "all", ...) {
                                       
   # x: 'rpa' object to plot  
   # set: probeset
@@ -45,7 +45,7 @@ plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgre
   if (is.null(main)) {
     main <- paste(set, "/ Probe-level signals and the summary estimate")
   }
-  rpa.plot(dat, rpa.fit.object, cex.lab = cex.lab, cex.axis = cex.axis, main = main, plots = "data", external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol)
+  rpa.plot(dat, rpa.fit.object, cex.lab = cex.lab, cex.axis = cex.axis, main = main, plots = plots, external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol)
 
   dat
 }

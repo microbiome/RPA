@@ -22,7 +22,7 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
   Np <- nrow(dat)
 
   mu <- rpa.fit.object$mu
-  s2 <- rpa.fit.object$sigma2
+  sd <- sqrt(rpa.fit.object$sigma2)
   af <- rpa.fit.object$affinity
   
   # image limits
@@ -42,7 +42,8 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
        cex.axis = cex.axis,
        main = main,
        las = 1, xaxt = 'n')
-  axis(1, at = 1:ncol(dat), labels = colnames(dat))
+  #axis(1, at = 1:ncol(dat), labels = colnames(dat), las = 2, cex.axis = 0.5)
+  #axis(1, at = 1:ncol(dat), las = 2, cex.axis = 0.5)
 
   for (i in 1:Np) { lines(dat[i, ], col = pcol, lwd = 2) }
 
@@ -61,15 +62,15 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
   if (plots == "all") {
   
     # Plot probe variances
-    barplot(s2, main = "Probe variances",
-          ylab = "Variance", xlab = "Probe index",
-          names.arg = 1:length(s2),
+    barplot(sd, main = "Probe noise",
+          ylab = "Standard deviation", xlab = "Probe index",
+          names.arg = 1:length(sd),
           las = 1,
           cex.lab = cex.lab,
           cex.axis = cex.axis)
 
     # Plot probe affinities
-    barplot(af, main = "Probe affinities",
+    barplot(af, main = "Probe affinity",
           ylab = "Affinity", xlab = "Probe index",
           names.arg = 1:length(af),
           las = 1,

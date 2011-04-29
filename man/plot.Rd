@@ -12,7 +12,7 @@
 
 \usage{plot.rpa(x, y = NULL, set, highlight.probes = NULL, pcol =
 "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1,
-external.signal = NULL, main = NULL, ...)}
+external.signal = NULL, main = NULL, plots = "all", ...)}
 
 \arguments{
   \item{x,y }{Instances of the 'rpa class; y is optional and never
@@ -27,12 +27,13 @@ external.signal = NULL, main = NULL, ...)}
   \item{external.signal }{Plot external signal on the probeset. For
                            instance, an alternative summary estimate
                            from another preprocessing methods.}
-  \item{main}{Title for plot.}			 
+  \item{main}{Title for plot.}
+  \item{plots}{Type of plot. See help(rpa.plot).}
   \item{...}{Other arguments to be passed.}
 			 
 }		       
 
-\value{Used for its side-effects. Returns probes x samples matrix of
+\value{Used for side-effects. Returns probes x samples matrix of
   probe-level data plotted on the image.}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
@@ -56,7 +57,7 @@ al., TCBB/IEEE. See http://bioconductor.org/packages/release/bioc/html/RPA.html}
 #rpa.results <- RPA.pointestimate(Dilution, set)
 
 ## Visualize the results for one of the probe sets
-#plot.rpa(set, rpa.results)
+#plot(rpa.results, set)
 
 }
 

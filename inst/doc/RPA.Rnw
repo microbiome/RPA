@@ -131,17 +131,19 @@ methods through the AffyComp
 website\footnote{http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html as
 of March 13, 2011} that provides the standard for comparing
 alternative preprocessing methods with various performance statistics
-\cite{Cope04}. Measured by the average ranking of the methods in the
-different tests (14 tests), RPA was ranked as 1/65 and 4/95 with hgu95
-and hgu133 spike-in data sets, respectively (March 13, 2011). The
-highest average ranks on hgu133 data were obtained by the three 'NLF'
-methods but results for these methods were not available for hgu95
-(the NLF95 which has a similar name ranked 6/95). This confirms that
-RPA has the best generalizability across different data sets and has
-superior preprocessing performance in short oligonucleotide array
-studies.  However, RPA does not only provide excellent preprocessing
-performance, it also provides explicit quantitative estimates of
-uncertainty in individual probes.
+\cite{Cope04}. Certain algorithms, including variants of GC-RMA and FARMS
+outperformed RMA. On the other hand, RPA outperformed some widely-used
+preprocessing algorithms such as RMA. The differences reflect to some
+extent the complexity of probe-level models: FARMS and GC-RMA have
+more detailed models for probe effects, whereas RMA is a special case
+of the RPA algorithm, obtained when the stochastic noise is assumed
+equal between all probes. The results indicate that RPA has a
+comparable preprocessing performance with standard preprocessing
+algorithms, which supports the validity of the probe performance
+estimates in RPA. Note that RPA has not been optimized for
+preprocessing purposes as it is primarily targeted at probe
+performance analysis.
+
 
 \section{Probe reliability analysis}
 

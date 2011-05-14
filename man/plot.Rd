@@ -11,8 +11,7 @@
   possible to highlight individual probes and external summary measures.}
 
 \usage{plot.rpa(x, y = NULL, set, highlight.probes = NULL, pcol =
-"darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1,
-external.signal = NULL, main = NULL, plots = "all", ...)}
+"darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.names = 1, cex.main = 1, external.signal = NULL, main = NULL, plots = "all", ...)}
 
 \arguments{
   \item{x,y }{Instances of the 'rpa class; y is optional and never
@@ -23,7 +22,7 @@ external.signal = NULL, main = NULL, plots = "all", ...)}
   \item{pcol }{Color for probe signal visualization.}
   \item{mucol }{Color for summary estimate.}
   \item{ecol }{Color for external signal.}  
-  \item{cex.lab, cex.axis }{Axis adjustment parameters.}
+  \item{cex.lab, cex.axis, cex.names, cex.main }{Axis adjustment parameters.}
   \item{external.signal }{Plot external signal on the probeset. For
                            instance, an alternative summary estimate
                            from another preprocessing methods.}

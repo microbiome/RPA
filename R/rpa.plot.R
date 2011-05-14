@@ -11,7 +11,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, external.signal = NULL, main = "", plots = "all") {
+rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
 
   # If no model given, calculate fit a new model on the data
   if (is.null(rpa.fit.object)) { rpa.fit.object <- rpa.fit(dat) }
@@ -40,8 +40,9 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
        ylab = "Signal",
        cex.lab = cex.lab,
        cex.axis = cex.axis,
+       cex.main = cex.main,
        main = main,
-       las = 1, xaxt = 'n')
+       las = 1, xaxt = 'n', ...)
   #axis(1, at = 1:ncol(dat), labels = colnames(dat), las = 2, cex.axis = 0.5)
   #axis(1, at = 1:ncol(dat), las = 2, cex.axis = 0.5)
 
@@ -62,20 +63,20 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
   if (plots == "all") {
   
     # Plot probe variances
-    barplot(sd, main = "Probe noise",
-          ylab = "Standard deviation", xlab = "Probe index",
+    barplot(sd, main = "Stochastic probe effect (noise)",
+          ylab = "Noise (tau)", xlab = "Probe index",
           names.arg = 1:length(sd),
           las = 1,
           cex.lab = cex.lab,
-          cex.axis = cex.axis)
+          cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main)
 
     # Plot probe affinities
-    barplot(af, main = "Probe affinity",
-          ylab = "Affinity", xlab = "Probe index",
+    barplot(af, main = "Fixed probe effect (affinity)",
+          ylab = "Affinity (mu)", xlab = "Probe index",
           names.arg = 1:length(af),
           las = 1,
-          cex.lab = cex.lab,
-          cex.axis = cex.axis)  
+          cex.lab = cex.lab, 
+          cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main)  
 
   }
   

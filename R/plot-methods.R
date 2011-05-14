@@ -19,7 +19,7 @@ plot.rpa.list <- function (x, y, ...) {
 
 }
 
-plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, external.signal = NULL, main = NULL, plots = "all", ...) {
+plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.names = 1, cex.main = 1, external.signal = NULL, main = NULL, plots = "all", ...) {
                                       
   # x: 'rpa' object to plot  
   # set: probeset
@@ -43,9 +43,9 @@ plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgre
   rpa.fit.object <- new("rpa.fit", list(mu = d, mu.real = mu.real, sigma2 = s2, affinity = affinity, data = dat))
 
   if (is.null(main)) {
-    main <- paste(set, "/ Probe-level signals and the summary estimate")
+    main <- paste("Probe signals and the summary estimate (", set, ")", sep = "")
   }
-  rpa.plot(dat, rpa.fit.object, cex.lab = cex.lab, cex.axis = cex.axis, main = main, plots = plots, external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol)
+  rpa.plot(dat, rpa.fit.object, cex.lab = cex.lab, cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main, main = main, plots = plots, external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol)
 
   dat
 }

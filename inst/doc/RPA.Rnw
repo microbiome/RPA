@@ -76,9 +76,9 @@
 
 \author{Leo Lahti\footnote{http://www.iki.fi/Leo.Lahti}\\University of Helsinki\\leo.lahti@iki.fi}
   
-\begin{document}
-\title{Robust Probabilistic Averaging for probe reliability analysis and preprocessing on short
-  oligonucleotide arrays}
+\begin{document} \title{Robust Probabilistic Averaging for probe
+performance analysis and preprocessing on short oligonucleotide
+arrays}
 
 \maketitle 
 
@@ -87,80 +87,46 @@
 \Rpackage{RPA} (Robust Probabilistic
 Averaging)\footnote{\url{http://bioconductor.org/packages/release/bioc/html/RPA.html}}
 provides tools for probe reliability analysis and gene expression
-preprocessing for (Affymetrix) short oligonucleotide arrays. It can
-also be used more generally to summarize multivariate observations
-that target the same objects with varying degree of reliability.
-
-RPA can be used for probe-level analysis of microarray data. The
-method provides explicit data-driven estimates of probe performance,
+preprocessing for (Affymetrix) short oligonucleotide arrays, and more
+generally to summarize normally distributed multivariate observations
+that target the same object with varying degrees of reliability.  RPA
+provides explicit data-driven estimates of probe performance,
 i.e. affinity and probe-specific noise level. Affinities are taken
 into account in summarizing the probes and noisy probes are
-downweighted, which yields more accurate estimates of gene
-expression. The model can reveal noisy probes independently of the
-error source noise; noise estimates have been validated by comparisons
-to known probe-level error sources \cite{Lahti11}. RPA has been
-shown to outperform other popular preprocessing methods in
-cross-platform studies and spike-in data sets (see below). The
-probabilistic formulation allows also incorporation of prior
-information concerning probe reliability into gene expression analysis
-\cite{Lahti11}.
+downweighted, which yields more accurate estimates of gene expression
+\cite{Lahti11}. The probabilistic formulation allows also
+incorporation of prior information concerning probe reliability into
+analysis.
 
 
-\section{Preprocessing gene expression data with RPA}
+\section{RPA preprocessing}
 
 RPA provides a wrapper ('rpa') for convenient preprocessing of
-Affymetrix arrays. Alternative CDF environments are also supported
-(see help(rpa) for details). Here is a preprocessing example with an
-example data set:
+Affymetrix arrays and support for alternative CDF environments. RPA
+operates on affybatch objects \cite{Gautier04a}. Load the example
+data:
 
-<<rpa, results = hide, eval = FALSE>>=
-library(affydata)
-data(Dilution)
-eset <- rpa(Dilution)
-@
-
-The input is an AffyBatch object. CEL files can be read in as
-affybatch with the ReadAffy function of the affy package. The output
-is an ExpressionSet object, which allows downstream analysis of the
-results using standard R/BioC tools for gene expression data.
-
-\subsection{AffyComp results}
-
-RPA was systematically compared to a number of other preprocessing
-methods through the AffyComp
-website\footnote{http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html as
-of March 13, 2011} that provides the standard for comparing
-alternative preprocessing methods with various performance statistics
-\cite{Cope04}. Certain algorithms, including variants of GC-RMA and FARMS
-outperformed RMA. On the other hand, RPA outperformed some widely-used
-preprocessing algorithms such as RMA. The differences reflect to some
-extent the complexity of probe-level models: FARMS and GC-RMA have
-more detailed models for probe effects, whereas RMA is a special case
-of the RPA algorithm, obtained when the stochastic noise is assumed
-equal between all probes. The results indicate that RPA has a
-comparable preprocessing performance with standard preprocessing
-algorithms, which supports the validity of the probe performance
-estimates in RPA. Note that RPA has not been optimized for
-preprocessing purposes as it is primarily targeted at probe
-performance analysis.
-
-
-\section{Probe reliability analysis}
-
-RPA operates on affybatch objects \cite{Gautier04a}. An affybatch
-contains the probe-level data of Affymetrix arrays. Our toy examples
-use the \Robject{Dilution} dataset provided by \Rpackage{affydata}
-package. Load example data (the 'Dilution' affybatch):
-
-<<startchunk,results=hide>>=
+<<rpa, results = hide, eval = TRUE>>=
 require(affy)
 require(affydata)
 data(Dilution)
 @
 
-{\it RPA.pointestimate} is the main function. Let us perform the
-analysis for particular probesets in the Dilution data (the whole data
-set will be analyzed by default if 'sets' is not given).
+The toy example uses the \Robject{Dilution} dataset provided by
+\Rpackage{affydata} package. To preprocess the affybatch, use:
+
+<<rpa, results = hide, eval = FALSE>>=
+eset <- rpa(Dilution)
+@
+
+Input is an AffyBatch object, obtained from CEL files with the
+ReadAffy function of the affy package. The output is an ExpressionSet
+object, which allows downstream analysis of the results using standard
+R/BioC tools for gene expression data.
+
+\section{Probe performance analysis}
+
+Use {\it RPA.pointestimate} to investigate particular probesets:
 
 <<RPA.pointestimate, results = hide>>=
 require(RPA)
@@ -168,13 +134,14 @@ sets <- geneNames(Dilution)[1:2]
 rpa.results <- RPA.pointestimate(Dilution, sets)
 @
 
-The 'rpa2eset' function can be used to coerce the probeset-level
-expression estimates into an ExpressionSet object.  The results for a
-particular probeset can be visualized with
+The rpa.results object contains probe-specific affinity and variance
+estimates (affinity, sigma2), the probeset-level summary estimate
+(\(d\)) and other information. The results can be visualized with
 
 <<visu, fig = FALSE, echo = TRUE, print = FALSE, results = hide, eval = FALSE>>=
 plot(rpa.results, set = "1000_at", plots = "all")
 #plot(rpa.results, set = set, plots = "data")
+#plot(rpa.results, set = set, plots = "toydata.comparison")
 @
 
 The output is shown in Figure \ref{fig:illustration}. See
@@ -185,38 +152,32 @@ help('rpa.plot') for details.
 <<barplots, fig = TRUE, echo = FALSE, print = FALSE, results = hide>>=
 dat <- plot(rpa.results, set = "1000_at", plots = "all")
 @
-\caption{Estimated probe affinities, probe-specific noise level (standard deviation) and probeset-level summary estimate for an example probe set.}
+\caption{Estimated probe affinities, probe-specific noise level (standard deviation) and probeset-level summary estimate and probe-level signals for an example probe set.}
 \label{fig:illustration}
 \end{center}
 \end{figure}
 
 
-\subsection{Estimating probe-specific noise and probe reliability}
+\subsection{Estimating probe reliability}
 
-RPA estimates the noise level of each individual probe through the
-probe-specific variance parameter (\(\taujSq\)). These can be obtained
-with
+The noise level of individual probes can be quantified based on the
+probe-specific variance parameter (\(\taujSq\)):
 
 <<noise,results=hide>>=
 noise <- get.probe.noise.estimates(rpa.results)
 @ 
 
-The higher the variance, the more noisy the probe. Inverse of the
-variance, \(\frac{1}{\taujSq}\), can be used to quantitate probe
-reliability. Note that the relative weight of a probe within probeset
-is determined by the relative noise of the probe with respect to the
-other probes in the same probeset. Comparison of probe-specific
-variances across probesets may benefit from normalization of this
-effect.  The get.probe.noise.estimates function can optionally provide
-normalized versions of the noise estimates.
+The precision \(\frac{1}{\taujSq}\), can be used to quantitate probe
+reliability. Comparison of probe-specific variances across probesets
+may benefit from probeset-specific normalization; see
+help(get.probe.noise.estimates) for details.
 
 
 \subsection{Setting probe-specific priors}
 
 Prior information of probe reliability can be set by tuning the shape
 (\(\alpha\)) and scale (\(\beta\)) parameters of the inverse Gamma
-distribution, which is the conjugate prior for the variances. Set
-priors for a particular probeset. If the 'priors' parameter is not
+conjugate prior for the variances. If the 'priors' parameter is not
 given, non-informative priors will be given for the other probesets:
 
 <<setpriors, results = hide>>=
@@ -225,19 +186,15 @@ probe.index <- 5
 alpha[[probe.index]] <- 3
 beta[[probe.index]] <- 1
 priors <- set.priors(Dilution, set = "1000_at", alpha, beta)
+rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
 @
 
-Run RPA with priors:
-
-<<pe, results=hide, eval = FALSE>>=
-rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
-@                                  
 
 \subsection{General usage}
 
 Robust Probabilistic Averaging can be used to summarize any
 multivariate observations concerning the same object and having
-varying (Gaussian) affinities and noise levels, see function rpa.fit:
+varying (Gaussian) affinities and noise levels:
 
 <<iter, results=hide, eval = FALSE>>=
 res <- rpa.fit(S)
@@ -248,22 +205,15 @@ res <- rpa.fit(S)
 
 \subsection{Relation to other probe-level models}
 
-RPA differs from other popular preprocessing algorithms in two key
-respects.  First, it utilizes probe-level estimates of differential
-expression; these are calculated {\it before} probeset-level
-summarization, which avoids certain probe-level effects that obscure
-the results in other preprocessing methods where probes with various
-affinities and contamination levels are combined into a probeset-level
-summary prior to differential expression analyses. In particular, our
-procedure avoids the modeling of unidentifiable probe affinities,
-which is the key probe-specific parameter in many preprocessing
-methods. Second, RPA provides tools for investigating the reliability
-of individual probes in terms of a probe-specific variance. This can
-be used in microarray design and in confirming the end results of a
-microarray study. These properties distinguish RPA from other
-probe-level preprocessing methods such as dChip's MBEI
-\cite{Li01pnas}, RMA \cite{Irizarry03rma}, or FARMS
-\cite{Hochreiter06}.
+RPA differs from other popular preprocessing algorithms such as
+dChip's MBEI \cite{Li01pnas}, RMA \cite{Irizarry03rma}, or FARMS
+\cite{Hochreiter06} in two key respects.  It calculates probe-level
+estimates of differential expression; {\it before} probeset-level
+summarization, which will avoid the modeling of unidentifiable probe
+affinities in determining the signal shape. Second, RPA provides tools
+for investigating the performance of individual probes. This can be
+used in microarray design and to confirm the end results of a
+microarray study.
 
 \subsection{Summary of RPA model}
 
@@ -276,7 +226,7 @@ normalization \cite{Bolstad03}. Our implementation utilizes the
 \Rpackage{affy} package \cite{Gautier04a} to handle probe-level data.
 For details about short oligonucleotide arrays and the design of the
 Affymetrix GeneChip arrays, see the Affymetrix MAS manual
-\cite{affy5}. 
+\cite{affy5}.
 
 \subsubsection{Probe reliability estimation and summarization}
 
@@ -341,24 +291,36 @@ terms, we are only providing the point estimates.
 If an identical prior is used for all probes in affinity estimation
 then \(\mu_{real}\) is estimated as the average of the probe effects
 \(\mu\) and the probe-specific affinities \(\mu_{probe}\) will sum to
-exactly zero ('zeromean' option). This is analogous to the model used
-in RMA, which uses medianpolish algorithm to fit this assumption. In
-contrast to our model the stochastic probe effects are not
-probe-specific in RMA.  We suggest an alternative approach where
-probes are weighted during affinity estimation ('rpa' option).  While
-\(\sigma^2\) estimated by RPA measures stochastic noise, not the
-affinity effect, we utilize them to give a heuristic weigh for the
-probes in affinity estimation according to how much they contribute to
-the overall signal shape. Intuitively, probes that have little effect
-on the signal shape (i.e. are very noisy and likely to be contaminated
-by many unrelated signals) should also contribute less to the absolute
-signal estimate. The probe affinities are expected to sum to zero but
-the model allows some flexibility.
+exactly zero ('zeromean' option), analogous to RMA. We suggest an
+alternative approach where probes are weighted during affinity
+estimation ('rpa' option) according to their noisiness
+\(\sigma^2\). Then noisy probes that have little effect on the signal
+shape will contribute less to the absolute signal estimate. Expected
+sum of probe affinities is zero but the model allows some flexibility.
+
+\section{Validation}
+
+The model can reveal noisy probes independently of the error source
+noise; noise estimates have been validated by comparisons to known
+probe-level error sources \cite{Lahti11}. RPA has been shown to
+outperform other popular preprocessing methods in cross-platform
+studies \cite{Elo05, Lahti11} and spike-in data sets. RPA has also
+been compared to other preprocessing methods through the AffyCompII
+benchmarking
+website\footnote{http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html as
+of March 13, 2011} \cite{Cope04}. RPA outperformed some widely-used
+preprocessing algorithms such as RMA, measured in terms of average
+rank over the different test statistics. Overall the results indicate
+that RPA has a comparable preprocessing performance with standard
+preprocessing algorithms, which supports the validity of the
+probe-level affinity and noise estimates in RPA. Note that while RPA
+can be used for preprocessing, its primary focus is on probe
+performance analysis.
 
 
 \section{Citing RPA}
 
-Please cite \cite{Lahti11} when using the package.
+Please cite \cite{Lahti11}.
 
 \section{Details}
 

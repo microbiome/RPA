@@ -13,6 +13,7 @@ export(estimate.affinities,
        plot.rpa,       
        RPA.pointestimate,
        RPA.preprocess,
+       sample.probeset,
        set.priors
 )
 #RPA.sigma2.update,              

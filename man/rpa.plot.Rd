@@ -10,7 +10,7 @@
   probeset-level signal, and probe-specific variances. It is also
   possible to highlight individual probes and external summary measures.}
 
-\usage{rpa.plot(dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol =
+\usage{rpa.plot(dat, rpa.fit.object = NULL, toydata.object = NULL, highlight.probes = NULL, pcol =
 "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...)
                 
 }
@@ -20,6 +20,7 @@
     Original data: probes x samples.
   }
   \item{rpa.fit.object }{An instance of the 'rpa.fit' class.}
+  \item{toydata.object }{Optional. Output from sample.probeset toydata generator function. Can be used to compare (toy)data with known ground truth to RPA estimates from rpa.fit.object.}
 
   \item{highlight.probes }{Optionally highlight some of the probes
                             (with dashed line)}

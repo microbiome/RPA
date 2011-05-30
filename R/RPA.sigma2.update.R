@@ -11,45 +11,50 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
 
-RPA.sigma2.update <- function (d, S = S, alphahat, beta, sigma2.method = "robust") {
+  # FIXME: online mode not necessarily needed at all
 
-  # S: arrays x probes matrix; observations vs. estimated real signal
-  
-  R <- S - d 
+  # R <- S - d: arrays x probes matrix; observations vs. estimated real signal
+  # Note: alpha here is alphahat = T/2 + alpha w.r.t. user-defined alpha prior
 
-  if (!sigma2.method == "var") {
-
-    # update betahat with posterior mean
-    # assuming alpha, beta(hat) are given
-    r.colsums <- colSums(R)
-    r2.colsums <- colSums(R^2)
-    betahat <- betahat.c(beta, r2.colsums, r.colsums, S)
-    #betahat <- .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))    
-
-    # update betahat by posterior mean (sigma2.method 'mean' and
-    # 'robust') or mode ('mode')
-    # alphahat > 1 required in sigma2.method 'mode' (and 'robust')
-    # betahat / (alphahat - 1) = sigma2 mean for invgam(sig^2 | alphahat,betahat)
-    # betahat / (alphahat + 1) = sigma2 mode for invgam(sig^2 | alphahat,betahat)
-    # (sigma2.method == "mean" || sigma2.method == "robust")
-    if (!sigma2.method == "mode") {
-      s2 <- betahat / (alphahat - 1)
-    } else {s2 <- betahat / (alphahat + 1)}
-
+  # alpha > 1 required in sigma2.method 'mode' and 'robust'
+  if (sigma2.method == "mean" || sigma2.method == "robust" || sigma2.method == "online") {
+    # mean for invgam(sig^2 | alpha,beta)
+    s2 <- beta / (alpha - 1) # FIXME: speedup by precalculating alpha - 1?
+  } else if (sigma2.method == "mode") {
+    # mode for invgam(sig^2 | alpha,beta)
+    s2 <- beta / (alpha + 1) 
   } else if (sigma2.method == "var") {
     # Assume uninformative priors alpha, beta -> 0	  
     # NOTE: RPA converges to variance with large sample size
-    s2 <- apply(R, 2, var) 		
-  } else { stop("sigma2.method missing!") }
+    # priors not used
+    # Do not center: S - d is already assumed to be centered by definition
+    # S = d + N(0, sigmaj2)  
+    # R <- S - d 
+    # faster way to calculate variance than apply(R, 2, var):
+    # Note that R is assumed to be centered already,
+    # so actually this is more accurate for our case than apply(R,2,var)
+    # which would center the data
+    #s2 <- colSums(centerData(R)^2)/(nrow(R) - 1) 
+    s2 <- colSums(R^2)/(nrow(R) - 1) 
+  } else { 
+    stop("Invalid sigma2.method provided!") 
+  }
 
   # return updated sigma2
   s2
 }
 
 
-# Provide compiled version of betahat, about 1.5-fold speedup seen
-betahat.f <- function (beta, r2.colsums, r.colsums, S) {
-    .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))
-}
-betahat.c <- cmpfun(betahat.f)
+    # update beta with posterior mean
+    # assuming alpha, beta(hat) are given
+    #r.colsums <- colSums(R)
+    #r2.colsums <- colSums(R^2)
+    #beta <- beta.c(beta, r2.colsums, r.colsums, S)
+    #beta <- .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))    
+    #(r2.colsums - r.colsums^2 / ((nrow(S) + 1)))*(1/nrow(S))
+
+#apply(R,2,var) =
+#(r2.colsums - r.colsums^2 / ((nrow(S) + 1)))*(1/nrow(S))
+

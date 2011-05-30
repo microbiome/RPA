@@ -23,9 +23,9 @@ RPA.dcost <- function (d, sigma2, S) {
   # sigma2 : probe-specific variances
 
   
-  M <- S - d
+  R <- S - d
 
-  -sum((1/(2*sigma2))*((colSums(M)^2)/(nrow(S)+1) - colSums(M^2)))
+  -sum((1/(2*sigma2))*((colSums(R)^2)/(nrow(R) + 1) - colSums(R^2)))
 
 }
 

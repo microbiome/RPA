@@ -1,8 +1,8 @@
 Package: RPA
 Type: Package
 Title: RPA: probe reliability and differential gene expression analysis
-Version: 1.9.05
-Date: 2011-05-14
+Version: 1.9.06
+Date: 2011-05-29
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
 Depends: R (>= 2.13.0), affy, affydata, compiler, methods
@@ -15,6 +15,3 @@ Description: Probabilistic analysis of probe reliability and
 	     http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
 License: FreeBSD
 LazyLoad: yes
-
-
-

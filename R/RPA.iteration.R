@@ -15,10 +15,6 @@
 
 # Changelog:
 
-# 21.4.2011 added NaN/NA check for values after erroneous affybatch crashed RPA
-# 6.3.2010 S.means and St removed (not used). alpha check added for
-#          sigma2.method "robust" (alpha > 1-nrow(S)/2)
-
 RPA.iteration <- function(S,
                           epsilon = 1e-3,
                             alpha = NULL,
@@ -30,53 +26,37 @@ RPA.iteration <- function(S,
 
 
   P <- ncol(S) # number of probes
-  T <- nrow(S) # Number of arrays (except control)
+  T <- nrow(S) # Number of arrays (except reference)
 
   # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
   if (all(is.nan(S) | is.na(S))) { 
-    return(list(d = rep(NA, T), sigma2 = rep(NA, P))) }
-  
-  # initialize with equal weight for all probes
-  sigma2 <- rep.int(1, P)
+    return(list(d = rep(NA, T), sigma2 = rep(NA, P))) 
+  }
 
-  # uninformative priors for sigma2.methods mean, mode, var;
-  # informative for 'robust'
-
-  # if alpha is scalar, set identical prior for all probes with this value
-  if (is.null(alpha) && !sigma2.method == "robust") {
-    alpha <- rep.int(1e-6, P)
-  } else if (is.null(alpha) && sigma2.method == "robust") {
-    alpha <- rep.int(2, P)
-  } else if (length(alpha) == 1) {
-    alpha <- rep.int(alpha, P)
-  } else {}
-
-  # if beta is scalar, set identical prior for all probes with this value
-  if (is.null(beta) && !sigma2.method == "robust") {
-    beta <- rep.int(1e-6, P)
-  } else if (is.null(beta) && sigma2.method == "robust") {
-    beta <- rep.int(1, P)
-  } else if (length(beta) == 1) {
-    beta <- rep.int(beta, P)
-  } else {}
-
-  # prior (note: set here after all alpha checks)
-  alphahat <- T/2 + alpha
-  
-  # Confirm that sigma2.method is valid for these parameters
-  if (sigma2.method == "mean" || sigma2.method == "robust") {
-    ifelse(all(alphahat > 1), TRUE, stop("alpha > 1 - nrow(S) / 2 required for sigma2.method = mean"))
-  } else {}
-    
   # not used in computation,
   # just to check convergence at first iteration
-  sigma2.old <- rep.int(1e3*epsilon, P)
-
-  # These initial values not used in computation,
-  # just to check convergence at first iteration
-  d <- rep.int(max(S), T) 
+  d <- rowMeans(S) # initialize by mean over the probes
   d.old <- (-d) 
-  d.init <- rep.int(0, T) 
+  
+  # uninformative priors for sigma2.methods mean, mode, var;
+  # informative for 'robust', or alpha, beta are provided by user
+  alpha <- set.alpha(alpha, sigma2.method, P)
+  beta <- set.beta(alpha, sigma2.method, P)
+
+  # Update hyperparameters
+  alpha <- update.alpha(T, alpha) # FIXME: if online version turns out problematic, check this:
+  	   		   	  # is it ok to update alpha already here?
+  # Do NOT update beta yet; it will be updated in while loop
+  # after estimating d based on the current priors!
+
+  # Confirm that sigma2.method is valid for these parameters
+  if (sigma2.method == "mean" || sigma2.method == "robust") {
+    ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this sigma2.method"))
+  } else {}
+
+  # initialize sigma2
+  sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
+  #sigma2 <- rep.int(1, P)
 
   # optimize until convergence
   loopcnt <- 0
@@ -85,13 +65,18 @@ RPA.iteration <- function(S,
     while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
 
       d.old <- d
-      sigma2.old <- sigma2
 
-      # update d
+      # update d, given sigma2
       d <- d.update.fast(t(S), sigma2)
 
-      # update sigma2	
-      sigma2 <- RPA.sigma2.update(d, S, alphahat, beta, sigma2.method)
+      # Estimate noise 
+      R <- S - d
+
+      # beta update
+      beta <- update.beta(R, beta)
+
+      # update sigma2
+      sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
 
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
@@ -103,13 +88,15 @@ RPA.iteration <- function(S,
         # separate while loops for d.methods to avoid logical comparisons 
         # during iteration	
         d.old <- d
-        sigma2.old <- sigma2
+
+        # beta update
+        beta <- update.beta(S - d, beta)
 
         # update d
-        d <- optim(d.init, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
+        d <- optim(d, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
 
         # update sigma2
-        sigma2 <- RPA.sigma2.update(d, S, alphahat, beta, sigma2.method)
+        sigma2 <- RPA.sigma2.update(S - d, alpha, beta, sigma2.method)
 
         # follow iteration count to avoid potentially infinite loops
         loopcnt <- loopcnt + 1 
@@ -117,5 +104,5 @@ RPA.iteration <- function(S,
       }
    } 
 
-  list(d = d, sigma2 = sigma2)
+  list(d = d, sigma2 = sigma2, alpha = alpha, beta = beta)
 }

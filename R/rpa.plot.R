@@ -11,7 +11,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
+rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
 
   # If no model given, calculate fit a new model on the data
   if (is.null(rpa.fit.object)) { rpa.fit.object <- rpa.fit(dat) }
@@ -28,9 +28,8 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
   # image limits
   ylims <- range(c(as.vector(dat), mu))
 
-  if (plots == "all") {
-    par(mfrow = c(3, 1))
-  }
+  if (plots == "all") { par(mfrow = c(3, 1)) }
+  if (plots == "toydata") { par(mfrow = c(2, 2)) }
   
   # expression figure
   plot(c(1,2,3), type = 'n',
@@ -77,6 +76,22 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, highlight.probes = NULL, pcol 
           las = 1,
           cex.lab = cex.lab, 
           cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main)  
+
+  } else if (plots == "toydata") {
+
+    estimated <- rpa.fit.object
+    real <- toydata.object
+
+    plot(real$d + real$mu.real, estimated$mu, 
+    	          main = "Signal", xlab = "Real", ylab = "Estimated")
+    abline(0,1)
+    barplot(rbind(real$affinity, estimated$affinity), 
+                  beside = TRUE, main = "Probe affinity", xlab = "Probe index", ylab = "Affinity")
+
+    tab <- rbind(real = real$variance, estimated = estimated$sigma2)
+    barplot(tab, beside = TRUE, 
+            main = "Probe variance", 
+            xlab = "Probe index", ylab = "Variance", legend = TRUE)
 
   }
   

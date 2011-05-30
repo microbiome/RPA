@@ -3,7 +3,7 @@ setClass("rpa",
 	 contains = "list")
 
 setClass("rpa.fit", 	 
-	 representation(mu = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", data = "array"), 
+	 representation(mu = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", data = "array", alpha = "numeric", beta = "numeric"), 
 	 contains = "list")
 
 setClass("rpa.list",

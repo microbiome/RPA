@@ -26,5 +26,6 @@ http://bioconductor.org/packages/release/bioc/html/RPA.html}
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \seealso{RPA.iteration}
+
 \keyword{ internal }
 

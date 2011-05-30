@@ -38,6 +38,8 @@ Objects can be created by calls of the form \code{new("rpa.fit", ...)}.
 		 estimated affinity effect for each probe in that
 		 probeset.}
   \item{data }{Original probe-level data.}
+  \item{alpha, beta }{Inverse Gamma prior parameters for variance (sigma2).}
+
 
   }
 }

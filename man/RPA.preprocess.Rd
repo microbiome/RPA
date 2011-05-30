@@ -49,10 +49,7 @@ of reference array.}
 
 }
 
-\references{Probabilistic Analysis of Probe Reliability in
-Differential Gene Expression Studies with Short Oligonucleotide
-Arrays. Lahti et al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/ }
+\references{See citation("RPA").}
 
 \author{Leo Lahti <leo.lahti@iki.fi>}
 

@@ -24,7 +24,7 @@ set.priors <- function (abatch, set,
   }
 
   priors[[set]]$alpha <- alpha
-   priors[[set]]$beta <- beta
+  priors[[set]]$beta <- beta
 
   priors
 }

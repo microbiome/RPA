@@ -14,7 +14,6 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-
   # To estimate means in the original data domain let us assume that
   # each probe-level observation x is of the following form:
   # x = d + mu + noise,

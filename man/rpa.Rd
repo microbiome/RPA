@@ -24,7 +24,7 @@
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
-         affinity.method = "rpa") 
+         affinity.method = "rpa", quantile.n = 50) 
 }
 
 \arguments{
@@ -135,6 +135,9 @@
       weighting probes by their general reliability.
       
     }
+
+    \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
+
 }
 
 \details{RPA preprocessing function. Gives an estimate of the

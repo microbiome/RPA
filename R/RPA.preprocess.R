@@ -17,7 +17,7 @@
 RPA.preprocess <- function (abatch, cind = 1,
                             bg.method = "rma",
                             normalization.method = "quantiles.robust",
-                            cdf = NULL)
+                            cdf = NULL, quantile.n = 50)
 {
 
   message("Preprocessing affybatch...")
@@ -29,20 +29,24 @@ RPA.preprocess <- function (abatch, cind = 1,
   }
 
   message("Background correcting...")
-  abatch2 <- bg.correct(abatch, bg.method, destructive = TRUE)
+  abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
   # FIXME: here the abatch values for some reason are set to NaNs!
   # for defected affybatch
   
   message("Normalizing...") 
-  abatch2 <- normalize(abatch2, method = normalization.method)
-  
+  if (normalization.method == "quantiles.online") {
+    abatch <- online.quantile(abatch, quantile.n)
+  } else {
+    abatch <- normalize(abatch, method = normalization.method)
+  }
+
   # Log transformation
   message("Logging PM values...")
-  q <- log2(pm(abatch2))
+  q <- log2(pm(abatch))
 
   message("Retrieving probe positions...")
   # The indices correspond to the output of pm()
-  pN <- probeNames(abatch2)
+  pN <- probeNames(abatch)
   set.inds <- split(1:length(pN), pN) # pNList
   
   return(list(q = q, set.inds = set.inds, cdf = cdf))

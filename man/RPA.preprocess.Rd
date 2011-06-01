@@ -12,7 +12,7 @@
   'reference' array (cind) and the other arrays.}
 
 \usage{RPA.preprocess(abatch, cind = 1, bg.method = "rma",
-                      normalization.method = "quantiles.robust", cdf = NULL)}
+                      normalization.method = "quantiles.robust", cdf = NULL, quantile.n = 50)}
                             
 
 \arguments{
@@ -26,10 +26,12 @@
   bgcorrect.methods(abatch) for options.}
   
   \item{normalization.method }{Specify normalization method. See
-  normalize.methods(abatch) for options.}
+  normalize.methods(abatch) for options. For memory-efficient online
+  version, use "quantiles.online".}
 
   \item{cdf }{The CDF environment used in the analysis.}
-
+  
+  \item{quantile.n }{Number of samples to be used in quantiles.online normalization.}
 }
 
 \details{Probe-specific variance estimates are robust against the choice

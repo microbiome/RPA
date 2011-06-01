@@ -4,6 +4,7 @@ import(affy)
 ##exportPattern("^[^\\.]")
 export(estimate.affinities,
        get.probe.noise.estimates,
+       online.quantile,
        rpa,
        rpa.fit,       
        RPA.dcost,
@@ -16,9 +17,10 @@ export(estimate.affinities,
        sample.probeset,
        set.priors
 )
+
 #RPA.sigma2.update,              
 #initialize.priors,                                        
-#d.update.fast,
+#d.update.fast
 
 exportClasses(
 "rpa",

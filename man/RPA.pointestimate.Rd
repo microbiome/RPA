@@ -12,7 +12,7 @@ sets.}
 \usage{RPA.pointestimate(abatch, sets = NULL, myseed = 101, priors =
 NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 "fast", verbose = TRUE, bg.method = "rma", normalization.method =
-"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, affinity.method = "rpa")}
+"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, affinity.method = "rpa", quantile.n = 50)}
 
 \arguments{
 
@@ -113,7 +113,9 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
       weighting probes by their general reliability.
       
     }    
-    
+
+    \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
+
 }
 
 \details{Calculates RPA estimates of probe reliability and differential

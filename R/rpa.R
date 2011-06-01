@@ -26,7 +26,7 @@ rpa <- function (abatch,
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
-                 affinity.method = "rpa") 
+                 affinity.method = "rpa", quantile.n = 50) 
 {
 
   # RPA preprocessing wrapper
@@ -38,7 +38,7 @@ rpa <- function (abatch,
   if (!is.null(cdf)) { abatch@cdfName <- cdf }
 
   # Preprocessing
-  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf)	
+  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf, quantile.n = quantile.n)	
   
   #################################################################
 

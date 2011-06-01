@@ -1,5 +1,6 @@
-Changes in 1.9.09 (2011-06-01)
+Changes in 1.9.10 (2011-06-01)
 
+  o added quantiles.online normalization method
   o added test/online.R example of online learning
 
 BUG FIXES

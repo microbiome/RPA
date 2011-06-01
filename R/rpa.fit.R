@@ -60,7 +60,7 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
            sigma2 = estimated$sigma2, 
            affinity = mu$probe, 
            data = dat,
-	   alpha = alpha,
-           beta = beta))
+	   alpha = estimated$alpha,
+           beta = estimated$beta))
   
 }

@@ -19,12 +19,15 @@ RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
   # Note: alpha here is alphahat = T/2 + alpha w.r.t. user-defined alpha prior
 
   # alpha > 1 required in sigma2.method 'mode' and 'robust'
-  if (sigma2.method == "mean" || sigma2.method == "robust" || sigma2.method == "online") {
+  if (sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust") {
     # mean for invgam(sig^2 | alpha,beta)
     s2 <- beta / (alpha - 1) # FIXME: speedup by precalculating alpha - 1?
   } else if (sigma2.method == "mode") {
     # mode for invgam(sig^2 | alpha,beta)
     s2 <- beta / (alpha + 1) 
+  } else if (sigma2.method == "fast") {
+    # this is sometimes also used
+    s2 <- beta / alpha 
   } else if (sigma2.method == "var") {
     # Assume uninformative priors alpha, beta -> 0	  
     # NOTE: RPA converges to variance with large sample size
@@ -46,15 +49,4 @@ RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
   s2
 }
 
-
-    # update beta with posterior mean
-    # assuming alpha, beta(hat) are given
-    #r.colsums <- colSums(R)
-    #r2.colsums <- colSums(R^2)
-    #beta <- beta.c(beta, r2.colsums, r.colsums, S)
-    #beta <- .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))    
-    #(r2.colsums - r.colsums^2 / ((nrow(S) + 1)))*(1/nrow(S))
-
-#apply(R,2,var) =
-#(r2.colsums - r.colsums^2 / ((nrow(S) + 1)))*(1/nrow(S))
 

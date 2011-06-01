@@ -1,4 +1,13 @@
-OnlineLearning/Changes in 1.9.06 (2011-05-29)
+Changes in 1.9.09 (2011-06-01)
+
+  o added test/online.R example of online learning
+
+BUG FIXES
+
+  o alpha, beta updates fixed
+  o rpa.fit did not return updated alpha, beta: now corrected.
+
+Changes in 1.9.06 (2011-05-29)
 
   o rpa.fit-class: added alpha, beta prior parameters for the inverse
     Gamma conjugate prior for the probe-specific variances

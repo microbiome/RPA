@@ -1,30 +1,28 @@
-# Provide compiled version of betahat, about 1.5-fold speedup seen
-
-betahat.f <- function (beta, r2.colsums, r.colsums, S) {
-    .5*(2 * beta + r2.colsums - r.colsums^2 / (nrow(S) + 1))
-}
-
-# NOTE: this essentially gives 
-# beta + (nrow(S)/2) * (ML estimate of (probe)variance);
-# speedup RPA by just replacing relevant parts with
-# direct variance estimation?
-require(compiler)
-betahat.c <- cmpfun(betahat.f) 
-
-#################################################################
 
 set.alpha <- function (alpha, sigma2.method, P){ 
 
   # if alpha is scalar, set identical prior for all probes with this value
-  if (is.null(alpha) && !sigma2.method == "robust") {
+  if (is.null(alpha) && !(sigma2.method == "robust" || sigma2.method == "mode" || sigma2.method == "online")) {
     # uninformative
     alpha <- rep.int(1e-6, P)
-  } else if (is.null(alpha) && sigma2.method == "robust") {
-    # informative, avoid collapse to individual probes
+  } else if (is.null(alpha) && (sigma2.method == "robust" || sigma2.method == "robust")) {
+    # alpha not given: set equal and informative priors to
+    # avoid collapse to individual probes
     alpha <- rep.int(2, P)
+  } else if (is.null(alpha) && sigma2.method == "mean") {
+    # alpha not given: set equal and informative priors to
+    # avoid collapse to individual probes
+    alpha <- rep.int(1 + 1e-6, P) # alpha > 1 required
   } else if (length(alpha) == 1) {
     alpha <- rep.int(alpha, P)
-  } else {}
+  } else {
+    alpha <- alpha
+  }
+
+  if ((sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust") && any(alpha <= 1)) {
+    alpha <- rep(1+1e-6, P)
+    warning(paste("Initial alpha parameter has to be >1. Setting alpha to:", alpha))
+  }
 
   alpha
 }

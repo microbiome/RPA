@@ -40,23 +40,30 @@ RPA.iteration <- function(S,
   
   # uninformative priors for sigma2.methods mean, mode, var;
   # informative for 'robust', or alpha, beta are provided by user
-  alpha <- set.alpha(alpha, sigma2.method, P)
-  beta <- set.beta(alpha, sigma2.method, P)
+  alpha.prior <- alpha <- set.alpha(alpha, sigma2.method, P)
+  beta.prior <- beta <- set.beta(beta, sigma2.method, P)
 
-  # Update hyperparameters
-  alpha <- update.alpha(T, alpha) # FIXME: if online version turns out problematic, check this:
-  	   		   	  # is it ok to update alpha already here?
-  # Do NOT update beta yet; it will be updated in while loop
-  # after estimating d based on the current priors!
-
-  # Confirm that sigma2.method is valid for these parameters
+  # Confirm that alpha is valid for sigma2.method 
   if (sigma2.method == "mean" || sigma2.method == "robust") {
     ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this sigma2.method"))
   } else {}
 
-  # initialize sigma2
-  sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
-  #sigma2 <- rep.int(1, P)
+  # initialize sigma2 using user-specified priors
+  if (sigma2.method == "var") {
+    s2.meth <- "mean"
+  } else {
+    s2.meth <- sigma2.method
+  }
+  sigma2 <- RPA.sigma2.update(NULL, alpha.prior, beta.prior, s2.meth)
+
+  ###############################
+
+  # Update alpha
+  # Do NOT update beta yet; it will be updated in while loop
+  # after estimating d based on the current priors!
+  alpha <- update.alpha(T, alpha) 
+
+  #################################
 
   # optimize until convergence
   loopcnt <- 0
@@ -72,14 +79,16 @@ RPA.iteration <- function(S,
       # Estimate noise 
       R <- S - d
 
-      # beta update
-      beta <- update.beta(R, beta)
+      # beta update (feed in beta prior, not updates from this loop!)
+      beta <- update.beta(R, beta.prior)
 
       # update sigma2
       sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
 
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
+
+
     }
   } else if (d.method == "basic") {
 
@@ -89,14 +98,16 @@ RPA.iteration <- function(S,
         # during iteration	
         d.old <- d
 
-        # beta update
-        beta <- update.beta(S - d, beta)
+        # Estimate noise 
+        R <- S - d
+
+        # beta update (feed in beta prior, not updates from this loop!)
+        beta <- update.beta(R, beta.prior)
 
         # update d
         d <- optim(d, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
-
         # update sigma2
-        sigma2 <- RPA.sigma2.update(S - d, alpha, beta, sigma2.method)
+        sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
 
         # follow iteration count to avoid potentially infinite loops
         loopcnt <- loopcnt + 1 

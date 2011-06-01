@@ -290,13 +290,12 @@ terms, we are only providing the point estimates.
 
 If an identical prior is used for all probes in affinity estimation
 then \(\mu_{real}\) is estimated as the average of the probe effects
-\(\mu\) and the probe-specific affinities \(\mu_{probe}\) will sum to
-exactly zero ('zeromean' option), analogous to RMA. We suggest an
-alternative approach where probes are weighted during affinity
-estimation ('rpa' option) according to their noisiness
-\(\sigma^2\). Then noisy probes that have little effect on the signal
-shape will contribute less to the absolute signal estimate. Expected
-sum of probe affinities is zero but the model allows some flexibility.
+\(\mu\) and the probe-specific affinities \(\mu_{probe}\) would sum to
+exactly zero, analogous to RMA. We suggest an alternative approach
+where probes are weighted during affinity estimation according to
+their noisiness \(\sigma^2\). Then noisy probes that have little
+effect on the signal shape will contribute less to the absolute signal
+estimate while the expected sum of probe affinities remains at zero.
 
 \section{Validation}
 

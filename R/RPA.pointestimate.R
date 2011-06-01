@@ -26,7 +26,6 @@ RPA.pointestimate <- function (abatch,
                                   cdf = NULL,
                                 alpha = NULL,
                                  beta = NULL,
-                      affinity.method = "rpa",
 		      quantile.n = 50
 				 )                                      
 {
@@ -107,7 +106,7 @@ RPA.pointestimate <- function (abatch,
       beta  <- priors[[set]]$beta
     }
 
-    res <- rpa.fit(preproc$q[pmindices,], cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)
+    res <- rpa.fit(preproc$q[pmindices,], cind, epsilon, alpha, beta, sigma2.method, d.method)
     
     #Store results
     d.results[i, ] <- res$mu # note this returns signal in original data domain

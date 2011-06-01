@@ -12,7 +12,7 @@ sets.}
 \usage{RPA.pointestimate(abatch, sets = NULL, myseed = 101, priors =
 NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 "fast", verbose = TRUE, bg.method = "rma", normalization.method =
-"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, affinity.method = "rpa", quantile.n = 50)}
+"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, quantile.n = 50)}
 
 \arguments{
 
@@ -97,23 +97,6 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
       solution. Probe-specific priors can be set with the 'priors'
       parameter.}
 
-    \item{affinity.method}{
-      Model details for affinity estimation explained in function source code.
-      
-      "rpa": Assuming affinity parameters are zero on average, and the
-      deviation from zero is determined by estimated probe-level noise
-      parameters. This gives higher weight (smaller affinity) for more
-      reliable probes also in affinity estimation. Heuristic solution,
-      which aims to fit probe-level signal in real data domain as close
-      to the reliable probes as possible.
-
-      "zeromean": assumes that probe affinities sum to zero. Analogous
-      to model assumptions in RMA. Gives equal weights for all probes in
-      affinity estimation. We expect this to be less optimal than
-      weighting probes by their general reliability.
-      
-    }    
-
     \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
 
 }
@@ -155,15 +138,14 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
   \item{sets }{A character vector listing the investigated probesets.}
 }
 
-\references{Probabilistic Analysis of Probe Reliability in Differential
-Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE, 2011. See citation("RPA") for details.}
+\references{See citation("RPA").}
 
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 
 \note{sigma2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative priors, d.method =
-"basic" may be preferable.}
+"basic" may be preferable, with large sample size d.method = "fast"
+should have considerable speedups and comparable accuracy.}
 
 \seealso{rpa.plot, rpa, set.priors, rpa2eset, RPA.preprocess, AffyBatch,
 rpa.fit, estimate.affinities}

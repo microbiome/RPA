@@ -55,26 +55,22 @@
   # probe affinities sum close to zero but there is some flexibility,
   # and more noisy probes can be downweighted.
 
-  # FIXME: add other ways to define affinity priors later
-
-estimate.affinities <- function (dat, d, sigmas = NULL) {
-
   # Mean level for each probe after extracting the
   # signal shape. This is the ML estimate for mu = mu.real + mu.probe
-  mu <- colMeans(t(dat) - d)
+  #mu <- colMeans(t(dat) - d)
 
-  # If no priors given, use equal weight for the probes
-  if (is.null(sigmas)) {
-    #sigmas <- rep.int(1, nrow(dat))
-    mu.real <- mean(mu)
-  } else {
-    # weighted mean, weighted by probe-specific affinity priors
-    mu.real <- sum(mu/sigmas)/sum(1/sigmas)
-  }
+  # weighted mean, weighted by probe-specific affinity priors
+  #mu.real <- sum(mu/sigmas)/sum(1/sigmas)
+  
+  # FIXME: add other ways to define affinity priors later
 
-  mu.probe <- mu - mu.real  
+estimate.affinities <- function (dat, mu) {
 
-  # Return estimated real signal level and probe affinities
-  list(real = mu.real, probe = mu.probe)
+  # In RPA, the final signal estimate
+  # is weighted average over the probes, 
+  # both in terms of shape and affinities
+  
+  # Calculate affinities w.r.t. overall signal
+  colMeans(t(dat) - mu)
 
 }

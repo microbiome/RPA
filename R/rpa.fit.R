@@ -10,7 +10,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  
-rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast", affinity.method = "rpa") {
+rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast") {
 
   # dat: original data (probes x samples)
   
@@ -26,27 +26,22 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
   # Fit RPA
   estimated <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
 
-  # Retrieve results. Reference sample is zero by definition.
-  # Add it to the result since it was is used in the calculation
-  d <- rep.int(0, ncol(dat))
-  names(d) <- colnames(dat)
-  d[rownames(S)] <- estimated$d
-
-  # Now d gives signal shape.
-  # Next: evaluate mean level in the original data
-  if (affinity.method == "rpa") {
-    # weigh probes by their estimated reliability level also when
-    # evaluating affinities. Heuristic solution but expected to be better
-    # than giving all probes equal weight in affinity calculation, as in the
-    # 'zeromean' option
-    sigmas <- estimated$sigma2
-  } else if (affinity.method == "zeromean") {
-    # require that probe affinities sum to zero
-    # (similar criteria as in RMA)
-    sigmas <- rep.int(1, length(estimated$sigma2))
-  }  
-
-  mu <- estimate.affinities(dat, d, sigmas)
+  # Estimate overall signal
+  if (d.method == "fast") {
+    mu <- d.update.fast(dat, estimated$sigma2)
+    affinity <- estimate.affinities(dat, mu)
+    mu.abs <- mean(mu[-cind] - estimated$d) # Difference between total signal and shape variable
+  } else if (d.method == "basic") {
+    d <- rep.int(0, ncol(dat))
+    names(d) <- colnames(dat)
+    d[rownames(S)] <- estimated$d
+    mu <- colMeans(t(dat) - d)
+    # overall signal level is obtained by weighted mean
+    # weighted by probe-specific affinities
+    mu.abs <- sum(mu/estimated$sigma2)/sum(1/estimated$sigma2)
+    affinity <- mu - mu.abs
+    mu <- mu.abs + d
+  }
 
   # Now return final fitted parameters
   # d: differential signal between reference sample and other samples
@@ -56,9 +51,9 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
   # model for probe p: x_p = mu.orig + affinity_p + noise_p; noise ~ N(0, sigma2_p)
 
   new("rpa.fit",
-      list(mu = d + mu$real, mu.real = mu$real, 
+      list(mu = mu, mu.real = mu.abs, 
            sigma2 = estimated$sigma2, 
-           affinity = mu$probe, 
+           affinity = affinity, 
            data = dat,
 	   alpha = estimated$alpha,
            beta = estimated$beta))

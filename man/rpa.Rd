@@ -24,7 +24,7 @@
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
-         affinity.method = "rpa", quantile.n = 50) 
+         	    quantile.n = 50) 
 }
 
 \arguments{
@@ -113,29 +113,6 @@
       solution. Probe-specific priors can be set with the 'priors'
       parameter.}
 
-    %\item{exclude.reference.array }{Logical indicating whether the
-    %  values for the reference array will be excluded in the final
-    %  differential gene expression matrix. Note that all values of the
-    %  reference array will be 0 since they indicate differential
-    %  expression of the reference array against itself.}
-
-    \item{affinity.method}{
-      For model details, see 'help(estimate.affinities)'.
-      
-      "rpa": Assuming affinity parameters are zero on average, and the
-      deviation from zero is determined by estimated probe-level noise
-      parameters. This gives higher weight (smaller affinity) for more
-      reliable probes also in affinity estimation. Heuristic solution,
-      which aims to fit probe-level signal in real data domain as close
-      to the reliable probes as possible.
-
-      "zeromean": assumes that probe affinities sum to zero. Analogous
-      to model assumptions in RMA. Gives equal weights for all probes in
-      affinity estimation. We expect this to be less optimal than
-      weighting probes by their general reliability.
-      
-    }
-
     \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
 
 }
@@ -148,10 +125,7 @@
   An instance of the 'expressionSet' class.
 }
 
-\references{Probabilistic Analysis of Probe Reliability in Differential
-Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et
-al., TCBB/IEEE. See
-http://www.cis.hut.fi/projects/mi/software/RPA/ }
+\references{See citation("RPA").}
 
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 

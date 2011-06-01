@@ -5,7 +5,7 @@
   affinity parameters.}
 \usage{
 rpa.fit(dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL,
-sigma2.method = "robust", d.method = "fast", affinity.method = "rpa")
+sigma2.method = "robust", d.method = "fast")
 }
 
 \arguments{
@@ -63,23 +63,6 @@ sigma2.method = "robust", d.method = "fast", affinity.method = "rpa")
 		 method with small sample sizes.
                 
 	      }
-
-    \item{affinity.method}{
-      For model details, see 'help(estimate.affinities)'.
-      
-      "rpa": Assuming affinity parameters are zero on average, and the
-      deviation from zero is determined by estimated probe-level noise
-      parameters. This gives higher weight (smaller affinity) for more
-      reliable probes also in affinity estimation. Heuristic solution,
-      which aims to fit probe-level signal in real data domain as close
-      to the reliable probes as possible.
-
-      "zeromean": assumes that probe affinities sum to zero. Analogous
-      to model assumptions in RMA. Gives equal weights for all probes in
-      affinity estimation. We expect this to be less optimal than
-      weighting probes by their general reliability.
-      
-    }	      
 
 }
 \details{First learns a point estimate for the RPA model in terms of

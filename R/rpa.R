@@ -26,7 +26,7 @@ rpa <- function (abatch,
                      cdf = NULL,
                    alpha = NULL,
                     beta = NULL,
-                 affinity.method = "rpa", quantile.n = 50) 
+                 quantile.n = 50) 
 {
 
   # RPA preprocessing wrapper
@@ -85,7 +85,7 @@ rpa <- function (abatch,
     
     # Calculate RPA 
     dat <- matrix(preproc$q[pmindices,], P)
-    mu.results[i, ] <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)$mu
+    mu.results[i, ] <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method)$mu
     # Store the results (only mean parameter and in the original data domain)    
      
   }

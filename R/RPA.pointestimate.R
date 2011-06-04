@@ -23,10 +23,7 @@ RPA.pointestimate <- function (abatch,
                               verbose = TRUE,
                             bg.method = "rma",
                  normalization.method = "quantiles.robust",
-                                  cdf = NULL,
-                                alpha = NULL,
-                                 beta = NULL,
-		      quantile.n = 50
+                                  cdf = NULL
 				 )                                      
 {
 
@@ -47,7 +44,7 @@ RPA.pointestimate <- function (abatch,
   if (!is.null(cdf)) { abatch@cdfName <- cdf }
       
   # Preprocessing
-  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf, quantile.n = quantile.n)
+  preproc <- RPA.preprocess(abatch, bg.method, normalization.method, cdf)
   
   #################################################################
 
@@ -69,7 +66,7 @@ RPA.pointestimate <- function (abatch,
   
   Nsets <- length(sets) 
 
-  ## Matrices to store the results
+  ## Matrices to store the results (also including reference array)
   d.results <- array(NA, dim = c(Nsets, T))
   rownames(d.results) <- sets
   colnames(d.results) <- colnames(exprs(abatch))
@@ -83,10 +80,8 @@ RPA.pointestimate <- function (abatch,
   mu.real <- vector(length = Nsets, mode = "list")  
   names(mu.real) <- sets    
 
-  if (!is.null(priors) && (!is.null(alpha) || !is.null(beta))) {
-    alpha <- beta <- NULL
-    warning("priors parameter is overriding alpha, beta when both are provided in the function input")
-  }
+  # Pick the priors for this set (gives NULL if no prior has been defined)
+  alpha <- priors$alpha
 
   for (i in 1:Nsets) {
 
@@ -96,17 +91,11 @@ RPA.pointestimate <- function (abatch,
 
     # Find probe (pm) indices for this set
     pmindices <- preproc$set.inds[[set]]
-    
-    # Number of probes in this probeset
-    P <- length(pmindices)
 
     # Pick the priors for this set (gives NULL if no prior has been defined)
-    if (!is.null(priors)) {
-      alpha <- priors[[set]]$alpha 
-      beta  <- priors[[set]]$beta
-    }
-
-    res <- rpa.fit(preproc$q[pmindices,], cind, epsilon, alpha, beta, sigma2.method, d.method)
+    beta  <- priors[[set]]$beta
+        
+    res <- rpa.fit(matrix(preproc$q[pmindices,], length(pmindices)), cind, epsilon, alpha, beta, sigma2.method, d.method)
     
     #Store results
     d.results[i, ] <- res$mu # note this returns signal in original data domain

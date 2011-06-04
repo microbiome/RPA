@@ -12,6 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
+
 online.quantile <- function (abatch, n) {
 
   # Pick random subset of abatch and learn quantile normalization
@@ -27,7 +28,6 @@ online.quantile <- function (abatch, n) {
     # If n is a vector, select the samples indicated by n
     s <- n
   }
-
 
   cat("Calculating quantile basis..\n")
   # FIXME: provide robust version
@@ -47,9 +47,49 @@ get.quantile.basis <- function (mat) {
 
 
 set.quantiles <- function (mat, quantile.basis) {
-  # replace smallest value with the smallest in quantile.basis etc.
+  # replace smallest value with the smallest in the given quantile.basis etc.
   apply(mat, 2, function(x) { 
     x[order(x)] <- sort(quantile.basis)
     x
   })
 }
+
+
+quantile.basis.online <- function (cel.files, bg.method = "rma", batch.size = 10, cdf = NULL) {
+  # Estimate basis for quantile normalization 
+  # by online-updates
+
+  # Split CEL file list into batches
+  batches <- get.batches(cel.files, batch.size)
+
+  # Process each batch separately
+  qs <- NULL
+
+  for (i in 1:length(batches)) {
+
+    message(paste("Calculating quantiles on batch", i, "/", length(batches)))
+
+    abatch <- ReadAffy(filenames = batches[[i]], compress=getOption("BioC")$affy$compress.cel) 
+
+    # Set alternative CDF environment if given
+    if (!is.null(cdf)) { abatch@cdfName <- cdf }    
+
+    # Background correction
+    abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
+  
+    # Add to overall probe-sum for quantile estimation
+    if (is.null(qs)) {
+      # Create new quantile basis
+      qs <- sort(rowSums(apply(pm(abatch), 2, sort)))
+    } else {
+      # Add to existing quantile basis
+      qs <- qs + sort(rowSums(apply(pm(abatch), 2, sort)))
+    }
+  }
+  
+  # Quantile basis is average (sum/n) over the individual arrays
+  qs/length(cel.files)
+
+}
+
+

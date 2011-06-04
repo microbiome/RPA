@@ -10,7 +10,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  
-rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast") {
+rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "fast", d.method = "fast") {
 
   # dat: original data (probes x samples)
   
@@ -21,9 +21,9 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
   # Extract reference sample  
   # Get samples x probes matrix of probe-wise fold-changes
   if (is.null(colnames(dat))) {colnames(dat) <- 1:ncol(dat)}
-  S <- t(dat[, -cind] - dat[, cind])
 
   # Fit RPA
+  S <- t(dat[, -cind] - dat[, cind])
   estimated <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
 
   # Estimate overall signal
@@ -32,15 +32,20 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
     affinity <- estimate.affinities(dat, mu)
     mu.abs <- mean(mu[-cind] - estimated$d) # Difference between total signal and shape variable
   } else if (d.method == "basic") {
+    # add the reference
     d <- rep.int(0, ncol(dat))
     names(d) <- colnames(dat)
     d[rownames(S)] <- estimated$d
-    mu <- colMeans(t(dat) - d)
+    prs <- t(dat) - d
     # overall signal level is obtained by weighted mean
     # weighted by probe-specific affinities
-    mu.abs <- sum(mu/estimated$sigma2)/sum(1/estimated$sigma2)
-    affinity <- mu - mu.abs
+    # finally take mean over all arrays to get robust estimate
+    # (all rows should give approximately same result)
+    mu.abs <- mean(rowSums(prs/estimated$sigma2)/sum(1/estimated$sigma2))
+    # prs = mu.abs + af + noise; dat = d + mu.abs + af + noise
+    affinity <- colMeans(prs) - mu.abs
     mu <- mu.abs + d
+
   }
 
   # Now return final fitted parameters

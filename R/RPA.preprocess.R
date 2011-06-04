@@ -14,11 +14,22 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-RPA.preprocess <- function (abatch, cind = 1,
+RPA.preprocess <- function (abatch, 
                             bg.method = "rma",
                             normalization.method = "quantiles.robust",
-                            cdf = NULL, quantile.n = 50)
+                            cdf = NULL, cel.files = NULL, cel.path = NULL)
 {
+
+  # Getting affybatch
+
+  if (is.null(abatch) && (!is.null(cel.files) || !is.null(cel.path))) {
+    if (is.null(cel.files) && !is.null(cel.path)) {
+       cel.files <- list.celfiles(cel.path, full.names = TRUE)
+    }
+    abatch <- ReadAffy(filenames = cel.files, compress=getOption("BioC")$affy$compress.cel)  
+  } else if (is.null(abatch)) {
+    stop("Provide abatch, cel.files or cel.path!")
+  } 
 
   message("Preprocessing affybatch...")
 
@@ -34,12 +45,8 @@ RPA.preprocess <- function (abatch, cind = 1,
   # for defected affybatch
   
   message("Normalizing...") 
-  if (normalization.method == "quantiles.online") {
-    abatch <- online.quantile(abatch, quantile.n)
-  } else {
-    abatch <- normalize(abatch, method = normalization.method)
-  }
-
+  abatch <- normalize(abatch, method = normalization.method)
+  
   # Log transformation
   message("Logging PM values...")
   q <- log2(pm(abatch))
@@ -52,3 +59,4 @@ RPA.preprocess <- function (abatch, cind = 1,
   return(list(q = q, set.inds = set.inds, cdf = cdf))
 
 }
+

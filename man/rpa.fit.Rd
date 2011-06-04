@@ -5,17 +5,12 @@
   affinity parameters.}
 \usage{
 rpa.fit(dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL,
-sigma2.method = "robust", d.method = "fast")
+sigma2.method = "fast", d.method = "fast")
 }
 
 \arguments{
-  \item{dat}{
-    Original data: probes x samples.
-  }
-  \item{cind}{
-    Index of reference array.
-  }
-
+  \item{dat}{Original data: probes x samples.}
+  \item{cind}{Index of reference array.}
   \item{epsilon }{Convergence tolerance. The iteration is deemed
   converged when the change in all parameters is < epsilon.}
   
@@ -59,8 +54,8 @@ sigma2.method = "robust", d.method = "fast")
 		large sample size.
 
         "basic": optimization scheme to find a mode used in Lahti et
-        	 al. TCBB/IEEE; relatively slow; this is the preferred 
-		 method with small sample sizes.
+        	 al. TCBB/IEEE; relatively slow; preferred 
+		 with small sample size.
                 
 	      }
 

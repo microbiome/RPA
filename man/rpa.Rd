@@ -3,28 +3,21 @@
 \Rdversion{1.1}
 
 \alias{rpa}
+\alias{rpa.online}
 
 \title{RPA for preprocessing.}
 
 \description{Returns an expressionSet object preprocessed with RPA. If
   'cind' is not specified, uses the first array of affybatch as the
-  reference.}
+  reference. With rpa.online one can run preprocessing in online-mode
+  to avoid memory problems with huge expression data collections.}
 
-\usage{rpa( abatch,
-                    sets = NULL,
-                  myseed = 101, 
-                  priors = NULL,
-                 epsilon = 1e-2, 
-                    cind = 1,
-           sigma2.method = "robust",
-                d.method = "fast",
-                 verbose = FALSE,
-               bg.method = "rma",
-    normalization.method = "quantiles.robust",
-                     cdf = NULL,
-                   alpha = NULL,
-                    beta = NULL,
-         	    quantile.n = 50) 
+\usage{
+
+rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL) 
+
+rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors = list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", cdf = NULL, batch.size = 10)
+
 }
 
 \arguments{
@@ -34,11 +27,17 @@
   \item{sets }{
     Probesets for which RPA will be computed. Default: all probe sets.}
 
-  \item{myseed }{Specify random seed.}
-
   \item{priors }{An 'rpa.priors' object. Can be used to set
-		user-specified priors for the model parameters. Not used
-		sigma2.method = "var".}
+		user-specified priors for the model parameters. Not
+		used sigma2.method = "var". The prior parameters alpha
+		and beta are prior parameters for inverse Gamma
+		distribution of probe-specific
+		variances. Noninformative prior is obtained with
+		alpha, beta -> 0.  Not used with sigma2.method
+		'var'. Scalar alpha and beta specify an identical
+		inverse Gamma prior for all probes, which regularizes
+		the solution. Can be also specified as lists, each
+		element corresponding to one probeset.}
 
   \item{epsilon }{Convergence tolerance. The iteration is deemed converged 
 		  when the change in all parameters is < epsilon.}
@@ -105,21 +104,21 @@
       Specify an alternative CDF environment. Default: none.
     }
 
-    \item{alpha, beta }{Prior (scalar) parameters for inverse Gamma
-      distribution of probe-specific variances. Noninformative prior is
-      obtained with alpha, beta -> 0.  Not used with sigma2.method
-      'var'. Scalar alpha and beta specify an identical inverse Gamma
-      prior for all probes, which regularizes the
-      solution. Probe-specific priors can be set with the 'priors'
-      parameter.}
+    \item{cel.files}{List of CEL files to preprocess.}
 
-    \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
+    \item{cel.path}{Path to CEL file directory.}
 
+    \item{batch.size}{Batch size for online mode (rpa.online); the complete list of CEL files will be preprocessed in batches with this size using Bayesian online-updates for probe-specific parameters.}
 }
 
 \details{RPA preprocessing function. Gives an estimate of the
-  probeset-level mean parameter d of the RPA model, and returns these in
-  an expressionSet object.}
+  probeset-level mean parameter d of the RPA model, and returns these
+  in an expressionSet object. In online-mode (rpa.online), the CEL
+  files are handled in batches to obtain Bayesian updates for
+  probe-specific hyperpriors; after scanning through the database the
+  results are combined. The online mode is useful for preprocessing
+  very large expression data sets where ordinary preprocessing
+  algorithms fail.}
 
 \value{
   An instance of the 'expressionSet' class.

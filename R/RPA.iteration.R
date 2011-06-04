@@ -19,7 +19,7 @@ RPA.iteration <- function(S,
                           epsilon = 1e-3,
                             alpha = NULL,
                              beta = NULL,
-                    sigma2.method = "robust",
+                    sigma2.method = "fast",
                          d.method = "fast",
                           maxloop = 1e6)
 {
@@ -33,11 +33,6 @@ RPA.iteration <- function(S,
     return(list(d = rep(NA, T), sigma2 = rep(NA, P))) 
   }
 
-  # not used in computation,
-  # just to check convergence at first iteration
-  d <- rowMeans(S) # initialize by mean over the probes
-  d.old <- (-d) 
-  
   # uninformative priors for sigma2.methods mean, mode, var;
   # informative for 'robust', or alpha, beta are provided by user
   alpha.prior <- alpha <- set.alpha(alpha, sigma2.method, P)
@@ -48,7 +43,10 @@ RPA.iteration <- function(S,
     ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this sigma2.method"))
   } else {}
 
-  # initialize sigma2 using user-specified priors
+  ###############################
+
+  # initialize sigma2 with user-defined priors
+
   if (sigma2.method == "var") {
     s2.meth <- "mean"
   } else {
@@ -56,6 +54,10 @@ RPA.iteration <- function(S,
   }
   sigma2 <- RPA.sigma2.update(NULL, alpha.prior, beta.prior, s2.meth)
 
+  # check convergence at first iteration, 
+  # not used in calculations
+  sigma2.old <- rep(-Inf, length(sigma2))
+  
   ###############################
 
   # Update alpha
@@ -69,9 +71,10 @@ RPA.iteration <- function(S,
   loopcnt <- 0
 
   if (d.method == "fast") {
-    while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
 
-      d.old <- d
+    while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
+
+      sigma2.old <- sigma2
 
       # update d, given sigma2
       d <- d.update.fast(t(S), sigma2)
@@ -88,15 +91,21 @@ RPA.iteration <- function(S,
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
 
-
     }
+
   } else if (d.method == "basic") {
 
-      while ((max(abs(c(d - d.old))) > epsilon) && loopcnt < maxloop) {
+      # initialize d for the first iteration
+      d <- rowMeans(S)  
+
+      while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
 
         # separate while loops for d.methods to avoid logical comparisons 
         # during iteration	
-        d.old <- d
+	sigma2.old <- sigma2
+
+        # update d
+        d <- optim(d, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
 
         # Estimate noise 
         R <- S - d
@@ -104,8 +113,6 @@ RPA.iteration <- function(S,
         # beta update (feed in beta prior, not updates from this loop!)
         beta <- update.beta(R, beta.prior)
 
-        # update d
-        d <- optim(d, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
         # update sigma2
         sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
 
@@ -116,4 +123,62 @@ RPA.iteration <- function(S,
    } 
 
   list(d = d, sigma2 = sigma2, alpha = alpha, beta = beta)
+}
+
+#################################################################################
+
+# Changelog:
+
+RPA.iteration.fast <- function(S,
+                          epsilon = 1e-3,
+                            alpha.prior,
+			    alpha.posterior,
+                             beta.prior,
+                          maxloop = 1e6)
+{
+
+  # S: samples x probes 
+
+  # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
+  if (all(is.nan(S) | is.na(S))) { 
+    return(list(d = rep(NA, nrow(S)), sigma2 = rep(NA, ncol(S)))) 
+  }
+
+  # Initialize variances by the original user-specified priors 
+  sigma2 <- beta.prior/alpha.prior # approx. mean and mode when sample size is largish
+
+  # check convergence at first iteration, 
+  # not used in calculations
+  sigma2.old <- rep(-1e6, length(sigma2))
+  
+  ###############################
+
+  # optimize until convergence
+  loopcnt <- 0
+
+  while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
+
+      sigma2.old <- sigma2
+
+      # update d, given sigma2
+      d <- d.update.fast.c(t(S), sigma2)
+
+      # Estimate noise 
+      R <- S - d
+
+      # beta update (feed in original beta prior, not updates from this loop!)
+      beta.posterior <- beta.fast.c(beta.prior, R) 
+      #beta.c(beta.prior, R) # update.beta(R, beta.prior)
+
+      # update sigma2 / NOTE: use posterior alpha and beta here!
+      sigma2 <- beta.posterior/alpha.posterior
+      #RPA.sigma2.update(R, alpha.posterior, beta.posterior, sigma2.method = fast)
+
+      # follow iteration count to avoid potentially infinite loops
+      loopcnt <- loopcnt + 1 
+
+  }
+
+
+  list(d = d, sigma2 = sigma2, beta = beta.posterior)
 }

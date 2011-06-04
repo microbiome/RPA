@@ -6,7 +6,8 @@ export(estimate.affinities,
        get.probe.noise.estimates,
        online.quantile,
        rpa,
-       rpa.fit,       
+       rpa.fit,
+       rpa.online,
        RPA.dcost,
        rpa2eset,
        RPA.iteration,
@@ -14,8 +15,7 @@ export(estimate.affinities,
        plot.rpa,       
        RPA.pointestimate,
        RPA.preprocess,
-       sample.probeset,
-       set.priors
+       sample.probeset
 )
 
 #RPA.sigma2.update,              
@@ -25,8 +25,8 @@ export(estimate.affinities,
 exportClasses(
 "rpa",
 "rpa.fit",
-"rpa.list",
-"rpa.priors"
+"rpa.list"
+#"rpa.priors"
 )
 
 importFrom(methods, show)

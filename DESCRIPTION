@@ -1,7 +1,7 @@
 Package: RPA
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.9.11
+Version: 1.9.12
 Date: 2011-06-02
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>

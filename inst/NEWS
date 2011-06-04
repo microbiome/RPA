@@ -1,8 +1,8 @@
 Changes in 1.9.11 (2011-06-02)
 
+  o speedups in hyperparameter estimation; alpha treated as scalar
   o removed affinity.method
   o added quantiles.online normalization method
-  o added test/online.R example of online learning
 
 BUG FIXES
 

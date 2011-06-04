@@ -12,7 +12,7 @@ sets.}
 \usage{RPA.pointestimate(abatch, sets = NULL, myseed = 101, priors =
 NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 "fast", verbose = TRUE, bg.method = "rma", normalization.method =
-"quantiles.robust", cdf = NULL, alpha = NULL, beta = NULL, quantile.n = 50)}
+"quantiles.robust", cdf = NULL)}
 
 \arguments{
 
@@ -23,9 +23,20 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 
   \item{myseed }{Specifies the random seed.}
 
-  \item{priors }{An 'rpa.priors' object. Can be used to set
-		 user-specified priors for the model parameters. Not
-		 applicable for sigma2.method = "var".}
+  \item{priors }{Optional list containing hyperparameters alpha and
+		 beta of the inverse Gamma prior of the probe-specific
+		 variances; alpha is a scalar, common for all probes
+		 and probeset; beta is a list where each element is a
+		 vector corresponding to one probeset, specifying beta
+		 for each probe. Can be used to set user-specified
+		 priors for the model parameters. Not applicable for
+		 sigma2.method = "var". Noninformative prior is
+		 obtained with alpha, beta -> 0.  Not used with
+		 sigma2.method 'var'. Can be used to regularize the
+		 solution with small sample size, or in batch-wise
+		 online-updates with large sample size. If priors are
+		 not provided for certain probesets (NULL), default
+		 priors are used. }
   
   \item{epsilon }{Convergence tolerance. The iteration is deemed
   	 	  converged when the change in the d parameter 
@@ -88,16 +99,6 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
     \item{cdf }{
       Specify an alternative CDF environment. Default: none.
     }
-
-    \item{alpha, beta }{Prior parameters for inverse Gamma
-      distribution of probe-specific variances. Noninformative prior is
-      obtained with alpha, beta -> 0.  Not used with sigma2.method
-      'var'. Scalar alpha and beta specify an identical inverse Gamma
-      prior for all probes, which regularizes the
-      solution. Probe-specific priors can be set with the 'priors'
-      parameter.}
-
-    \item{quantile.n }{Number of samples to be used with quantiles.online normalization method.}
 
 }
 

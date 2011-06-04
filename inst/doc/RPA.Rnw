@@ -181,11 +181,12 @@ conjugate prior for the variances. If the 'priors' parameter is not
 given, non-informative priors will be given for the other probesets:
 
 <<setpriors, results = hide>>=
-alpha <- beta <- rep(1, 16)
+priors <- list(alpha = NULL, beta = NULL, d = NULL)
+set <- "1000_at"
+priors$alpha <- 2
+priors$beta[[set]] <- rep(1, 16)
 probe.index <- 5
-alpha[[probe.index]] <- 3
-beta[[probe.index]] <- 1
-priors <- set.priors(Dilution, set = "1000_at", alpha, beta)
+priors$beta[[set]][[probe.index]] <- 3
 rpa.results <- RPA.pointestimate(Dilution, sets, priors = priors)
 @
 

@@ -10,6 +10,6 @@ setClass("rpa.list",
          representation(d = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", cind = "numeric", set = "character", data="array"), 
 	 contains = "list")
 
-setClass("rpa.priors",
-	 representation(alpha = "list", beta = "list", d = "list"),
-	 contains = "list")
+#setClass("rpa.priors",
+#	 representation(alpha = "list", beta = "list", d = "list"),
+#	 contains = "list")

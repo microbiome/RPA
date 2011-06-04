@@ -11,7 +11,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
+RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "fast") {
 
   # FIXME: online mode not necessarily needed at all
 

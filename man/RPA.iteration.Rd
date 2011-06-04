@@ -12,7 +12,7 @@ true signal underlying probe-level observations), and sigma2
 
 \usage{RPA.iteration(S, epsilon = 1e-3, 
                      alpha = NULL, beta = NULL,
-                     sigma2.method = "robust", d.method = "fast",
+                     sigma2.method = "fast", d.method = "fast",
                      maxloop = 1e6)}
 
 \arguments{

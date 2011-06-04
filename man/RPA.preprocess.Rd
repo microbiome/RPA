@@ -11,17 +11,16 @@
   probe-level differential expression is computed between the specified
   'reference' array (cind) and the other arrays.}
 
-\usage{RPA.preprocess(abatch, cind = 1, bg.method = "rma",
-                      normalization.method = "quantiles.robust", cdf = NULL, quantile.n = 50)}
+\usage{RPA.preprocess(abatch, bg.method = "rma",
+                      normalization.method = "quantiles.robust", 
+		      cdf = NULL, 
+		      cel.files = NULL, cel.path = NULL)}
                             
 
 \arguments{
 
   \item{abatch }{An AffyBatch object.}
   
-  \item{cind }{Specify which of the arrays in abatch is used as a
-  reference for computing probe-level differential expression.}
-
   \item{bg.method }{Specify background correction method. See
   bgcorrect.methods(abatch) for options.}
   
@@ -31,7 +30,10 @@
 
   \item{cdf }{The CDF environment used in the analysis.}
   
-  \item{quantile.n }{Number of samples to be used in quantiles.online normalization.}
+  \item{cel.files}{List of CEL files to preprocess.}
+
+  \item{cel.path}{Path to CEL file directory.}
+
 }
 
 \details{Probe-specific variance estimates are robust against the choice

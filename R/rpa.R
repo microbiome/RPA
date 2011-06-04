@@ -12,9 +12,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
   
-rpa <- function (abatch,
+rpa <- function (abatch = NULL,
                     sets = NULL,
-                  myseed = 101, 
                   priors = NULL,
                  epsilon = 1e-2, 
                     cind = 1,
@@ -24,46 +23,26 @@ rpa <- function (abatch,
                bg.method = "rma",
     normalization.method = "quantiles.robust",
                      cdf = NULL,
-                   alpha = NULL,
-                    beta = NULL,
-                 quantile.n = 50) 
+               cel.files = NULL, 
+                cel.path = NULL) 
 {
 
   # RPA preprocessing wrapper
 
-  #Set random seed
-  set.seed( myseed )
-
-  # Set alternative CDF environment if given
-  if (!is.null(cdf)) { abatch@cdfName <- cdf }
-
-  # Preprocessing
-  preproc <- RPA.preprocess(abatch, cind, bg.method, normalization.method, cdf, quantile.n = quantile.n)	
-  
-  #################################################################
-
-  # ESTIMATE PROBE RELIABILITY AND DIFFERENTIAL EXPRESSION
-
-  #################################################################
+  # Background correction, normalization and logging
+  preproc <- RPA.preprocess(abatch, bg.method, normalization.method, cdf = cdf, cel.files = cel.files, cel.path = cel.path)	
 
   message("Calculating Expression")
   
-  # Number of arrays except control
-  T <- ncol( preproc$q )
-
   # Check names and number for the investigated probesets
   # if my.sets not specified, take all sets in abatch
-  if (is.null(sets)) { sets <- geneNames(abatch) } 
+  if (is.null(sets)) { sets <- names(preproc$set.inds) } 
   Nsets <- length( sets ) 
 
   ## Matrices to store results
-  mu.results <- array(NA, dim = c(Nsets, T))
+  mu.results <- array(NA, dim = c(Nsets, ncol( preproc$q )))
   rownames(mu.results) <- sets
   colnames(mu.results) <- colnames(preproc$q)
-
-  if (!is.null(priors) && (!is.null(alpha) || !is.null(beta))) {
-    stop("Specify either priors OR alpha, beta- both cannot be specified at the same time!")
-  }
 
   for (i in 1:Nsets) {
 
@@ -73,18 +52,15 @@ rpa <- function (abatch,
 
     # Find probe (pm) indices for this set
     pmindices <- preproc$set.inds[[set]] #pmindex(abatch, set)[[1]]
-  
-    # Number of probes for this probeset
-    P <- length(pmindices)
-    
+      
     # Pick the priors for this set
-    if (!is.null(priors)) {
-      alpha <- priors[[set]]$alpha 
-      beta  <- priors[[set]]$beta
-    } else {}
+    alpha <- priors[[set]]$alpha 
+    beta  <- priors[[set]]$beta
     
     # Calculate RPA 
-    dat <- matrix(preproc$q[pmindices,], P)
+    # (note: in the new version this is done in the original data domain, 
+    # including the reference array)
+    dat <- matrix(preproc$q[pmindices,], length(pmindices))
     mu.results[i, ] <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method)$mu
     # Store the results (only mean parameter and in the original data domain)    
      

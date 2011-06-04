@@ -1,27 +1,49 @@
+get.batches <- function (items, batch.size) {
+
+  # N elements into batches of size batch.size
+  # last batch can be smaller
+
+  if (length(items) == 1 && is.numeric(items)) {
+    N <- items
+    items <- 1:N
+  } else {
+    N <- length(items)
+  }
+
+  if (N < batch.size) {
+     warning("batch.size > N, setting batch.size = N.")
+  }
+
+  batches <- list()
+  ns <- floor(c(0, seq(batch.size, N, batch.size)))
+  if (ns[[length(ns)]] < N) {ns[[length(ns) + 1]] <- N}
+  cnt <- 0
+  for (i in 2:length(ns)) {
+    cnt <- cnt + 1
+    n.start <- ns[[i-1]]
+    n.stop <- ns[[i]]
+    batches[[i-1]] <- items[(n.start+1):n.stop]
+  }
+  
+  batches
+}
+
 
 set.alpha <- function (alpha, sigma2.method, P){ 
 
   # if alpha is scalar, set identical prior for all probes with this value
-  if (is.null(alpha) && !(sigma2.method == "robust" || sigma2.method == "mode" || sigma2.method == "online")) {
-    # uninformative
-    alpha <- rep.int(1e-6, P)
-  } else if (is.null(alpha) && (sigma2.method == "robust" || sigma2.method == "robust")) {
-    # alpha not given: set equal and informative priors to
-    # avoid collapse to individual probes
-    alpha <- rep.int(2, P)
-  } else if (is.null(alpha) && sigma2.method == "mean") {
-    # alpha not given: set equal and informative priors to
-    # avoid collapse to individual probes
-    alpha <- rep.int(1 + 1e-6, P) # alpha > 1 required
-  } else if (length(alpha) == 1) {
-    alpha <- rep.int(alpha, P)
-  } else {
-    alpha <- alpha
+  if (is.null(alpha)) {
+    if (sigma2.method == "mode" || sigma2.method == "var") {
+      alpha <- 1e-6     # uninformative
+    } else if (sigma2.method == "robust" || sigma2.method == "mean" || sigma2.method == "online") {
+      # alpha not given: set equal and informative priors to
+      # avoid collapse to individual probes
+      alpha <- 2
+    } 
   }
 
   if ((sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust") && any(alpha <= 1)) {
-    alpha <- rep(1+1e-6, P)
-    warning(paste("Initial alpha parameter has to be >1. Setting alpha to:", alpha))
+    stop(paste("Set alpha > 1!"))
   }
 
   alpha

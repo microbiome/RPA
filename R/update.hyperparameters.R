@@ -12,17 +12,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-
-
-
-update.hyperparameters <- function (R, alpha, beta) {
+hyperparameter.update <- function (dat, alpha, beta, th = 1e-2) {
   
-  # R: arrays x probes matrix; observations vs. estimated real signal
-  #    with mean (d) removed: R <- S - d.
+  # dat: probes x samples matrix
+
+  # Estimate s2 with EM-type procedure
+  s2 <- s2.update(dat, alpha, beta, s2.init = beta/alpha, th = th)
+
+  # Update hyperparams: 
+  alpha <- update.alpha(ncol(dat), alpha)
+  #beta <- alpha * s2 # from the mode of s2, i.e. beta/alpha
 
   # return updated hyperparameters
-  list(alpha = update.alpha(nrow(R), alpha), beta = update.beta(R, beta))
+  list(alpha = alpha, beta = alpha * s2)
 }
+
 
 
 update.alpha <- function (T, alpha) { alpha + T/2 }
@@ -47,60 +51,74 @@ update.beta <- function (R, beta, mode = "robust") {
 }
 
 
-  # The two modes give essentially same results when 
-  # sample size is sufficient
-  # R <- matrix(rnorm(1000), 100,10)
-  # r.colsums <- colSums(R)
-  # r2.colsums <- colSums(R^2)
-  # plot(colSums(R^2)/2, 0.5*(r2.colsums - r.colsums^2 / (nrow(R) + 1)))
-  # abline(0,1)
-    # NOTE: by definition,  r.colsums ~ 0 by expectation
-    # since R = S - d etc. Therefore we have approximation
-    # beta + r2.colsums/2 
-    # beta + (N/2)*(r2.colsums/N) 
-    # beta + (N/2)* variance(R)
-    # vrt. (N/2)*var = 0.5*(N * var) = 0.5 * sum(s^2)
-
 #######################################
 
-# EM update for beta
-# P(s2) ~ Prod_s (integrate_d P(s2_p | d) P(d | sigmahat))
-# where sigmahat is estimated from previous iteration
-# through P(d|sigmahat) ~ Prod_p (P(d_s | x_ps, s2_old_p))
-# and P(s2_p|d) ~ Prod_s P(d_s|x_ps, s2_p)
 
-beta.EM <- function (dat, s2.old) {
-  
-# TODO FIXME TODOTODO
+s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2) {
 
+  # Center the probes to obtain approximation:
+  # x = d + mu.abs + mu.affinity + epsilon.reference + epsilon.samples
+  # by centering we remove mu.abs + mu.affinity + epsilon.reference
+  # with large sample size it is safe to assume that epsilon.reference = 0
+  # so this does not affect the results, compared to the exact solution
+  # where the variance in epsilon is estimated also including epsilon.reference ie. 
+  # x = d + epsilon.reference + epsilon.samples
+  # which would just shift x little but as it is marginalized in the treatment the
+  # result will converge to estimating variance from 
+  # x = d + epsilon.samples when N -> Inf. Therefore, we use:
+  datc <- t(centerData(t(dat)))
 
-  # dat: probes x samples
+  if (is.null(s2.init)) {s2.init <- rep(1, length(beta))}
 
-  # Prior for d from previous step:
-  # P(d | muhat, sigmahat) = Prod_s P(d_s | muhat, sigmahat)
-  #  ~ Prod_s Prod_p N(d_s | x_ps, s2__old_p) 
-  #  ~ Prod_s N(d_s | muhat_s, s2hat)
-  # from product of Gaussians we get 
-  # mean: weighted average over the x's
-  muhat <- d.update.fast(dat, s2.old)
-  # variance (speedup by combining with d.update.fast
-  # which also calculates the denominator
-  s2hat <- 1/sum(1/s2.old)
-  # This is for d.s ~ N(d.s | muhat, s2hat)
+  s2 <- s2.init 
+  epsilon <- Inf
+  n <- ncol(datc)
+  ndot <- n-1
 
-  # Now combine with update part (s2 to be estimated):
-  # update each probe p separately: P(d.s | x.ps, s2.p)
-  # again, we get from product of normal densities
-  # P(s2.p) ~ P(d.s | x.ps, s2.p) P(d.s | muhat.s, s2hat)
-  muhat.B <- NULL
-  for (probe in 1:nrow(dat)) {
-    mub <- d.update.fast(rbind(dat[probe,], muhat), c(s2.old[[probe]], s2hat[[probe]]))
-    muhat.B <- rbind(muhat.B, mub)
+  while (epsilon > th) {
+
+    s2.old <- s2
+
+    # Generalized EM; should be sufficient to improve by using the mode of d (mu.hat)
+    # instead of sampling from d (d is a long vector anyway, giving sufficiently many instants)
+    d <- d.update.fast.c(datc, s2)
+
+    # optimize s2
+    s2.obs <- s2obs.c(datc, d, ndot) # colSums((t(datc) - d)^2)/ndot
+    k <- ndot / s2.obs
+    s2 <- abs(optim(s2, fn = s2.neglogp, ndot = ndot, alpha = alpha, beta.inv = 1/beta, k = k)$par)
+
+    epsilon <- max(abs(s2 - s2.old))
+
+    # print(epsilon)
+
   }
-  s2hat.B <- 1/(1/s2.old + 1/s2hat)
 
+  s2
+}
+
+
+s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
+
+  # Remove sign; s2 always >0
+  s2 <- abs(s2)			  
+
+  # mode of s2 ((N-1) * s2 / s2.obs ~ chisq_(N-1) and mode is df - 2, here df = N-1)
+  log.likelihood <- dchisq.c(s2 * k, df = ndot, log = TRUE)
+  log.prior <- dgamma.c(1/s2, shape = alpha, scale = beta.inv, log = TRUE) # beta.inv <- 1/beta
+
+  # minimize -logP; separately for each probe likelihood + prior
+  -(sum(log.likelihood + log.prior))
 
 }
+
+
+dchisq.c <- cmpfun(dchisq) 
+dgamma.c <- cmpfun(dgamma) 
+
+s2obs <- function (datc, d, ndot) { colSums((t(datc) - d)^2)/ndot  }
+s2obs.c <- cmpfun(s2obs) 
+
 
 ########################################
 
@@ -111,7 +129,6 @@ betahat.appr <- function (beta, R) {
 beta.fast.c <- cmpfun(betahat.appr) 
 
 #######################################
-
 
 # Provide compiled version of betahat, about 1.5-fold speedup seen
 betahat.f <- function (beta, R) {
@@ -130,31 +147,12 @@ betahat.f <- function (beta, R) {
 # NOTE: this essentially gives 
 # beta + (nrow(S)/2) * (ML estimate of (probe)variance);
 #require(compiler)
+
 beta.c <- cmpfun(betahat.f) 
 
 
 
-##################################################################
 
-#(r2.colsums - r.colsums^2 / ((nrow(R) + 1)))  *(1/nrow(R))
-#r.colsums <- colSums(R)
-#r2.colsums <- colSums(R^2)
-#beta + (r2.colsums - r.colsums^2 / ((nrow(R) + 1)))/2
-#N <- nrow(R)
-#print("1-")
-#print((N/2)*colSums(R^2)/(N-1))
-#print("2-")
-#print((N/2)*apply(R,2,var))
-#print("3-")
-#print(colSums(R^2)/2)
-#print("3-")
-
-
-
-
-
-
-############################
 
 
 

@@ -1,8 +1,8 @@
 Package: RPA
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.9.12
-Date: 2011-06-02
+Version: 1.9.14
+Date: 2011-06-20
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
 Depends: R (>= 2.13.0), affy, affydata, compiler, methods
@@ -15,3 +15,4 @@ Description: Probabilistic analysis of probe reliability and
 	     http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
 License: FreeBSD
 LazyLoad: yes
+

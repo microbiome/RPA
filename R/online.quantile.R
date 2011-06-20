@@ -46,6 +46,7 @@ get.quantile.basis <- function (mat) {
 }
 
 
+
 set.quantiles <- function (mat, quantile.basis) {
   # replace smallest value with the smallest in the given quantile.basis etc.
   apply(mat, 2, function(x) { 

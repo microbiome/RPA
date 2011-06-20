@@ -25,6 +25,7 @@ rpa.online <- function (
               batch.size = 10) 
 {
 
+  warning("rpa.online is an experimental version")
 
   if (batch.size < 2) {
      warning("Minimum batch.size is 2. Setting batch.size = 2.")

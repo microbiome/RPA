@@ -12,14 +12,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-d.update.fast <- function (St, sigma2) {
+d.update.fast <- function (St, s2) {
 
   # St: probes x arrays  
 
   # With large sample sizes when T -> Inf
   # the d converges to the weighted mean 
   # over the probes, weighted by probe variances	 
-  colSums(St / sigma2) / sum(1 / sigma2)
+  colSums(St / s2) / sum(1 / s2)
 }
 
 

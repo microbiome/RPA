@@ -120,6 +120,8 @@ rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors = list(alpha =
   very large expression data sets where ordinary preprocessing
   algorithms fail.}
 
+\note{rpa.online is still an experimental version.}
+
 \value{
   An instance of the 'expressionSet' class.
 }

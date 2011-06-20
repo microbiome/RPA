@@ -1,3 +1,8 @@
+Changes in 1.9.14 (2011-06-20)
+
+  o accurate and relatively fast variance hyperparameter update
+    function added (see update.hyperparameters, update.s2)
+
 Changes in 1.9.11 (2011-06-02)
 
   o speedups in hyperparameter estimation; alpha treated as scalar

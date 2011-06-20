@@ -21,9 +21,8 @@ sample.probeset <- function (P = 10, n = 20, shape = 1, scale = 1, mu.real = 2) 
   for (p in 1:P) {
     dat[p, ] <- rnorm(n, 
     	              mean = d + mu.real + probe.affinity[[p]], 
-                      sd = sqrt(probe.variance[[p]]))
+                        sd = sqrt(probe.variance[[p]]))
   }
-
 
   list(dat = dat, variance = probe.variance, affinity = probe.affinity, d = d, mu.real = mu.real)
 

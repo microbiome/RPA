@@ -56,24 +56,27 @@ rpa.online <- function (
   abatch <- ReadAffy(filenames = batches[[1]], compress=getOption("BioC")$affy$compress.cel) 
   # Set alternative CDF environment if given
   if (!is.null(cdf)) { abatch@cdfName <- cdf }    
-  # Retrieve probe positions
-  # The indices correspond to the output of pm()
-  pN <- probeNames(abatch)
-  set.inds <- split(1:length(pN), pN) # pNList
-
-  #################################################################
-
-  # Hyperparameter estimation through batches
 
   # Check names and number for the investigated probesets
   # if my.sets not specified, take all sets in abatch
   if (is.null(sets)) { sets <- geneNames(abatch) } 
   Nsets <- length( sets ) 
 
+  # Retrieve probe positions
+  # The indices correspond to the output of pm()
+  pN <- probeNames(abatch)
+  set.inds <- split(1:length(pN), pN)[sets] # pNList
+
+  #################################################################
+
+  # Hyperparameter estimation through batches
+
   # Initialize hyperparameters
   # Note: alpha is scalar and same for all probesets alpha <- alpha + N/2 at each batch
-  alpha.posterior <- priors$alpha # initialize posterior
-  betas <- lapply(sets, function (x) {priors$beta})
+  alpha <- priors$alpha # initialize 
+  betas <- lapply(sets, function (set) { 
+    rep(priors$beta, length(set.inds[[set]]))
+  })
   names(betas) <- sets    
 
   for (i in 1:length(batches)) {
@@ -82,31 +85,26 @@ rpa.online <- function (
 
     # Get background corrected, quantile normalized, and logged probe-level matrix
     q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis)
+
     # Get probes x samples matrix of probe-wise fold-changes
     q <- matrix(q[, -cind] - q[, cind], nrow(q))
+
     T <- ncol(q) # Number of arrays expect reference
 
-    # Split the probe matrix into probesets
-    # pmindices <- set.inds[[set]]
-    # Get probe-level data for this probeset    
-    # dat <- matrix(q[pmindices,], length(pmindices))  
-
-    # Get samples x probes matrices for each probeset
-    q <- lapply(set.inds, function (pmis) {dat <- t(matrix(q[pmis,], length(pmis)))})
+    # Get probes x samples matrices for each probeset
+    q <- lapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) })
     names(q) <- sets
- 
-    # FIXME: speedup by using scalar for alpha as it is in most cases anyway
 
-    # Update alpha
-    # Do NOT update beta yet; it will be updated in while loop
-    # after estimating d based on the current priors!
-    # initialize sigma2 with user-defined priors
+    # Update variance for each probeset
+    alpha.old <- alpha 
+    s2s <- lapply(sets, function (set) {
+      s2.update(q[[set]], alpha.old, betas[[set]], s2.init = betas[[set]]/alpha.old, th = 1e-2)
+    }) # FIXME move conv. param. to arguments
+    names(s2s) <- sets
 
-    alpha.posterior <- update.alpha(T, alpha.posterior)
-
-    # Update beta 
-    betas <- lapply(sets, function (set) {print(which(set == sets) / length(sets)); RPA.iteration.fast(q[[set]], epsilon, priors$alpha, alpha.posterior, betas[[set]])$beta})
-    names(betas) <- sets
+    # Update alpha, beta (variance = beta/alpha at mode with large T)
+    alpha <- update.alpha(T, alpha)
+    betas <- lapply(s2s, function (s2) {s2 * alpha})
 
   }
 
@@ -125,20 +123,20 @@ rpa.online <- function (
 
     # Get background corrected, quantile normalized, and logged probe-level matrix
     # Do NOT calculate probe-level diff.exp here any more, only needed in variance estimation.
-    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis)
+    q <- get.probe.matrix(cels = batch.cels, cdf, quantile.basis)
 
     # Get probes x samples matrices for each probeset
-    q <- lapply(set.inds, function (pmis) {dat <- matrix(q[pmis,], length(pmis))})
+    q <- lapply(set.inds, function (pmis) {matrix(q[pmis,], length(pmis))})
     names(q) <- sets
 
     # Get estimated variances for each probeset based on hyperparameter posteriors
-    variances <- lapply(betas, function (beta) {beta/alpha.posterior})
+    variances <- lapply(betas, function (beta) {beta/alpha})
     names(variances) <- names(betas) 
 
     for (set in sets) {
-      print(which(set == sets)/length(sets))    
+      # print(which(set == sets)/length(sets))    
       # Get summary estimate using the posterior variance
-      cel.names <- sapply(strsplit(batch.cels, "/"), function (x) {x[[length(x)]]})
+      cel.names <- sapply(strsplit(batch.cels, "/"), function (x) { x[[length(x)]] })
       emat[set, cel.names] <- d.update.fast.c(q[[set]], variances[[set]])
       # d.update.fast(q[[set]], variances[[set]])
     }

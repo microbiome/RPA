@@ -32,6 +32,7 @@ hyperparameter.update <- function (dat, alpha, beta, th = 1e-2) {
 update.alpha <- function (T, alpha) { alpha + T/2 }
 
 
+
 update.beta <- function (R, beta, mode = "robust") {
 
   # FIXME: define separate funcs for modes to speed up?
@@ -49,7 +50,6 @@ update.beta <- function (R, beta, mode = "robust") {
     beta.c(beta, R)
   }
 }
-
 
 #######################################
 
@@ -86,7 +86,8 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
     # optimize s2
     s2.obs <- s2obs.c(datc, d, ndot) # colSums((t(datc) - d)^2)/ndot
     k <- ndot / s2.obs
-    s2 <- abs(optim(s2, fn = s2.neglogp, ndot = ndot, alpha = alpha, beta.inv = 1/beta, k = k)$par)
+    s2 <- abs(optim(s2, fn = s2.neglogp, ndot = ndot, alpha = alpha, beta.inv = 1/beta, k = k, method = "BFGS")$par)
+    # FIXME: check if 'optimize' would be faster?
 
     epsilon <- max(abs(s2 - s2.old))
 
@@ -129,6 +130,8 @@ betahat.appr <- function (beta, R) {
 beta.fast.c <- cmpfun(betahat.appr) 
 
 #######################################
+
+
 
 # Provide compiled version of betahat, about 1.5-fold speedup seen
 betahat.f <- function (beta, R) {

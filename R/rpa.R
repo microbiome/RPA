@@ -61,7 +61,8 @@ rpa <- function (abatch = NULL,
     # (note: in the new version this is done in the original data domain, 
     # including the reference array)
     dat <- matrix(preproc$q[pmindices,], length(pmindices))
-    mu.results[i, ] <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method)$mu
+    res <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method)
+    mu.results[i, ] <- res$mu
     # Store the results (only mean parameter and in the original data domain)    
      
   }

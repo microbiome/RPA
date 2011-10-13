@@ -16,7 +16,8 @@
 
 rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL) 
 
-rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors = list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", cdf = NULL, batch.size = 10)
+rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors=
+list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", normalization.method = "quantiles", cdf = NULL, batch.size = 10)
 
 }
 

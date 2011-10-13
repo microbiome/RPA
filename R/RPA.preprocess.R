@@ -32,11 +32,10 @@ RPA.preprocess <- function (abatch,
   } 
 
   message("Preprocessing affybatch...")
-
   # Set alternative CDF environment if given
   if (!is.null(cdf)) {
-	abatch@cdfName <- cdf
-	message(paste("Setting alternative CDF", cdf))
+    abatch@cdfName <- cdf
+    message(paste("Setting alternative CDF", cdf))
   }
 
   message("Background correcting...")

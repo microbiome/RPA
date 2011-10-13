@@ -1,5 +1,7 @@
-Changes in 1.9.14 (2011-06-20)
+Changes in 1.9.17 (2011-06-27)
 
+  o added bg correction in rpa.online
+ 
   o accurate and relatively fast variance hyperparameter update
     function added (see update.hyperparameters, update.s2)
 

@@ -31,8 +31,6 @@ hyperparameter.update <- function (dat, alpha, beta, th = 1e-2) {
 
 update.alpha <- function (T, alpha) { alpha + T/2 }
 
-
-
 update.beta <- function (R, beta, mode = "robust") {
 
   # FIXME: define separate funcs for modes to speed up?
@@ -51,53 +49,54 @@ update.beta <- function (R, beta, mode = "robust") {
   }
 }
 
-#######################################
-
 
 s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2) {
 
-  # Center the probes to obtain approximation:
-  # x = d + mu.abs + mu.affinity + epsilon.reference + epsilon.samples
-  # by centering we remove mu.abs + mu.affinity + epsilon.reference
-  # with large sample size it is safe to assume that epsilon.reference = 0
-  # so this does not affect the results, compared to the exact solution
-  # where the variance in epsilon is estimated also including epsilon.reference ie. 
-  # x = d + epsilon.reference + epsilon.samples
-  # which would just shift x little but as it is marginalized in the treatment the
-  # result will converge to estimating variance from 
-  # x = d + epsilon.samples when N -> Inf. Therefore, we use:
-  datc <- t(centerData(t(dat)))
-
-  if (is.null(s2.init)) {s2.init <- rep(1, length(beta))}
+  if (is.null(s2.init)) { s2.init <- rep(1, length(beta)) }
 
   s2 <- s2.init 
   epsilon <- Inf
-  n <- ncol(datc)
+  n <- ncol(dat)
   ndot <- n-1
-
+  #n.sqrt <- sqrt(n)
+  
   while (epsilon > th) {
 
     s2.old <- s2
 
-    # Generalized EM; should be sufficient to improve by using the mode of d (mu.hat)
-    # instead of sampling from d (d is a long vector anyway, giving sufficiently many instants)
-    d <- d.update.fast.c(datc, s2)
-
-    # optimize s2
-    s2.obs <- s2obs.c(datc, d, ndot) # colSums((t(datc) - d)^2)/ndot
-    k <- ndot / s2.obs
+    # Generalized EM; should be sufficient to improve by using the
+    # mode of d (mu.hat) instead of sampling from d (d is a long
+    # vector anyway, giving sufficiently many instants); updating with
+    # the mode here as complete sampling would slow down computation
+    # considerably, probably without much gain in performance in this
+    # case.
+    d <- d.update.fast.c(dat, s2)
+    s2hat <- s2hat.c(s2)
+    
+    # optimize s2; regularize observed variance by adding small
+    # constant on observed variances; use here s2hat as an adaptive
+    # lower bound (s2hat is variance of the mean). The regularization
+    # is needed as with the current implementation (which uses mode of
+    # d instead of full sampling over d space) optimization gets
+    # sometimes stuck to local optima, collapsing s2 -> 0 for one of
+    # the probes (about 1e-4~1e-5 occurrence frequency); the prior
+    # does not seem to prevent this here.
+    s2.obs <- s2obs.c(dat, d, ndot) + s2hat
+     k <- ndot / s2.obs
     s2 <- abs(optim(s2, fn = s2.neglogp, ndot = ndot, alpha = alpha, beta.inv = 1/beta, k = k, method = "BFGS")$par)
+
     # FIXME: check if 'optimize' would be faster?
-
     epsilon <- max(abs(s2 - s2.old))
-
-    # print(epsilon)
 
   }
 
   s2
+
 }
 
+# FIXME: could be utilized in d.update.fast.c to speed up
+s2hat <- function (s2) { 1 / sum(1 / s2) }
+s2hat.c <- cmpfun(s2hat) 
 
 s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 
@@ -117,7 +116,31 @@ s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 dchisq.c <- cmpfun(dchisq) 
 dgamma.c <- cmpfun(dgamma) 
 
-s2obs <- function (datc, d, ndot) { colSums((t(datc) - d)^2)/ndot  }
+s2obs <- function (dat, d, ndot) {
+  # Center the probes to obtain approximation:
+  # x = d + mu.abs + mu.affinity + epsilon.reference + epsilon.samples
+  # by centering we remove mu.abs + mu.affinity + epsilon.reference
+  # with large sample size it is safe to assume that epsilon.reference = 0
+  # so this does not affect the results, compared to the exact solution
+  # where the variance in epsilon is estimated also including epsilon.reference ie. 
+  # x = d + epsilon.reference + epsilon.samples
+  # which would just shift x little but as it is marginalized in the treatment the
+  # result will converge to estimating variance from 
+  # x = d + epsilon.samples when N -> Inf. Therefore, we use:
+  # datc <- t(centerData(t(dat)))
+
+  datc <- centerData(t(dat) - d)
+
+  # avoid getting stuck to local optima with d (occurs sometimes ~
+  # 1e-4) by adding small constant on observed variance (which should
+  # never be 0 in real data) seems that the prior term does not always
+  # prevent such collapse with the current implementation; can
+  # probably be improved so that regularization is cpompletely handled
+  # by the prior (FIXME)
+  #s2 + 1e-3
+  colSums(datc^2)/ndot
+}
+
 s2obs.c <- cmpfun(s2obs) 
 
 

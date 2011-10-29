@@ -12,6 +12,49 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
+quantile.basis.online <- function (cel.files, bg.method = "rma", batch.size = 10, cdf = NULL, save.batches = NULL) {
+  # Estimate basis for quantile normalization 
+  # by online-updates
+
+  # Split CEL file list into batches
+  batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
+
+  # Process each batch separately
+  qs <- NULL
+
+  for (i in 1:length(batches)) {
+
+    message(paste("Calculating quantiles on batch", i, "/", length(batches)))
+
+    abatch <- ReadAffy(filenames = batches[[i]], compress=getOption("BioC")$affy$compress.cel) 
+
+    # Set alternative CDF environment if given
+    if (!is.null(cdf)) { abatch@cdfName <- cdf }    
+
+    # Background correction
+    abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
+    
+    # Store the necessary PM probe information used by quantile normalization
+    # This can speed up preprocessing considerably
+    if (!is.null(save.batches)) {
+      batch <- apply(pm(abatch), 2, order)
+      save(batch, file = paste(save.batches, "-", i, ".RData", sep = ""))
+    }
+
+    # Add to overall probe-sum for quantile estimation
+    if (is.null(qs)) {
+      # Create new quantile basis
+      qs <- sort(rowSums(apply(pm(abatch), 2, sort)))
+    } else {
+      # Add to existing quantile basis
+      qs <- qs + sort(rowSums(apply(pm(abatch), 2, sort)))
+    }
+  }
+  
+  # Quantile basis is average (sum/n) over the individual arrays
+  qs/length(cel.files)
+
+}
 
 online.quantile <- function (abatch, n) {
 
@@ -54,43 +97,4 @@ set.quantiles <- function (mat, quantile.basis) {
     x
   })
 }
-
-
-quantile.basis.online <- function (cel.files, bg.method = "rma", batch.size = 10, cdf = NULL) {
-  # Estimate basis for quantile normalization 
-  # by online-updates
-
-  # Split CEL file list into batches
-  batches <- get.batches(cel.files, batch.size)
-
-  # Process each batch separately
-  qs <- NULL
-
-  for (i in 1:length(batches)) {
-
-    message(paste("Calculating quantiles on batch", i, "/", length(batches)))
-
-    abatch <- ReadAffy(filenames = batches[[i]], compress=getOption("BioC")$affy$compress.cel) 
-
-    # Set alternative CDF environment if given
-    if (!is.null(cdf)) { abatch@cdfName <- cdf }    
-
-    # Background correction
-    abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
-  
-    # Add to overall probe-sum for quantile estimation
-    if (is.null(qs)) {
-      # Create new quantile basis
-      qs <- sort(rowSums(apply(pm(abatch), 2, sort)))
-    } else {
-      # Add to existing quantile basis
-      qs <- qs + sort(rowSums(apply(pm(abatch), 2, sort)))
-    }
-  }
-  
-  # Quantile basis is average (sum/n) over the individual arrays
-  qs/length(cel.files)
-
-}
-
 

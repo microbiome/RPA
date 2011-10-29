@@ -161,14 +161,14 @@ RPA.iteration.fast <- function(S,
       sigma2.old <- sigma2
 
       # update d, given sigma2
-      d <- d.update.fast.c(t(S), sigma2)
+      d <- d.update.fast(t(S), sigma2)
 
       # Estimate noise 
       R <- S - d
 
       # beta update (feed in original beta prior, not updates from this loop!)
-      beta.posterior <- beta.fast.c(beta.prior, R) 
-      #beta.c(beta.prior, R) # update.beta(R, beta.prior)
+      beta.posterior <- beta.fast(beta.prior, R) 
+      #betahat.f(beta.prior, R) # update.beta(R, beta.prior)
 
       # update sigma2 / NOTE: use posterior alpha and beta here!
       sigma2 <- beta.posterior/alpha.posterior

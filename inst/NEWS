@@ -1,3 +1,8 @@
+Changes in 1.9.18 (2011-10-29)
+
+  o removed compiler and corrected the broken compiler function
+    references
+
 Changes in 1.9.17 (2011-06-27)
 
   o added bg correction in rpa.online

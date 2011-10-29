@@ -2,7 +2,8 @@ import(affy)
 
 ##export everything that does not start with a .
 ##exportPattern("^[^\\.]")
-export(estimate.affinities,
+export(
+       estimate.affinities,
        get.probe.noise.estimates,
        online.quantile,
        rpa,

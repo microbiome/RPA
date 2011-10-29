@@ -24,4 +24,4 @@ d.update.fast <- function (St, s2) {
 
 
 #require(compiler)
-d.update.fast.c <- cmpfun(d.update.fast) 
+#d.update.fast.c <- cmpfun(d.update.fast) 

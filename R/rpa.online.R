@@ -24,7 +24,8 @@ rpa.online <- function (
                bg.method = "rma",
 	       normalization.method = "quantiles",
                      cdf = NULL, 
-              batch.size = 10) 
+              batch.size = 10, 
+	  quantile.basis = NULL) 
 {
 
   warning("rpa.online is an experimental version")
@@ -139,7 +140,7 @@ rpa.online <- function (
     for (set in sets) {
       # print(which(set == sets)/length(sets))    
       # Get summary estimate using the posterior variance
-      emat[set, batch.cels] <- d.update.fast.c(q[[set]], variances[[set]])
+      emat[set, batch.cels] <- d.update.fast(q[[set]], variances[[set]])
     }
   }
 

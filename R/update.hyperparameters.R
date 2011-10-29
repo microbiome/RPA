@@ -45,7 +45,7 @@ update.beta <- function (R, beta, mode = "robust") {
   } else if (mode == "robust") {
     # update beta with posterior mean
     # assuming alpha, beta(hat) are given
-    beta.c(beta, R)
+    betahat.f(beta, R)
   }
 }
 
@@ -70,8 +70,8 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
     # the mode here as complete sampling would slow down computation
     # considerably, probably without much gain in performance in this
     # case.
-    d <- d.update.fast.c(dat, s2)
-    s2hat <- s2hat.c(s2)
+    d <- d.update.fast(dat, s2)
+    s2hat <- s2hat(s2)
     
     # optimize s2; regularize observed variance by adding small
     # constant on observed variances; use here s2hat as an adaptive
@@ -81,7 +81,7 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
     # sometimes stuck to local optima, collapsing s2 -> 0 for one of
     # the probes (about 1e-4~1e-5 occurrence frequency); the prior
     # does not seem to prevent this here.
-    s2.obs <- s2obs.c(dat, d, ndot) + s2hat
+    s2.obs <- s2obs(dat, d, ndot) + s2hat
      k <- ndot / s2.obs
     s2 <- abs(optim(s2, fn = s2.neglogp, ndot = ndot, alpha = alpha, beta.inv = 1/beta, k = k, method = "BFGS")$par)
 
@@ -96,7 +96,7 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
 
 # FIXME: could be utilized in d.update.fast.c to speed up
 s2hat <- function (s2) { 1 / sum(1 / s2) }
-s2hat.c <- cmpfun(s2hat) 
+#s2hat.c <- cmpfun(s2hat) 
 
 s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 
@@ -104,8 +104,8 @@ s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
   s2 <- abs(s2)			  
 
   # mode of s2 ((N-1) * s2 / s2.obs ~ chisq_(N-1) and mode is df - 2, here df = N-1)
-  log.likelihood <- dchisq.c(s2 * k, df = ndot, log = TRUE)
-  log.prior <- dgamma.c(1/s2, shape = alpha, scale = beta.inv, log = TRUE) # beta.inv <- 1/beta
+  log.likelihood <- dchisq(s2 * k, df = ndot, log = TRUE)
+  log.prior <- dgamma(1/s2, shape = alpha, scale = beta.inv, log = TRUE) # beta.inv <- 1/beta
 
   # minimize -logP; separately for each probe likelihood + prior
   -(sum(log.likelihood + log.prior))
@@ -113,8 +113,8 @@ s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 }
 
 
-dchisq.c <- cmpfun(dchisq) 
-dgamma.c <- cmpfun(dgamma) 
+#dchisq.c <- cmpfun(dchisq) 
+#dgamma.c <- cmpfun(dgamma) 
 
 s2obs <- function (dat, d, ndot) {
   # Center the probes to obtain approximation:
@@ -141,16 +141,16 @@ s2obs <- function (dat, d, ndot) {
   colSums(datc^2)/ndot
 }
 
-s2obs.c <- cmpfun(s2obs) 
+#s2obs.c <- cmpfun(s2obs) 
 
 
 ########################################
 
 # Provide compiled version of approximate beta update
-betahat.appr <- function (beta, R) {
+beta.fast <- function (beta, R) {
   beta + colSums(R^2)/2
 }
-beta.fast.c <- cmpfun(betahat.appr) 
+#beta.fast.c <- cmpfun(betahat.fast) 
 
 #######################################
 
@@ -174,7 +174,7 @@ betahat.f <- function (beta, R) {
 # beta + (nrow(S)/2) * (ML estimate of (probe)variance);
 #require(compiler)
 
-beta.c <- cmpfun(betahat.f) 
+#beta.c <- cmpfun(betahat.f) 
 
 
 

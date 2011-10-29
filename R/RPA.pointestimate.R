@@ -27,9 +27,10 @@ RPA.pointestimate <- function (abatch,
 				 )                                      
 {
 
-
 # Find posterior mode for RPA model parameters d (mean) and sigma2 (variances)
 # and then estimate also probe affinities.
+
+#abatch<-Dilution; sets = NULL; myseed = 101; priors = NULL; epsilon = 1e-2; cind = 1; sigma2.method = "robust"; d.method = "fast"; verbose = TRUE; bg.method = "rma"; normalization.method = "quantiles.robust"; cdf = NULL
 
   #################################################################
 

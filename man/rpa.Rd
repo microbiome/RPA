@@ -17,7 +17,7 @@
 rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL) 
 
 rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors=
-list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", normalization.method = "quantiles", cdf = NULL, batch.size = 10)
+list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", normalization.method = "quantiles", cdf = NULL, batch.size = 10, quantile.basis = NULL)
 
 }
 
@@ -110,6 +110,9 @@ list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method 
     \item{cel.path}{Path to CEL file directory.}
 
     \item{batch.size}{Batch size for online mode (rpa.online); the complete list of CEL files will be preprocessed in batches with this size using Bayesian online-updates for probe-specific parameters.}
+
+   \item{quantile.basis}{Pre-calculated quantile vector for quantile normalization.}
+
 }
 
 \details{RPA preprocessing function. Gives an estimate of the

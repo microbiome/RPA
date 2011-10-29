@@ -1,4 +1,7 @@
-get.batches <- function (items, batch.size) {
+get.batches <- function (items, batch.size, shuffle = FALSE) {
+
+  # Random ordering for the items?
+  if (shuffle) {items <- sample(items)}
 
   # N elements into batches of size batch.size
   # last batch can be smaller

@@ -11,8 +11,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (priors, sets, set.inds, batches, cdf, quantile.basis, bg.method, normalization.method, epsilon, cind, load.batches = NULL, mc.cores = NULL) {
+estimate.hyperparameters <- function (priors, set.inds, batches, cdf, quantile.basis, bg.method, normalization.method, epsilon, cind, load.batches = NULL, mc.cores = 1, verbose = TRUE) {
 
+  #load.batches = batch.file.id; mc.cores = 4
+  
   # Hyperparameter estimation through batches
 
   # Initialize hyperparameters
@@ -20,75 +22,50 @@ estimate.hyperparameters <- function (priors, sets, set.inds, batches, cdf, quan
   # Note: alpha is scalar and same for all probesets 
   # alpha <- alpha + N/2 at each batch
 
+  sets <- names(set.inds)
+  
+  if (verbose) {message("Initialize priors")}
   alpha <- priors$alpha # initialize 
-  betas <- lapply(sets, function (set) { rep(priors$beta, length(set.inds[[set]])) })
+  betas <- mclapply(sets, function (set) { rep(priors$beta, length(set.inds[[set]])) }, mc.cores = mc.cores)
   names(betas) <- sets
 
   for (i in 1:length(batches)) {
 
-    message(paste("Updating hyperparameters on batch", i, "/", length(batches)))
+    if (verbose) {message(paste("Updating hyperparameters on batch", i, "/", length(batches)))}
     
     # Get background corrected, quantile normalized, and logged probe-level matrix
-    if (is.null(load.batches)) {
-      q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, bg.method, normalization.method)
-    } else {
-      
-      # Load precalculated batch (gives probe ordering for quantile normalization)
-      # Intermediate saves should remarkably save time here in calculations
-      load(paste(load.batches, "-", i, ".RData", sep = "")) # batch: apply(pm(abatch), 2, order)
-
-      # Set quantile basis in the right (probe) order on each array
-      q <- apply(batch, 2, function (o) {sort(quantile.basis)[o]}) 
-
+    if (!is.null(load.batches)) {
+      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")
     }
+      
+    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, bg.method, normalization.method, batch.file, verbose = verbose)
 
     # Get probes x samples matrix of probe-wise fold-changes
     # q <- matrix(q[, -cind] - q[, cind], nrow(q))
     T <- ncol(q) # Number of arrays expect reference
 
     # Get probes x samples matrices for each probeset
-    if (is.null(mc.cores)) {
-      q <- lapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) })
-      names(q) <- sets
 
-      # Update variance for each probeset
-      s2s <- lapply(sets, function (set) {
-        s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
-      }) # FIXME move conv. param. to arguments
-      names(s2s) <- sets
+    q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores)
+    names(q) <- sets	    
 
-      # Update alpha, beta (variance = beta/alpha at mode with large T)
-      alpha <- update.alpha(T, alpha)
-      betas <- lapply(s2s, function (s2) { s2 * alpha })
-
-    } else {
-      # Parallelize
-      q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores)
-      names(q) <- sets	    
-
-      # Update variance for each probeset
-      s2s <- mclapply(sets, function (set) {
-        s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
-      }, mc.cores = mc.cores) # FIXME move conv. param. to arguments
-      names(s2s) <- sets
+    # Update variance for each probeset
+    s2s <- mclapply(sets, function (set) {
+      s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
+    }, mc.cores = mc.cores) # FIXME move conv. param. to arguments
+    names(s2s) <- sets
     
-      # Update alpha, beta (variance = beta/alpha at mode with large T)
-      alpha <- update.alpha(T, alpha)
-      betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
-
-    } 
+    # Update alpha, beta (variance = beta/alpha at mode with large T)
+    alpha <- update.alpha(T, alpha)
+    betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
 
   }
 
   # Get final estimated variances for each probeset based on hyperparameter posteriors
-  if (is.null(mc.cores)) {
-    variances <- lapply(betas, function (beta) {beta/alpha})
-    names(variances) <- names(betas) 
-  } else {
-    variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
-    names(variances) <- names(betas) 
-  }
+  variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
+  names(variances) <- names(betas) 
 
+  
   list(alpha = alpha, betas = betas, variances = variances)  
 
 }

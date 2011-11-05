@@ -13,7 +13,8 @@ get.set.inds <- function (cel.files, cdf, sets) {
   # The indices correspond to the output of pm()
   pN <- probeNames(abatch)
   set.inds <- split(1:length(pN), pN)[sets] # pNList
- 
+  names(set.inds) <- sets
+  
   list(set.inds = set.inds, cdf = cdf)
  
 }

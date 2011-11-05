@@ -5,6 +5,7 @@ import(affy)
 export(
        estimate.affinities,
        get.probe.noise.estimates,
+       quantile.basis.online,
        online.quantile,
        rpa,
        rpa.fit,

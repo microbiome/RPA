@@ -127,7 +127,7 @@ rpa.online <- function (
   
 }
 
-summarize.batches <- function (sets, batches, load.batches, mc.cores = NULL) {
+summarize.batches <- function (sets, batches, load.batches, mc.cores = 1) {
 
   cel.files <- unlist(batches)		  
 
@@ -145,27 +145,17 @@ summarize.batches <- function (sets, batches, load.batches, mc.cores = NULL) {
     batch.cels <- batches[[i]] 
 
     # Get background corrected, quantile normalized, and logged probe-level matrix
-    if (is.null(load.batches)) {
-      q <- get.probe.matrix(cels = batch.cels, cdf, quantile.basis, bg.method, normalization.method)
-    } else {
-      
-      # Load precalculated batch (gives probe ordering for quantile normalization)
-      # Intermediate saves should remarkably save time here in calculations
-      load(paste(load.batches, "-", i, ".RData", sep = "")) # batch: apply(pm(abatch), 2, order)
 
-      # Set quantile basis in the right (probe) order on each array
-      q <- apply(batch, 2, function (o) {sort(quantile.basis)[o]}) 
-
+    if (!is.null(load.batches)) {
+      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")
     }
+      
+    q <- get.probe.matrix(cels = batch.cels, cdf, quantile.basis, bg.method, normalization.method, batch.file, verbose = verbose)
 
     # Get probes x samples matrices for each probeset
     # No need to remove the reference sample for d.update here
     # FIXME with mc.cores = 1 mclapply -> lapply, no need to separate
-    if (is.null(mc.cores)) {
-      q <- lapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) })
-    } else {
-      q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores) 
-    }
+    q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores) 
     names(q) <- sets
 
     for (set in sets) {
@@ -182,8 +172,20 @@ summarize.batches <- function (sets, batches, load.batches, mc.cores = NULL) {
   new("ExpressionSet", assayData = list(exprs = emat)) 
 }  
 
-get.probe.matrix <- function (cels, cdf, quantile.basis, bg.method = "rma", normalization.method = "quantiles") {
+get.probe.matrix <- function (cels, cdf, quantile.basis, bg.method = "rma", normalization.method = "quantiles", batch.file = NULL, verbose = TRUE) {
 
+  if (!is.null(batch.file)) {
+      if (verbose) {message("Load precalculated batch")}
+      # (gives probe ordering for quantile normalization)
+      # Intermediate saves should remarkably save time here in calculations
+      #load(paste(load.batches, "-", i, ".RData", sep = "")) # batch: apply(pm(abatch), 2, order)
+      load(batch.file)
+      
+      if (verbose) {message("Set quantile data on each array")}
+      q <- apply(batch, 2, function (o) {quantile.basis[o]}) 
+      #q <- set.quantiles(pm(abatch.bg), qb)
+    } else {
+  
   # Get background corrected, quantile normalized, and logged probe-level matrix
   # The bg + quant are from quantile.basis  
 
@@ -216,7 +218,11 @@ get.probe.matrix <- function (cels, cdf, quantile.basis, bg.method = "rma", norm
   } 
   
   # Log transformation
-  log2(pm(abatch))
+  q <- log2(pm(abatch))
+
+}
+
+  q
 
 }
 

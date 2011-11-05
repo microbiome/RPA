@@ -19,8 +19,10 @@ quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL,
   # Split CEL file list into batches
   if (is.null(batches)) {
     batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
-  }
+  } 
 
+  cel.files <- unlist(batches)
+  
   # Process each batch separately
   qs <- NULL
 
@@ -40,7 +42,7 @@ quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL,
     # Store the necessary PM probe information used by quantile normalization
     # This can speed up preprocessing considerably
     if (!is.null(save.batches)) {
-      batch <- apply(pma, 2, order)
+      batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
       save(batch, file = paste(save.batches, "-", i, ".RData", sep = ""))
     }
@@ -48,19 +50,18 @@ quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL,
     # Add to overall probe-sum for quantile estimation
     if (is.null(qs)) {
       # Create new quantile basis
-      qs <- sort(rowSums(apply(pma, 2, sort)))
+      qs <- rowSums(apply(pma, 2, sort))
     } else {
       # Add to existing quantile basis
-      qs <- qs + sort(rowSums(apply(pma, 2, sort)))
+      qs <- qs + rowSums(apply(pma, 2, sort))
     }
   }
-  
+
   # Quantile basis is average (sum/n) over the individual arrays
   basis <- qs/length(cel.files)
 
   # Finally, the data is presented in log2
   basis <- log2(basis)
-
 
 }
 
@@ -99,10 +100,15 @@ get.quantile.basis <- function (mat) {
 
 
 set.quantiles <- function (mat, quantile.basis) {
-  # replace smallest value with the smallest in the given quantile.basis etc.
-  apply(mat, 2, function(x) { 
-    x[order(x)] <- sort(quantile.basis);
-    x
-  })
+  apply(mat, 2, function(x) {quantile.basis[rank(x)]})
 }
+
+
+#set.quantiles <- function (mat, quantile.basis) {
+#  # replace smallest value with the smallest in the given quantile.basis etc.
+#  apply(mat, 2, function(x) { 
+#    x[order(x)] <- sort(quantile.basis);
+#    x
+#  })
+#}
 

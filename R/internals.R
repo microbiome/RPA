@@ -1,3 +1,25 @@
+get.set.inds <- function (cel.files, cdf, sets) {
+
+  # Get probe position indices
+  abatch <- ReadAffy(filenames = cel.files[1:2], compress=getOption("BioC")$affy$compress.cel) 
+  # Set alternative CDF environment if given
+  if (!is.null(cdf)) { abatch@cdfName <- cdf }    
+
+  # Check names for the investigated probesets
+  # if my.sets not specified, take all sets in abatch
+  if ( is.null(sets) ) { sets <- geneNames(abatch) } 
+
+  # Retrieve probe positions
+  # The indices correspond to the output of pm()
+  pN <- probeNames(abatch)
+  set.inds <- split(1:length(pN), pN)[sets] # pNList
+ 
+  list(set.inds = set.inds, cdf = cdf)
+ 
+}
+
+
+
 get.batches <- function (items, batch.size, shuffle = FALSE) {
 
   # Random ordering for the items?

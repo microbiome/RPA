@@ -24,13 +24,13 @@ rpa <- function (abatch = NULL,
     normalization.method = "quantiles.robust",
                      cdf = NULL,
                cel.files = NULL, 
-                cel.path = NULL) 
+                cel.path = NULL, save = FALSE) 
 {
 
   # RPA preprocessing wrapper
 
   # Background correction, normalization and logging
-  preproc <- RPA.preprocess(abatch, bg.method, normalization.method, cdf = cdf, cel.files = cel.files, cel.path = cel.path)	
+  preproc <- RPA.preprocess(abatch, bg.method, normalization.method, cdf = cdf, cel.files = cel.files, cel.path = cel.path, save = save)	
 
   message("Calculating Expression")
   

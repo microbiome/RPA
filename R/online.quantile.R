@@ -12,12 +12,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-quantile.basis.online <- function (cel.files, bg.method = "rma", batch.size = 10, cdf = NULL, save.batches = NULL) {
+quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL, cdf = NULL, save.batches = NULL, batch.size = 2) {
   # Estimate basis for quantile normalization 
   # by online-updates
 
   # Split CEL file list into batches
-  batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
+  if (is.null(batches)) {
+    batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
+  }
 
   # Process each batch separately
   qs <- NULL
@@ -32,27 +34,33 @@ quantile.basis.online <- function (cel.files, bg.method = "rma", batch.size = 10
     if (!is.null(cdf)) { abatch@cdfName <- cdf }    
 
     # Background correction
-    abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
-    
+    abatch <- bg.correct(abatch, bg.method, destructive = TRUE)    
+    pma <- pm(abatch)
+
     # Store the necessary PM probe information used by quantile normalization
     # This can speed up preprocessing considerably
     if (!is.null(save.batches)) {
-      batch <- apply(pm(abatch), 2, order)
+      batch <- apply(pma, 2, order)
+      colnames(batch) <- batches[[i]]
       save(batch, file = paste(save.batches, "-", i, ".RData", sep = ""))
     }
 
     # Add to overall probe-sum for quantile estimation
     if (is.null(qs)) {
       # Create new quantile basis
-      qs <- sort(rowSums(apply(pm(abatch), 2, sort)))
+      qs <- sort(rowSums(apply(pma, 2, sort)))
     } else {
       # Add to existing quantile basis
-      qs <- qs + sort(rowSums(apply(pm(abatch), 2, sort)))
+      qs <- qs + sort(rowSums(apply(pma, 2, sort)))
     }
   }
   
   # Quantile basis is average (sum/n) over the individual arrays
-  qs/length(cel.files)
+  basis <- qs/length(cel.files)
+
+  # Finally, the data is presented in log2
+  basis <- log2(basis)
+
 
 }
 
@@ -93,7 +101,7 @@ get.quantile.basis <- function (mat) {
 set.quantiles <- function (mat, quantile.basis) {
   # replace smallest value with the smallest in the given quantile.basis etc.
   apply(mat, 2, function(x) { 
-    x[order(x)] <- sort(quantile.basis)
+    x[order(x)] <- sort(quantile.basis);
     x
   })
 }

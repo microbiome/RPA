@@ -11,7 +11,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (priors, set.inds, batches, cdf, quantile.basis, bg.method, normalization.method, epsilon, cind, load.batches = NULL, mc.cores = 1, verbose = TRUE) {
+estimate.hyperparameters <- function (priors, set.inds, batches, cdf, quantile.basis, bg.method, normalization.method, epsilon, cind, load.batches = NULL, save.batches = NULL, mc.cores = 1, verbose = TRUE) {
 
   #load.batches = batch.file.id; mc.cores = 4
   
@@ -59,6 +59,11 @@ estimate.hyperparameters <- function (priors, set.inds, batches, cdf, quantile.b
     alpha <- update.alpha(T, alpha)
     betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
 
+    # Save hyperparameters for this batch
+    if (!is.null(save.batches)) {
+      batch.file <- paste(save.batches, "-", i, ".RData", sep = "")
+    }
+        
   }
 
   # Get final estimated variances for each probeset based on hyperparameter posteriors

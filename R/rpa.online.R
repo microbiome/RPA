@@ -127,7 +127,7 @@ rpa.online <- function (
   
 }
 
-summarize.batches <- function (sets, batches, load.batches, mc.cores = 1) {
+summarize.batches <- function (sets, variances, batches, load.batches, mc.cores = 1) {
 
   cel.files <- unlist(batches)		  
 

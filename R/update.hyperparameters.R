@@ -62,16 +62,16 @@ estimate.hyperparameters <- function (priors, set.inds, batches, cdf, quantile.b
     # Save hyperparameters for this batch
     if (!is.null(save.batches)) {
       batch.file <- paste(save.batches, "-", i, ".RData", sep = "")
+      save(alpha, betas, file = batch.file)
     }
         
   }
 
   # Get final estimated variances for each probeset based on hyperparameter posteriors
-  variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
-  names(variances) <- names(betas) 
+  #variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
+  #names(variances) <- names(betas) 
 
-  
-  list(alpha = alpha, betas = betas, variances = variances)  
+  list(alpha = alpha, betas = betas, variances = s2s)  
 
 }
 

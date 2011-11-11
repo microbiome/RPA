@@ -12,17 +12,30 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL, cdf = NULL, save.batches = NULL, batch.size = 2) {
+qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = NULL, batch.size = 2) {
+
+  # cel.files = batches; save.batches = batch.file.id
+  
   # Estimate basis for quantile normalization 
   # by online-updates
 
-  # Split CEL file list into batches
-  if (is.null(batches)) {
-    batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
-  } 
-
-  cel.files <- unlist(batches)
+  # FIXME: add option to calculate only based on subset of data (as
+  # now in online.quantile function; merge these two)
   
+  # Split CEL file list into batches
+
+  if (length(cel.files[[1]]) == 1) {
+    # Assume cel.files is a character vector listing CEL files
+    # Create batches
+    batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
+
+  } else if (length(cel.files[[1]]) > 1) {
+
+    # Assume that cel.files a list of batches
+    batches <- cel.files
+    cel.files <- unlist(batches)
+  }
+
   # Process each batch separately
   qs <- NULL
 
@@ -58,10 +71,8 @@ quantile.basis.online <- function (cel.files, bg.method = "rma", batches = NULL,
   }
 
   # Quantile basis is average (sum/n) over the individual arrays
-  basis <- qs/length(cel.files)
-
   # Finally, the data is presented in log2
-  basis <- log2(basis)
+  basis <- log2(qs/length(cel.files))
 
 }
 
@@ -92,11 +103,9 @@ online.quantile <- function (abatch, n) {
 
 }  
 
-
 get.quantile.basis <- function (mat) {
   sort(rowMeans(apply(mat, 2, sort)))
 }
-
 
 
 set.quantiles <- function (mat, quantile.basis) {
@@ -104,11 +113,5 @@ set.quantiles <- function (mat, quantile.basis) {
 }
 
 
-#set.quantiles <- function (mat, quantile.basis) {
-#  # replace smallest value with the smallest in the given quantile.basis etc.
-#  apply(mat, 2, function(x) { 
-#    x[order(x)] <- sort(quantile.basis);
-#    x
-#  })
-#}
+
 

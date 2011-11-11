@@ -4,21 +4,25 @@ import(affy)
 ##exportPattern("^[^\\.]")
 export(
        estimate.affinities,
+       estimate.hyperparameters,       
+       get.batches,
        get.probe.noise.estimates,
-       quantile.basis.online,
+       #get.set.inds,
+       hyperparameter.update,
        online.quantile,
+       plot.rpa,              
+       qnorm.basis.online,
        rpa,
-       rpa.fit,
-       rpa.online,
        RPA.dcost,
-       rpa2eset,
+       rpa.fit,
        RPA.iteration,
+       #rpa.online,
        rpa.plot,
-       plot.rpa,       
        RPA.pointestimate,
        RPA.preprocess,
+       rpa2eset,
        sample.probeset,
-       hyperparameter.update,
+       summarize.batches,
        s2.update
 )
 

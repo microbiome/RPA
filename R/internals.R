@@ -1,58 +1,6 @@
-get.set.inds <- function (cel.files, cdf, sets) {
-
-  # Get probe position indices
-  abatch <- ReadAffy(filenames = cel.files[1:2], compress=getOption("BioC")$affy$compress.cel) 
-  # Set alternative CDF environment if given
-  if (!is.null(cdf)) { abatch@cdfName <- cdf }    
-
-  # Check names for the investigated probesets
-  # if my.sets not specified, take all sets in abatch
-  if ( is.null(sets) ) { sets <- geneNames(abatch) } 
-
-  # Retrieve probe positions
-  # The indices correspond to the output of pm()
-  pN <- probeNames(abatch)
-  set.inds <- split(1:length(pN), pN)[sets] # pNList
-  names(set.inds) <- sets
-  
-  list(set.inds = set.inds, cdf = cdf)
- 
-}
 
 
 
-get.batches <- function (items, batch.size, shuffle = FALSE) {
-
-  # Random ordering for the items?
-  if (shuffle) {items <- sample(items)}
-
-  # N elements into batches of size batch.size
-  # last batch can be smaller
-
-  if (length(items) == 1 && is.numeric(items)) {
-    N <- items
-    items <- 1:N
-  } else {
-    N <- length(items)
-  }
-
-  if (N < batch.size) {
-     warning("batch.size > N, setting batch.size = N.")
-  }
-
-  batches <- list()
-  ns <- floor(c(0, seq(batch.size, N, batch.size)))
-  if (ns[[length(ns)]] < N) {ns[[length(ns) + 1]] <- N}
-  cnt <- 0
-  for (i in 2:length(ns)) {
-    cnt <- cnt + 1
-    n.start <- ns[[i-1]]
-    n.stop <- ns[[i]]
-    batches[[i-1]] <- items[(n.start+1):n.stop]
-  }
-  
-  batches
-}
 
 
 set.alpha <- function (alpha, sigma2.method, P){ 

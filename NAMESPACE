@@ -16,7 +16,7 @@ export(
        RPA.dcost,
        rpa.fit,
        RPA.iteration,
-       #rpa.online,
+       rpa.online,
        rpa.plot,
        RPA.pointestimate,
        RPA.preprocess,

@@ -12,7 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = NULL, batch.size = 2) {
+qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = NULL, batch.size = 2, verbose = TRUE) {
 
   # cel.files = batches; save.batches = batch.file.id
   
@@ -36,6 +36,10 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
     cel.files <- unlist(batches)
   }
 
+  if (!is.null(save.batches)) {
+    warning(paste("Saving background corrected data for quantile normalization into temporary files ", save.batches,"-*.RData to speed up preprocessing in later steps.", sep = ""))
+  }
+
   # Process each batch separately
   qs <- NULL
 
@@ -45,10 +49,12 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 
     abatch <- ReadAffy(filenames = batches[[i]], compress=getOption("BioC")$affy$compress.cel) 
 
-    # Set alternative CDF environment if given
-    if (!is.null(cdf)) { abatch@cdfName <- cdf }    
+    if (!is.null(cdf)) {
+      if (verbose) {message("Setting alternative CDF environmen")}
+      abatch@cdfName <- cdf
+    }    
 
-    # Background correction
+    if (verbose) {message("Background correcting...")}
     abatch <- bg.correct(abatch, bg.method, destructive = TRUE)    
     pma <- pm(abatch)
 
@@ -57,7 +63,9 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
     if (!is.null(save.batches)) {
       batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
-      save(batch, file = paste(save.batches, "-", i, ".RData", sep = ""))
+      bf <- paste(save.batches, "-", i, ".RData", sep = "")
+      message(paste("Storing batch data into file: ", bf))
+      save(batch, file = bf)
     }
 
     # Add to overall probe-sum for quantile estimation
@@ -72,6 +80,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 
   # Quantile basis is average (sum/n) over the individual arrays
   # Finally, the data is presented in log2
+  #if (verbose) {message("")}
   basis <- log2(qs/length(cel.files))
 
 }

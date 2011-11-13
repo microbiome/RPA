@@ -11,46 +11,53 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (priors, batches, cdf, quantile.basis, bg.method = NULL, normalization.method = NULL, epsilon, cind, load.batches = NULL, save.batches = NULL, mc.cores = 1, verbose = TRUE) {
+estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta = 1), 
+                                      batches, cdf = NULL, quantile.basis, 
+				      bg.method = "rma", epsilon = 1e-2, cind = 1, 
+				      load.batches = NULL, 
+				      save.hyperparameter.batches = NULL, 
+                                      mc.cores = 1, verbose = TRUE, 
+				      normalization.method = "quantiles") {
 
-  # Aimed at online version. Modify later for general-purpose.
-  
-  #load.batches = batch.file.id; mc.cores = 2; save.batches = hyperparameter.batches
-  
   # Hyperparameter estimation through batches
-
+  
+  # FIXME: For online version. Modify later general-purpose.
+    
+  if (verbose) {message("Get probeset indices")}
+  set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
+  if (is.null(sets)) {sets <- names(set.inds)}
+  
   # Initialize hyperparameters
-
   # Note: alpha is scalar and same for all probesets 
   # alpha <- alpha + N/2 at each batch
-
-  cel.files <- batches[[1]][1:2]
-  set.inds <- get.set.inds(cel.files, cdf)
-  sets <- names(set.inds)
-  
   if (verbose) {message("Initialize priors")}
   alpha <- priors$alpha # initialize 
-  betas <- mclapply(sets, function (set) { rep(priors$beta, length(set.inds[[set]])) }, mc.cores = mc.cores)
+  betas <- mclapply(sets, function (set) { 
+    rep(priors$beta, length(set.inds[[set]])) 
+  }, mc.cores = mc.cores)
   names(betas) <- sets
 
   for (i in 1:length(batches)) {
 
-    if (verbose) {message(paste("Updating hyperparameters on batch", i, "/", length(batches)))}
+    if (verbose) {
+      message(paste("Updating hyperparameters on batch", i, "/", length(batches)))
+    }
     
     # Get background corrected, quantile normalized, and logged probe-level matrix
+    batch <- NULL
     if (!is.null(load.batches)) {
-      if (verbose) {message(paste("Load batch", i))}
-      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")
+      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")      
+      if (verbose) {message(paste("Load batch from file:", batch.file))}
       load(batch.file) # batch
-    } else {
-      batch <- NULL
     }
 
     if (verbose) {message("Pick probe-level values")}
-    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, bg.method, normalization.method, batch, verbose = verbose)
-
+    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, 
+                          bg.method, normalization.method, batch, verbose = verbose)
+    
     # Get probes x samples matrix of probe-wise fold-changes
-    # q <- matrix(q[, -cind] - q[, cind], nrow(q))
+    # 11.11.2011 check
+    q <- matrix(q[, -cind] - q[, cind], nrow(q))
     # T <- ncol(q) # Number of arrays expect reference
 
     if (verbose) {message("Get probes x samples matrices for each probeset")}
@@ -60,26 +67,27 @@ estimate.hyperparameters <- function (priors, batches, cdf, quantile.basis, bg.m
     if (verbose) {message("Update variance for each probeset")}
     s2s <- mclapply(sets, function (set) {
       s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
-    }, mc.cores = mc.cores) # FIXME move conv. param. to arguments
+    }, mc.cores = mc.cores) 
     names(s2s) <- sets
 
     if (verbose) {message("Update alpha and beta")}    
     # Update alpha, beta (variance = beta/alpha at mode with large T =  ncol(q))
     alpha <- update.alpha(length(batches[[i]]), alpha)
+    # When calculating point estimates it is ok to fit variance first, then
+    # check what beta is at the optimal point estimate 
     betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
 
-    if (verbose) {message("Save hyperparameters")}        
-    # Save hyperparameters for this batch
-    if (!is.null(save.batches)) {
-      batch.file <- paste(save.batches, "-", i, ".RData", sep = "")
+    if (!is.null(save.hyperparameter.batches)) {
+      batch.file <- paste(save.hyperparameter.batches, "-", i, ".RData", sep = "")
+      if (verbose) {message(paste("Save hyperparameters into file:", batch.file))}    
       save(alpha, betas, file = batch.file)
     }
         
   }
 
   # Get final estimated variances for each probeset based on hyperparameter posteriors
-  #variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
-  #names(variances) <- names(betas) 
+  # variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
+  # names(variances) <- names(betas) 
 
   list(alpha = alpha, betas = betas, variances = s2s)  
 

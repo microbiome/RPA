@@ -1,4 +1,5 @@
-%\VignetteIndexEntry{RPA}
+
+% \VignetteIndexEntry{RPA}
 %The above line is needed to remove a warning in R CMD check
 \documentclass[12pt]{article}
 
@@ -330,8 +331,72 @@ This document was written using:
 sessionInfo()
 @
 
-\bibliographystyle{abbrv}
-\bibliography{RPA}
+%\bibliographystyle{abbrv}
+%\bibliography{RPA}
+
+\begin{thebibliography}{10}
+
+\bibitem{affy5}
+Affymetrix.
+\newblock {\em Affymetrix Microarray Suite User Guide}.
+\newblock Affymetrix, Santa Clara, CA, version 5 edition, 2001.
+
+\bibitem{Bolstad03}
+B.~M. Bolstad, R.~A. Irizarry, M.~Astrand, and T.~P. Speed.
+\newblock {A comparison of normalization methods for high density
+  oligonucleotide array data based on variance and bias}.
+\newblock {\em Bioinformatics}, 19(2):185--193, 2003.
+
+\bibitem{Cope04}
+L.~M. Cope, R.~A. Irizarry, H.~A. Jaffee, Z.~Wu, and T.~P. Speed.
+\newblock {A benchmark for Affymetrix GeneChip expression measures}.
+\newblock {\em Bioinformatics}, 20:323--331, 2004.
+
+\bibitem{Elo05}
+L.~L. Elo, L.~Lahti, H.~Skottman, M.~Kyl{\"a}niemi, R.~Lahesmaa, and
+  T.~Aittokallio.
+\newblock {Integrating probe-level expression changes across generations of
+  Affymetrix arrays}.
+\newblock {\em Nucleic Acids Research}, 33(22):e193, 2005.
+
+\bibitem{Gautier04a}
+L.~Gautier, L.~Cope, B.~M. Bolstad, and R.~A. Irizarry.
+\newblock {affy--analysis of Affymetrix GeneChip data at the probe level}.
+\newblock {\em Bioinformatics}, 20(3):307--315, 2004.
+
+\bibitem{Hochreiter06}
+S.~Hochreiter, D.-A. Clevert, and K.~Obermayer.
+\newblock {A new summarization method for affymetrix probe level data}.
+\newblock {\em Bioinformatics}, 22(8):943--949, 2006.
+
+\bibitem{Irizarry03rma}
+R.~A. Irizarry, B.~M. Bolstad, F.~Collin, L.~M. Cope, B.~Hobbs, and T.~P.
+  Speed.
+\newblock {Summaries of Affymetrix GeneChip probe level data}.
+\newblock {\em Nucl. Acids Res.}, 31(4):e15, 2003.
+
+\bibitem{Irizarry03}
+R.~A. Irizarry, B.~Hobbs, F.~Collin, Y.~D. Beazer-Barclay, K.~J. Antonellis,
+  U.~Scherf, and T.~P. Speed.
+\newblock Exploration, normalization, and summaries of high density
+  oligonucleotide array probe level data.
+\newblock {\em Biostatistics}, 4(2):249--264, 2003.
+
+\bibitem{Lahti11}
+L.~Lahti, L.~L. Elo, T.~Aittokallio, and S.~Kaski.
+\newblock Probabilistic analysis of probe reliability in differential gene
+  expression studies with short oligonucleotide arrays.
+\newblock {\em {IEEE/ACM Transactions on Computational Biology and
+  Bioinformatics}}, 8(1):217--225, 2011.
+
+\bibitem{Li01pnas}
+C.~Li and W.~H. Wong.
+\newblock Model-based analysis of oligonucleotide arrays: Expression index
+  computation and outlier detection.
+\newblock {\em Proc. Natl. Acad. Sci.}, 98:31--36, 2001.
+
+\end{thebibliography}
+
 
 \end{document}
 

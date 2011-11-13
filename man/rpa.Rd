@@ -1,25 +1,13 @@
 \name{rpa}
-
 \Rdversion{1.1}
-
 \alias{rpa}
-\alias{rpa.online}
-
 \title{RPA for preprocessing.}
 
 \description{Returns an expressionSet object preprocessed with RPA. If
   'cind' is not specified, uses the first array of affybatch as the
-  reference. With rpa.online one can run preprocessing in online-mode
-  to avoid memory problems with huge expression data collections.}
+  reference.}
 
-\usage{
-
-rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL) 
-
-rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, priors=
-list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method = "rma", normalization.method = "quantiles", cdf = NULL, batch.size = 10, quantile.basis = NULL)
-
-}
+\usage{rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL)}
 
 \arguments{
 
@@ -109,55 +97,30 @@ list(alpha = 2, beta = 1), epsilon = 0.01, cind = 1, verbose = FALSE, bg.method 
 
     \item{cel.path}{Path to CEL file directory.}
 
-    \item{batch.size}{Batch size for online mode (rpa.online); the complete list of CEL files will be preprocessed in batches with this size using Bayesian online-updates for probe-specific parameters.}
-
-   \item{quantile.basis}{Pre-calculated quantile vector for quantile normalization.}
-
 }
 
 \details{RPA preprocessing function. Gives an estimate of the
-  probeset-level mean parameter d of the RPA model, and returns these
-  in an expressionSet object. In online-mode (rpa.online), the CEL
-  files are handled in batches to obtain Bayesian updates for
-  probe-specific hyperpriors; after scanning through the database the
-  results are combined. The online mode is useful for preprocessing
-  very large expression data sets where ordinary preprocessing
-  algorithms fail.}
+  probeset-level mean parameter d of the RPA model, and returns these in
+  an expressionSet object.}
 
-\note{rpa.online is still an experimental version.}
-
-\value{
-  An instance of the 'expressionSet' class.
-}
-
+\value{An instance of the 'expressionSet' class.}
 \references{See citation("RPA").}
-
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 
-\note{sigma2.method = "robust" and d.method = "fast" are
+\note{The choices sigma2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative prior, d.method =
-"basic" may be preferable.}
+"basic" may be preferable. For very large expression data collections,
+see rpa.online function.}
 
-\seealso{RPA.pointestimate, set.priors, AffyBatch, ExpressionSet,
-  estimate.affinities, rpa.fit}
+\seealso{rpa.online, RPA.pointestimate, set.priors, AffyBatch,
+  ExpressionSet, estimate.affinities, rpa.fit}
 
 \examples{
-
 # Not run:
-
 ## Load example data set
 #require(affydata)
 #data(Dilution)
-
-## Compute RPA for specific probesets
-#sets <- geneNames(Dilution)[1:2]	
-#set <- "33572_at"
-#eset <- rpa(Dilution, sets)
-
-## Compute RPA for whole data set	
-## ... slow, not executed here	
 ## eset <- rpa(Dilution)
-
 }
 
 \keyword{ methods }

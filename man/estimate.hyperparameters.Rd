@@ -4,7 +4,7 @@
 \description{Hyperparameter estimation}
 \usage{
 estimate.hyperparameters(sets = NULL, priors =  list(alpha = 2, beta = 1), batches, 
-cdf = NULL, quantile.basis, bg.method = "rma", epsilon = 1e-2, cind = 1, 
+cdf = NULL, quantile.basis, bg.method = "rma", epsilon = 1e-2, cind = NULL, 
 load.batches = NULL, save.hyperparameter.batches = NULL, mc.cores = 1, 
 verbose = TRUE, normalization.method = "quantiles")
 }

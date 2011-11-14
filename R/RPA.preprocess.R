@@ -83,6 +83,7 @@ get.set.inds <- function (cel.files, cdf = NULL, sets = NULL) {
 
 get.batches <- function (items, batch.size, shuffle = FALSE) {
 
+  
   # Random ordering for the items?
   if (shuffle) {items <- sample(items)}
 

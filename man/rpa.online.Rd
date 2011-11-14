@@ -12,7 +12,7 @@
 
 \usage{rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf =
                  NULL, bg.method = "rma", priors = list(alpha = 2, beta
-                 = 1), epsilon = 1e-2, cind = 1, mc.cores = 1, verbose =
+                 = 1), epsilon = 1e-2, cind = NULL, mc.cores = 1, verbose =
                  TRUE, shuffle = TRUE, batch.size = 10, batches = NULL,
                  batch.file.id = NULL, batch.list.file.id = NULL,
                  quantile.basis = NULL, quantile.file.id = NULL,

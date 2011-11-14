@@ -11,13 +11,15 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta = 1), 
-                                      batches, cdf = NULL, quantile.basis, 
-				      bg.method = "rma", epsilon = 1e-2, cind = 1, 
-				      load.batches = NULL, 
-				      save.hyperparameter.batches = NULL, 
-                                      mc.cores = 1, verbose = TRUE, 
-				      normalization.method = "quantiles") {
+estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
+                                      = 2, beta = 1), batches, cdf =
+                                      NULL, quantile.basis, bg.method
+                                      = "rma", epsilon = 1e-2, cind =
+                                      NULL, load.batches = NULL,
+                                      save.hyperparameter.batches =
+                                      NULL, mc.cores = 1, verbose =
+                                      TRUE, normalization.method =
+                                      "quantiles") {
 
   # Hyperparameter estimation through batches
   
@@ -55,8 +57,17 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
     q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, 
                           bg.method, normalization.method, batch, verbose = verbose)
     
-    # Get probes x samples matrix of probe-wise fold-changes
-    # 11.11.2011 check
+    # Get probes x samples matrix of probe-wise fold-changes If no
+    # cind given, select one of the arrays as a reference at
+    # random. Choice of the reference array does not notably affect
+    # the results in experiments as the control effect is marginalized
+    # out in the treatment. Note that in rpa.online implementation,
+    # cind is specific to each batch but it is only used to in
+    # hyperparameter estimation step to cancel probe affinity effects;
+    # in probeset summarization no reference sample is needed. Whether
+    # cind is the same for the overall data collection or
+    # batch-specific should not notably affect the results, either.
+    if (is.null(cind)) { cind <- sample(ncol(q), 1)}
     q <- matrix(q[, -cind] - q[, cind], nrow(q))
     # T <- ncol(q) # Number of arrays expect reference
 

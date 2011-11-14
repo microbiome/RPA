@@ -20,8 +20,7 @@ rpa.online <- function (
                bg.method = "rma",                              
                   priors = list(alpha = 2, beta = 1),
                  epsilon = 1e-2,
-
-                    cind = 1,
+                    cind = NULL,
                 mc.cores = 1,
                  verbose = TRUE,                          
                  shuffle = TRUE,
@@ -42,6 +41,18 @@ rpa.online <- function (
 
   ###############################################################
 
+  warning("rpa.online is an experimental version")
+
+  if (is.null(batch.size)) {
+    if (verbose) {message("Determining batch size")}
+    batch.size <- min(length(unlist(cel.files)), 100)
+  }
+  
+  if (batch.size < 3) {
+    warning("Minimum batch.size is 3. Setting batch.size = 3.")
+    batch.size <- 3
+  }
+
   if (is.null(batches)) {
     message("Split CEL file list into batches")
     batches <- get.batches(cel.files, batch.size, shuffle)
@@ -50,7 +61,6 @@ rpa.online <- function (
     if (verbose) {message(paste("Saving batch list into file: ", batch.list.file.id))}
     save(batches, file = batch.list.file.id)    
   }
-  
   
   ###############################################################
 
@@ -68,11 +78,18 @@ rpa.online <- function (
 
   if (is.null(hyper.parameters)) {
     message("Estimating hyperparameters")
-    hyper.parameters <- estimate.hyperparameters(sets, priors, batches, cdf, quantile.basis, 
-                                                  bg.method, epsilon, cind, load.batches = batch.file.id, 
-						  save.hyperparameter.batches = hyperparameter.batch.id, 
-						  mc.cores = mc.cores, verbose = verbose)
-  }
+
+    hyper.parameters <- estimate.hyperparameters(sets, priors,
+                                                  batches, cdf,
+                                                  quantile.basis,
+                                                  bg.method, epsilon,
+                                                  cind, load.batches =
+                                                  batch.file.id,
+                                                  save.hyperparameter.batches
+                                                  =
+                                                  hyperparameter.batch.id,
+                                                  mc.cores = mc.cores,
+                                                  verbose = verbose) }
   
   if (!is.null(hyperparameter.batch.id)) {
     hyper.file <- paste(hyperparameter.batch.id, ".RData", sep = "")
@@ -84,8 +101,11 @@ rpa.online <- function (
 
   # Final ExpressioSet object 
   message("Summarizing probesets")
-  eset <- summarize.batches(sets, hyper.parameters$variances, batches, load.batches = batch.file.id, mc.cores = mc.cores, cdf = cdf, quantile.basis = quantile.basis, verbose = verbose)
-  # save(eset, file = "eset.RData")
+
+  eset <- summarize.batches(sets = sets, variances =
+  hyper.parameters$variances, batches = batches, load.batches =
+  batch.file.id, mc.cores = mc.cores, cdf = cdf, bg.method =
+  bg.method, quantile.basis = quantile.basis, verbose = verbose)
   
   ##################################################################
 
@@ -97,7 +117,7 @@ rpa.online <- function (
 }
 
 
-summarize.batches <- function (sets = NULL, variances, batches, load.batches = NULL, save.batches = NULL, mc.cores = 1, cdf = NULL, bg.method = NULL, normalization.method = NULL, verbose = FALSE, quantile.basis) {
+summarize.batches <- function (sets = NULL, variances, batches, load.batches = NULL, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = FALSE, quantile.basis) {
 
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}
@@ -129,7 +149,8 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = N
     # Get probes x samples matrices for each probeset
     # No need to remove the reference sample for d.update in the summarization step!
     if (verbose) {message("Extract probe-level data")}      
-    q <- get.probe.matrix(batch.cels, cdf, quantile.basis, bg.method, normalization.method, batch, verbose = verbose)    
+    q <- get.probe.matrix(cels = batch.cels, cdf = cdf, quantile.basis = quantile.basis, bg.method = bg.method, batch = batch, verbose = verbose)
+    #if (verbose) {message("Probeset matrices")}          
     q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores) 
     names(q) <- sets
 
@@ -179,11 +200,12 @@ get.probe.matrix <- function (cels, cdf = NULL, quantile.basis, bg.method = "rma
         abatch <- bg.correct(abatch, bg.method, destructive = TRUE)
       }
 
+
       # Normalize by forcing the pre-calculated quantile basis
       if (normalization.method == "none") {
         message("Normalization skipped..")
       } else if (normalization.method == "quantiles") {
-        message("Normalizing...")
+        if (verbose) {message("Normalizing")}
         pm(abatch) <- set.quantiles(pm(abatch), quantile.basis)
       } 
   

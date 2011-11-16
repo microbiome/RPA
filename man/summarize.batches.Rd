@@ -4,7 +4,7 @@
 \description{Probeset summarization in batches}
 \usage{
 summarize.batches(sets, variances, batches, load.batches, mc.cores = 1,
-cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = FALSE, quantile.basis)
+cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis)
 }
 \arguments{
   \item{sets}{Probesets to summarize}

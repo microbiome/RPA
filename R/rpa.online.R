@@ -117,7 +117,7 @@ rpa.online <- function (
 }
 
 
-summarize.batches <- function (sets = NULL, variances, batches, load.batches = NULL, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = FALSE, quantile.basis) {
+summarize.batches <- function (sets = NULL, variances, batches, load.batches = NULL, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis) {
 
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}

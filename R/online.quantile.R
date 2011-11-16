@@ -17,13 +17,11 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
   # cel.files = batches; save.batches = batch.file.id
   
   # Estimate basis for quantile normalization 
-  # by online-updates
 
   # FIXME: add option to calculate only based on subset of data (as
   # now in online.quantile function; merge these two)
   
   # Split CEL file list into batches
-
   if (length(cel.files[[1]]) == 1) {
     # Assume cel.files is a character vector listing CEL files
     # Create batches
@@ -31,7 +29,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 
   } else if (length(cel.files[[1]]) > 1) {
 
-    # Assume that cel.files a list of batches
+    # Assume that cel.files is already a list of batches
     batches <- cel.files
     cel.files <- unlist(batches)
   }
@@ -56,15 +54,17 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 
     if (verbose) {message("Background correcting...")}
     abatch <- bg.correct(abatch, bg.method, destructive = TRUE)    
+    if (verbose) {message("Done.")}    
     pma <- pm(abatch)
 
     # Store the necessary PM probe information used by quantile normalization
     # This can speed up preprocessing considerably
     if (!is.null(save.batches)) {
+      if (verbose) {message("Saving the batch")}
       batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
       bf <- paste(save.batches, "-", i, ".RData", sep = "")
-      message(paste("Storing batch data into file: ", bf))
+      if (verbose) {message(paste("Stored batch data in: ", bf))}
       save(batch, file = bf)
     }
 

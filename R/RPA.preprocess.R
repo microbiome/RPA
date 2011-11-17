@@ -111,6 +111,9 @@ get.batches <- function (items, batch.size, shuffle = FALSE) {
     n.stop <- ns[[i]]
     batches[[i-1]] <- items[(n.start+1):n.stop]
   }
+
+  # Provide ID for each batch
+  names(batches) <- paste("batch", 1:length(batches), sep = "-")
   
   batches
 }

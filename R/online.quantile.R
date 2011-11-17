@@ -12,7 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = NULL, batch.size = 2, verbose = TRUE) {
+qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 2, verbose = TRUE) {
 
   # cel.files = batches; save.batches = batch.file.id
   
@@ -34,8 +34,12 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
     cel.files <- unlist(batches)
   }
 
+  if (is.null(names(batches))) {
+    names(batches) <- paste("batch", 1:length(batches), sep = "-")
+  }
+  
   if (!is.null(save.batches)) {
-    warning(paste("Saving background corrected data for quantile normalization into temporary files ", save.batches,"-*.RData to speed up preprocessing in later steps.", sep = ""))
+    warning(paste("Saving background corrected data for quantile normalization into temporary files to speed up preprocessing in later steps.", sep = ""))
   }
 
   # Process each batch separately
@@ -59,13 +63,13 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 
     # Store the necessary PM probe information used by quantile normalization
     # This can speed up preprocessing considerably
-    if (!is.null(save.batches)) {
+    if (save.batches) {
       if (verbose) {message("Saving the batch")}
       batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
-      bf <- paste(save.batches, "-", i, ".RData", sep = "")
-      if (verbose) {message(paste("Stored batch data in: ", bf))}
+      bf <- paste(names(batches)[[i]], ".RData", sep = "")
       save(batch, file = bf)
+      if (verbose) {message(paste("Stored batch data in: ", bf))}      
     }
 
     # Add to overall probe-sum for quantile estimation

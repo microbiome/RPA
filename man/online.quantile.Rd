@@ -7,7 +7,7 @@
 \usage{
 online.quantile(abatch, n)
 qnorm.basis.online(cel.files, bg.method = "rma", cdf = NULL,
-save.batches = NULL, batch.size = 2, verbose = TRUE)
+save.batches = FALSE, batch.size = 2, verbose = TRUE)
 }
 \arguments{
   \item{abatch}{AffyBatch}
@@ -16,8 +16,9 @@ save.batches = NULL, batch.size = 2, verbose = TRUE)
   list of batches, each batch containing a vector of CEL files}
   \item{bg.method}{Background correction method}
   \item{cdf}{Optional. CDF file for alternative probeset definitions}
-  \item{save.batches}{Optional. Save results for each batch into file
-  with identifier 'save.batches-1.RData' etc.}
+  \item{save.batches}{Logical. If TRUE, save results for each batch into file
+  with batchname.RData where 'batchname' is picked from the batch
+  identifiers in the batch list (as given by get.batches function).}
   \item{batch.size}{Batch size}
   \item{verbose}{Print progress information}
 }

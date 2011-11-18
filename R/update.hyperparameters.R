@@ -15,9 +15,9 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
                                       = 2, beta = 1), batches, cdf =
                                       NULL, quantile.basis, bg.method
                                       = "rma", epsilon = 1e-2, cind =
-                                      NULL, load.batches = NULL,
+                                      NULL, load.batches = FALSE,
                                       save.hyperparameter.batches =
-                                      NULL, mc.cores = 1, verbose =
+                                      FALSE, mc.cores = 1, verbose =
                                       TRUE, normalization.method =
                                       "quantiles") {
 
@@ -47,15 +47,17 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
-    if (!is.null(load.batches)) {
-      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")      
+    if (load.batches) {
+      batch.file <- paste(names(batches)[[i]], ".RData", sep = "")      
       if (verbose) {message(paste("Load batch from file:", batch.file))}
       load(batch.file) # batch
     }
 
     if (verbose) {message("Pick probe-level values")}
-    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis, 
-                          bg.method, normalization.method, batch, verbose = verbose)
+    
+    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis,
+                          bg.method, normalization.method, batch,
+                          verbose = verbose)
     
     # Get probes x samples matrix of probe-wise fold-changes If no
     # cind given, select one of the arrays as a reference at
@@ -88,8 +90,8 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     # check what beta is at the optimal point estimate 
     betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
 
-    if (!is.null(save.hyperparameter.batches)) {
-      batch.file <- paste(save.hyperparameter.batches, "-", i, ".RData", sep = "")
+    if (save.hyperparameter.batches) {
+      batch.file <- paste(names(batches)[[i]], "-hyper.RData", sep = "")
       if (verbose) {message(paste("Save hyperparameters into file:", batch.file))}    
       save(alpha, betas, file = batch.file)
     }

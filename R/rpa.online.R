@@ -80,6 +80,8 @@ rpa.online <- function (
                                                   bg.method, epsilon,
                                                   cind, load.batches =
                                                   save.batches,
+                                                  save.hyperparameter.batches
+                                                  = save.batches,
                                                   mc.cores = mc.cores,
                                                   verbose = verbose) }
   

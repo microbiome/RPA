@@ -26,17 +26,11 @@ rpa.online <- function (
                  shuffle = TRUE,
                           
               batch.size = 10, 
-                 batches = NULL, # user-defined CEL file batches                          
-           batch.file.id = NULL, # will be augmented with batch number and .RData suffix
-      batch.list.file.id = NULL,                          
-                          
+                 batches = NULL, # user-defined CEL file batches
           quantile.basis = NULL, # pre-calculated basis for quantile normalization
-        quantile.file.id = NULL, # will be augmented with .RData suffix
-                          
-        hyper.parameters = NULL, 
- hyperparameter.batch.id = NULL # will be augmented with batch number and .RData suffix
-                          )     # except on the last round when all batches have been considered
-                                # then no batch number used
+            hyper.parameters = NULL,                       
+                save.batches = FALSE,
+
 {
 
   ###############################################################
@@ -57,19 +51,20 @@ rpa.online <- function (
     message("Split CEL file list into batches")
     batches <- get.batches(cel.files, batch.size, shuffle)
   }
-  if (!is.null(batch.list.file.id)) {
-    if (verbose) {message(paste("Saving batch list into file: ", batch.list.file.id))}
-    save(batches, file = batch.list.file.id)    
+  if (save.batches) {
+    blf <- "RPA-batchlist.RData"
+    if (verbose) {message(paste("Saving batch list into file: ", blf}
+    save(batches, file = blf)    
   }
   
   ###############################################################
 
   if (is.null(quantile.basis)) {
     message("Calculating the basis for quantile normalization")    
-    quantile.basis <- qnorm.basis.online(batches, bg.method, cdf, batch.file.id, batch.size, verbose = verbose)
+    quantile.basis <- qnorm.basis.online(batches, bg.method, cdf, save.batches = save.batches, batch.size, verbose = verbose)
   }
-  if (!is.null(quantile.file.id)) {
-    quantile.file <- paste(quantile.file.id, ".RData", sep = "")
+  if (save.batches) {
+    quantile.file <- "RPA-quantiles.RData"
     if (verbose) {message(paste("Saving quantile basis into file: ", quantile.file))}
     save(quantile.basis, file = quantile.file)
   }
@@ -78,21 +73,18 @@ rpa.online <- function (
 
   if (is.null(hyper.parameters)) {
     message("Estimating hyperparameters")
-
+    
     hyper.parameters <- estimate.hyperparameters(sets, priors,
                                                   batches, cdf,
                                                   quantile.basis,
                                                   bg.method, epsilon,
                                                   cind, load.batches =
-                                                  batch.file.id,
-                                                  save.hyperparameter.batches
-                                                  =
-                                                  hyperparameter.batch.id,
+                                                  save.batches,
                                                   mc.cores = mc.cores,
                                                   verbose = verbose) }
   
-  if (!is.null(hyperparameter.batch.id)) {
-    hyper.file <- paste(hyperparameter.batch.id, ".RData", sep = "")
+  if (save.batches) {
+    hyper.file <- "RPA-hyperparameters.RData"
     if (verbose) {message(paste("Saving hyperparameters into file: ", hyper.file))}
     save(hyper.parameters, file = hyper.file)
   }
@@ -104,7 +96,7 @@ rpa.online <- function (
 
   eset <- summarize.batches(sets = sets, variances =
   hyper.parameters$variances, batches = batches, load.batches =
-  batch.file.id, mc.cores = mc.cores, cdf = cdf, bg.method =
+  save.batches, mc.cores = mc.cores, cdf = cdf, bg.method =
   bg.method, quantile.basis = quantile.basis, verbose = verbose)
   
   ##################################################################
@@ -117,7 +109,7 @@ rpa.online <- function (
 }
 
 
-summarize.batches <- function (sets = NULL, variances, batches, load.batches = NULL, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis) {
+summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis) {
 
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}

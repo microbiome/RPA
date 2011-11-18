@@ -21,10 +21,8 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
                                       TRUE, normalization.method =
                                       "quantiles") {
 
-  # Hyperparameter estimation through batches
-  
-  # FIXME: For online version. Modify later general-purpose.
-    
+  # Hyperparameter estimation through batches  
+  # FIXME: For online version. Modify later general-purpose
   if (verbose) {message("Get probeset indices")}
   set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
   if (is.null(sets)) {sets <- names(set.inds)}

@@ -12,11 +12,10 @@
 
 \usage{rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf =
                  NULL, bg.method = "rma", priors = list(alpha = 2, beta
-                 = 1), epsilon = 1e-2, cind = NULL, mc.cores = 1, verbose =
-                 TRUE, shuffle = TRUE, batch.size = 10, batches = NULL,
-                 batch.file.id = NULL, batch.list.file.id = NULL,
-                 quantile.basis = NULL, quantile.file.id = NULL,
-                 hyper.parameters = NULL, hyperparameter.batch.id = NULL)}
+                 = 1), epsilon = 1e-2, cind = NULL, mc.cores = 1,
+                 verbose = TRUE, shuffle = TRUE, batch.size = 10,
+                 batches = NULL, quantile.basis = NULL, hyper.parameters
+                 = NULL, save.batches = FALSE)}
 
 \arguments{
   
@@ -65,25 +64,13 @@ size using Bayesian online-updates for probe-specific parameters.}
 
   \item{batches}{User-defined CEL file batches}
 
-  \item{batch.file.id}{Save background corrected and quantile-normalized
-data batches to files with this identifier. Will be augmented with batch
-number and .RData suffix}
-
-  \item{batch.list.file.id}{Save the CEL file batch list in file with this
-  id. Will be augmented with .RData suffix}
-
   \item{quantile.basis}{Pre-calculated basis for quantile normalization}
-
-  \item{quantile.file.id}{Save quantile.basis into file with this
-  id. Will be augmented with .RData suffix}
 
   \item{hyper.parameters}{Pre-calculated hyperparameters can be
   optinally provided by the user through this argument.}
 
-  \item{hyperparameter.batch.id}{Will be augmented with batch number and
-                                .RData suffix except on the last round
-                                when all batches have been considered
-                                then no batch number used.}
+  \item{save.batches}{Save batches to speed up preprocessing.}
+
 }
 
 \details{RPA preprocessing function. Gives an estimate of the

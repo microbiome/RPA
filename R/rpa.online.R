@@ -23,13 +23,11 @@ rpa.online <- function (
                     cind = NULL,
                 mc.cores = 1,
                  verbose = TRUE,                          
-                 shuffle = TRUE,
-                          
+                 shuffle = TRUE,                          
               batch.size = 10, 
-                 batches = NULL, # user-defined CEL file batches
-          quantile.basis = NULL, # pre-calculated basis for quantile normalization
-            hyper.parameters = NULL,                       
-                save.batches = FALSE,
+                 batches = NULL, 
+          quantile.basis = NULL, 
+            save.batches = FALSE)
 
 {
 
@@ -53,7 +51,7 @@ rpa.online <- function (
   }
   if (save.batches) {
     blf <- "RPA-batchlist.RData"
-    if (verbose) {message(paste("Saving batch list into file: ", blf}
+    if (verbose) {message(paste("Saving batch list into file: ", blf))}
     save(batches, file = blf)    
   }
   
@@ -70,9 +68,6 @@ rpa.online <- function (
   }
 
   ###############################################################
-
-  if (is.null(hyper.parameters)) {
-    message("Estimating hyperparameters")
     
     hyper.parameters <- estimate.hyperparameters(sets, priors,
                                                   batches, cdf,
@@ -83,7 +78,7 @@ rpa.online <- function (
                                                   save.hyperparameter.batches
                                                   = save.batches,
                                                   mc.cores = mc.cores,
-                                                  verbose = verbose) }
+                                                  verbose = verbose)
   
   if (save.batches) {
     hyper.file <- "RPA-hyperparameters.RData"

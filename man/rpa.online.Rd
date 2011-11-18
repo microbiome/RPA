@@ -14,8 +14,7 @@
                  NULL, bg.method = "rma", priors = list(alpha = 2, beta
                  = 1), epsilon = 1e-2, cind = NULL, mc.cores = 1,
                  verbose = TRUE, shuffle = TRUE, batch.size = 10,
-                 batches = NULL, quantile.basis = NULL, hyper.parameters
-                 = NULL, save.batches = FALSE)}
+                 batches = NULL, quantile.basis = NULL, save.batches = FALSE)}
 
 \arguments{
   
@@ -65,9 +64,6 @@ size using Bayesian online-updates for probe-specific parameters.}
   \item{batches}{User-defined CEL file batches}
 
   \item{quantile.basis}{Pre-calculated basis for quantile normalization}
-
-  \item{hyper.parameters}{Pre-calculated hyperparameters can be
-  optinally provided by the user through this argument.}
 
   \item{save.batches}{Save batches to speed up preprocessing.}
 

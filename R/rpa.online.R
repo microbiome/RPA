@@ -130,7 +130,7 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = F
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
     if (!is.null(load.batches)) {
-      batch.file <- paste(load.batches, "-", i, ".RData", sep = "")
+      batch.file <- paste(names(batches)[[i]], ".RData", sep = "")
       if (verbose) {message(paste("Load preprocessed data for this batch from: ", batch.file))}
       load(batch.file) # batch
     }

@@ -31,6 +31,8 @@ rpa.online <- function (
 
 {
 
+#cel.path = NULL; cel.files = cels; sets = NULL; cdf = cdf; bg.method = "rma"; priors = list(alpha = 2, beta = 1); epsilon = 1e-2; cind = NULL; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 1; batches = NULL; quantile.basis = NULL; save.batches = TRUE
+
   ###############################################################
 
   warning("rpa.online is an experimental version")
@@ -91,7 +93,7 @@ rpa.online <- function (
   # Final ExpressioSet object 
   message("Summarizing probesets")
 
-  eset <- summarize.batches(sets = sets, variances =
+  emat <- summarize.batches(sets = sets, variances =
   hyper.parameters$variances, batches = batches, load.batches =
   save.batches, mc.cores = mc.cores, cdf = cdf, bg.method =
   bg.method, quantile.basis = quantile.basis, verbose = verbose)
@@ -101,13 +103,15 @@ rpa.online <- function (
   # Arrange CEL files in the original order and Coerce expression
   # values in the rpa object into an ExpressionSet object and return
   # expression set
-  new("ExpressionSet", assayData = list(exprs = exprs(eset)[, cel.files])) 
+  new("ExpressionSet", assayData = list(exprs = emat[, cel.files])) 
 
 }
 
 
 summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis) {
 
+#sets = sets; variances = hyper.parameters$variances; batches = batches; load.batches = save.batches; mc.cores = mc.cores; cdf = cdf; bg.method = bg.method; quantile.basis = quantile.basis; verbose = verbose; normalization.method = "quantiles"
+  
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}
   set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
@@ -145,14 +149,12 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = F
 
     # Get summary estimate for each probeset using the posterior variance
     emat[sets, batch.cels] <- t(sapply(mclapply(sets, function(set) {d.update.fast(q[[set]], variances[[set]])}, mc.cores = mc.cores), identity))
-    # Check 11.11.2011 - more than 25-fold speedup
-    # system.time(for (set in sets) {emat[set, batch.cels] <- d.update.fast(q[[set]], variances[[set]])})    
-
+    # >25-fold speedup with sapply
   }
 
   # Coerce expression values in the rpa object into an ExpressionSet object
   # and return expression set
-  new("ExpressionSet", assayData = list(exprs = emat)) 
+  emat
 }  
 
 get.probe.matrix <- function (cels, cdf = NULL, quantile.basis, bg.method = "rma", normalization.method = "quantiles", batch = NULL, verbose = TRUE) {

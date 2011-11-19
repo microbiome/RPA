@@ -22,7 +22,7 @@ mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method =
 \details{Sweeps through the batches. Summarizes the probesets within
   each batch based on the precalculated model parameters using point
   estimates of the model.}
-\value{An ExpressionSet object}
+\value{Expression matrix: probesets x samples.}
 \references{See citation("RPA").}
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 %\seealso{}

@@ -91,7 +91,7 @@ get.batches <- function (items, batch.size, shuffle = FALSE) {
   # last batch can be smaller
 
   if (length(items) == 1 && is.numeric(items)) {
-    N <- items
+    N <- length(items)
     items <- 1:N
   } else {
     N <- length(items)
@@ -102,7 +102,7 @@ get.batches <- function (items, batch.size, shuffle = FALSE) {
   }
 
   batches <- list()
-  ns <- floor(c(0, seq(batch.size, N, batch.size)))
+  ns <- floor(c(0, seq(N, N, batch.size)))
   if (ns[[length(ns)]] < N) {ns[[length(ns) + 1]] <- N}
   cnt <- 0
   for (i in 2:length(ns)) {

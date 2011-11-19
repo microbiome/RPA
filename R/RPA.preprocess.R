@@ -99,10 +99,11 @@ get.batches <- function (items, batch.size, shuffle = FALSE) {
 
   if (N < batch.size) {
      warning("batch.size > N, setting batch.size = N.")
+     batch.size <- N
   }
 
   batches <- list()
-  ns <- floor(c(0, seq(N, N, batch.size)))
+  ns <- floor(c(0, seq(batch.size, N, batch.size)))
   if (ns[[length(ns)]] < N) {ns[[length(ns) + 1]] <- N}
   cnt <- 0
   for (i in 2:length(ns)) {

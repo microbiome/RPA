@@ -14,8 +14,8 @@
 estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
                                       = 2, beta = 1), batches, cdf =
                                       NULL, quantile.basis, bg.method
-                                      = "rma", epsilon = 1e-2, cind =
-                                      NULL, load.batches = FALSE,
+                                      = "rma", epsilon = 1e-2,
+                                      load.batches = FALSE,
                                       save.hyperparameter.batches =
                                       FALSE, mc.cores = 1, verbose =
                                       TRUE, normalization.method =
@@ -57,9 +57,9 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
                           bg.method, normalization.method, batch,
                           verbose = verbose)
     
-    # Get probes x samples matrix of probe-wise fold-changes If no
-    # cind given, select one of the arrays as a reference at
-    # random. Choice of the reference array does not notably affect
+    # Get probes x samples matrix of probe-wise fold-changes
+    # Select one of the arrays as a reference at
+    # random for each batch. Choice of the reference array does not notably affect
     # the results in experiments as the control effect is marginalized
     # out in the treatment. Note that in rpa.online implementation,
     # cind is specific to each batch but it is only used to in
@@ -67,7 +67,8 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     # in probeset summarization no reference sample is needed. Whether
     # cind is the same for the overall data collection or
     # batch-specific should not notably affect the results, either.
-    if (is.null(cind)) { cind <- sample(ncol(q), 1)}
+
+    cind <- sample(ncol(q), 1)
     q <- matrix(q[, -cind] - q[, cind], nrow(q))
     # T <- ncol(q) # Number of arrays expect reference
 

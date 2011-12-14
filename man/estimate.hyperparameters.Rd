@@ -5,7 +5,7 @@
 \usage{
 estimate.hyperparameters(sets = NULL, priors = list(alpha = 2, beta =
 1), batches, cdf = NULL, quantile.basis, bg.method = "rma", epsilon =
-1e-2, cind = NULL, load.batches = FALSE, save.hyperparameter.batches =
+1e-2, load.batches = FALSE, save.hyperparameter.batches =
 FALSE, mc.cores = 1, verbose = TRUE, normalization.method = "quantiles")
 }
 \arguments{
@@ -16,7 +16,6 @@ FALSE, mc.cores = 1, verbose = TRUE, normalization.method = "quantiles")
   \item{quantile.basis}{Basis for quantile normalization}
   \item{bg.method}{Background correction method}
   \item{epsilon}{Convergence parameter}
-  \item{cind}{Reference array index}
   \item{load.batches}{Logical. Load preprocessed data whose identifiers
     are picked from names(batches). Assuming that the same batch list
     (batches) was used to create the files in online.quantiles function.}

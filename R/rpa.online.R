@@ -20,7 +20,6 @@ rpa.online <- function (
                bg.method = "rma",                              
                   priors = list(alpha = 2, beta = 1),
                  epsilon = 1e-2,
-                    cind = NULL,
                 mc.cores = 1,
                  verbose = TRUE,                          
                  shuffle = TRUE,                          
@@ -31,7 +30,7 @@ rpa.online <- function (
 
 {
 
-#cel.path = NULL; cel.files = cels; sets = NULL; cdf = cdf; bg.method = "rma"; priors = list(alpha = 2, beta = 1); epsilon = 1e-2; cind = NULL; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 1; batches = NULL; quantile.basis = NULL; save.batches = TRUE
+#cel.path = NULL; cel.files = cels; sets = NULL; cdf = cdf; bg.method = "rma"; priors = list(alpha = 2, beta = 1); epsilon = 1e-2; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 1; batches = NULL; quantile.basis = NULL; save.batches = TRUE
 
   ###############################################################
 
@@ -75,7 +74,7 @@ rpa.online <- function (
                                                   batches, cdf,
                                                   quantile.basis,
                                                   bg.method, epsilon,
-                                                  cind, load.batches =
+                                                  load.batches =
                                                   save.batches,
                                                   save.hyperparameter.batches
                                                   = save.batches,

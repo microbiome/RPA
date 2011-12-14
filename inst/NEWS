@@ -1,3 +1,7 @@
+Changes in 1.11.12 (2011-12-13)
+
+  o removed cind option from update.hyperparameters in RPA.online
+
 Changes in 1.11.05 (2011-11-11)
 
   o online functions work properly

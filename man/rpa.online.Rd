@@ -12,7 +12,7 @@
 
 \usage{rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf =
                  NULL, bg.method = "rma", priors = list(alpha = 2, beta
-                 = 1), epsilon = 1e-2, cind = NULL, mc.cores = 1,
+                 = 1), epsilon = 1e-2, mc.cores = 1,
                  verbose = TRUE, shuffle = TRUE, batch.size = 10,
                  batches = NULL, quantile.basis = NULL, save.batches = FALSE)}
 
@@ -43,14 +43,6 @@
   \item{epsilon }{Convergence tolerance. The iteration is deemed converged 
 		  when the change in all parameters is < epsilon.}
   
-  \item{cind }{Specify reference array for computing probe-level
-    	       differential expression. Default: cind = 1. Note that if
-    	       exclude.reference.array = TRUE the expression value for
-    	       the reference array (cind) will be excluded in the
-    	       output. Note that all values of the reference array are 0
-    	       since they indicate the differential expression of the
-    	       reference array against itself.}
-
   \item{mc.cores}{Number of cores for parallel computation}
 
   \item{verbose}{Print progress information during computation}

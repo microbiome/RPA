@@ -10,7 +10,7 @@
   probeset-level signal, and probe-specific variances. It is also
   possible to highlight individual probes and external summary measures.}
 
-\usage{plot.rpa(x, y = NULL, set, highlight.probes = NULL, pcol =
+\usage{\method{plot}{rpa}(x, y = NULL, set, highlight.probes = NULL, pcol =
 "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.names = 1, cex.main = 1, external.signal = NULL, main = NULL, plots = "all", ...)}
 
 \arguments{

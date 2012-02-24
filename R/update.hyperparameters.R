@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2010-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -133,7 +133,7 @@ update.beta <- function (R, beta, mode = "robust") {
     # of variance ((sum(x-x.mean)^2)/n)
     # Note R already assumed to be zero-mean (S = d + N(0, s2))
     # This is same as apply(R, 2, var) except we use 1/n while var uses 1/(n-1)
-    # Note this approximation ignores marginalization over the reference sample
+    # Note: this approximation ignores marginalization over the reference sample
     beta + colSums(R^2)/2 
   } else if (mode == "robust") {
     # update beta with posterior mean
@@ -142,6 +142,17 @@ update.beta <- function (R, beta, mode = "robust") {
   }
 }
 
+betahat.f <- function (beta, R) {
+     r.colsums <- colSums(R)
+    r2.colsums <- colSums(R^2)
+    beta + 0.5*(r2.colsums - r.colsums^2 / (nrow(R) + 1))
+    # NOTE: by definition,  r.colsums ~ 0 by expectation
+    # since R = S - d etc. Therefore we have approximation
+    # beta + r2.colsums/2 
+    # beta + (N/2)*(r2.colsums/N) 
+    # beta + (N/2)* variance(R)
+    # vrt. (N/2)*var = 0.5*(N * var) = 0.5 * sum(s^2)
+}
 
 s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2) {
 
@@ -246,33 +257,5 @@ beta.fast <- function (beta, R) {
 #beta.fast.c <- cmpfun(betahat.fast) 
 
 #######################################
-
-# Provide compiled version of betahat, about 1.5-fold speedup seen
-betahat.f <- function (beta, R) {
-     r.colsums <- colSums(R)
-    r2.colsums <- colSums(R^2)
-    beta + 0.5*(r2.colsums - r.colsums^2 / (nrow(R) + 1))
-    # NOTE: by definition,  r.colsums ~ 0 by expectation
-    # since R = S - d etc. Therefore we have approximation
-    # beta + r2.colsums/2 
-    # beta + (N/2)*(r2.colsums/N) 
-    # beta + (N/2)* variance(R)
-    # vrt. (N/2)*var = 0.5*(N * var) = 0.5 * sum(s^2)
-}
-
-
-# NOTE: this essentially gives 
-# beta + (nrow(S)/2) * (ML estimate of (probe)variance);
-#require(compiler)
-
-#beta.c <- cmpfun(betahat.f) 
-
-
-
-
-
-
-
-
 
 

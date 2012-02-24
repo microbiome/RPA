@@ -1,7 +1,7 @@
 # This file is a part of the RPA (Robust Probabilistic Averaging)
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -10,20 +10,38 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  
-rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "fast", d.method = "fast") {
+rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast") {
 
   # dat: original data (probes x samples)
-  
+  #cind = 1; epsilon = 1e-2; alpha = NULL; beta = NULL; sigma2.method = "fast"; d.method = "fast"
+
   # Fits RPA on fold-change data calculated against the reference sample.
   # After estimating the RPA fold-changes, also fits the mean in the
   # original data domain since this is often desired.
+
+  if (sum(is.na(dat)) > 0) {
+    warning(paste("Data has ", mean(is.na(dat)), " fraction of missing values: imputing"))
+    dat <- t(apply(dat, 1, function (x) { y <- x; y[is.na(y)] <- rnorm(sum(is.na(y)), mean(y, na.rm = T), sd(y, na.rm = T)); y}))
+  }
 
   # Extract reference sample  
   # Get samples x probes matrix of probe-wise fold-changes
   if (is.null(colnames(dat))) {colnames(dat) <- 1:ncol(dat)}
 
+  # Accommodate single-probe probesets
+  if (nrow(dat) == 1) {  
+    return(new("rpa.fit",
+		list(mu = as.vector(dat), 
+		mu.real = as.vector(dat)[[cind]], 
+           	sigma2 = 0, 
+           	affinity = 0, 
+           	data = dat,
+	   	alpha = ncol(dat)/2,
+           	beta = 0)))
+  }
+
   # Fit RPA
-  S <- t(dat[, -cind] - dat[, cind])
+  S <- t(matrix(dat[, -cind] - dat[, cind], nrow = nrow(dat)))
   estimated <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
 
   # Estimate overall signal

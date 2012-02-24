@@ -1,23 +1,27 @@
+# This file is a part of the RPA program
+# (Robust Probabilistic Averaging) 
+# http://bioconductor.org/packages/release/bioc/html/RPA.html
 
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the FreeBSD License.
 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-
-set.alpha <- function (alpha, sigma2.method, P){ 
-
-  # if alpha is scalar, set identical prior for all probes with this value
-  if (is.null(alpha)) {
-    if (sigma2.method == "mode" || sigma2.method == "var") {
-      alpha <- 1e-6     # uninformative
-    } else if (sigma2.method == "robust" || sigma2.method == "mean" || sigma2.method == "online") {
-      # alpha not given: set equal and informative priors to
-      # avoid collapse to individual probes
-      alpha <- 2
-    } 
-  }
-
-  if ((sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust") && any(alpha <= 1)) {
-    stop(paste("Set alpha > 1!"))
+set.alpha <- function (alpha = NULL, sigma2.method, P){ 
+  
+  # set uninformative prior if not given
+  if ((sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust")) {
+    if (is.null(alpha)) { 
+      alpha <- 1 + 1e-6
+    } else if (any(alpha <= 1)) {
+      stop(paste("Set alpha > 1!"))
+    }
+  } else if (is.null(alpha)) { 
+    alpha <- 1e-6 
   }
 
   alpha
@@ -37,8 +41,6 @@ set.beta <- function (beta, sigma2.method, P) {
   beta
 
 }
-
-##################################
 
 centerData <- function (X,rm.na = FALSE, meanvalue = NULL) {
 

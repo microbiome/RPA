@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -11,9 +11,15 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "fast") {
+RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
 
-  # FIXME: online mode not necessarily needed at all
+  # FIXME: online mode not necessarily needed at all here
+  # FIXME: speedup by defining the method outside this looping function
+
+  # sigma2 values are notably smaller with 
+  # sigma2.method = "fast" than sigma2.method = "robust"
+  # This is because different priors for alpha are used
+  # they lead to similar probe weights, though so not so much effect on probeset level estimates
 
   # R <- S - d: arrays x probes matrix; observations vs. estimated real signal
   # Note: alpha here is alphahat = T/2 + alpha w.r.t. user-defined alpha prior
@@ -26,7 +32,7 @@ RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "fast") {
     # mode for invgam(sig^2 | alpha,beta)
     s2 <- beta / (alpha + 1) 
   } else if (sigma2.method == "fast") {
-    # this is sometimes also used
+    # this is often also used
     s2 <- beta / alpha 
   } else if (sigma2.method == "var") {
     # Assume uninformative priors alpha, beta -> 0	  

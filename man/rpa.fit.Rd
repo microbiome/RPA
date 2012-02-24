@@ -5,7 +5,7 @@
   affinity parameters.}
 \usage{
 rpa.fit(dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL,
-sigma2.method = "fast", d.method = "fast")
+sigma2.method = "robust", d.method = "fast")
 }
 
 \arguments{
@@ -67,10 +67,13 @@ sigma2.method = "fast", d.method = "fast")
   concerning probe affinities.}
 \value{
 
-  \item{d}{Differential signal between reference sample and other samples.}
   \item{mu}{Fitted signal in original data: mu.real + d}
-  \item{affinity}{Probe-specific affinities}
+  \item{mu.real}{Shifting parameter of the reference sample}
   \item{sigma2}{Probe-specific stochastic noise}
+  \item{affinity}{Probe-specific affinities}
+  \item{data}{Probeset data matrix}
+  \item{alpha, beta}{prior parameters}
+
 }
 
 \references{Probabilistic Analysis of Probe Reliability in Differential

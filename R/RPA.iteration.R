@@ -3,7 +3,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -11,9 +11,6 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-# Changelog:
 
 RPA.iteration <- function(S,
                           epsilon = 1e-3,
@@ -27,6 +24,9 @@ RPA.iteration <- function(S,
 
   P <- ncol(S) # number of probes
   T <- nrow(S) # Number of arrays (except reference)
+
+  # Accommodate single-probe probesets
+  if (P == 1) { return(list(d = as.vector(S), sigma2 = 0, alpha = T/2, beta = 0)) }
 
   # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
   if (all(is.nan(S) | is.na(S))) { 
@@ -52,11 +52,15 @@ RPA.iteration <- function(S,
   } else {
     s2.meth <- sigma2.method
   }
+
+  # FIXME: add chance to give user-defined priors in here!
   sigma2 <- RPA.sigma2.update(NULL, alpha.prior, beta.prior, s2.meth)
+  # initialize with large initial variance if not 
+  if (length(sigma2) == 0) {sigma2 <- rep(3*sd(as.vector(S)), P)} 
 
   # check convergence at first iteration, 
   # not used in calculations
-  sigma2.old <- rep(-Inf, length(sigma2))
+  sigma2.old <- rep(Inf, P)
   
   ###############################
 

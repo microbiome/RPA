@@ -1,3 +1,10 @@
+Changes in 1.11.13 (2012-02-25)
+
+  o modifications to accommodate single-probe probesets without errors
+  o sigma2.method default to "robust" in functions RPA.sigma2.update and rpa.fit
+  o changed defaults in set.alpha function
+  o added missing data imputation in rpa.fit
+
 Changes in 1.11.12 (2011-12-13)
 
   o removed cind option from update.hyperparameters in RPA.online

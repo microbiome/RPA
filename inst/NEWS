@@ -1,3 +1,13 @@
+Changes in 1.13.02 (2012-05-27)
+
+NEW FEATURES
+
+  o added arguments in rpa.online function: save.batches.dir, keep.batch.files, unique.run.identifier
+  o changed the default for save.batches option in rpa.online into TRUE
+
+BUG FIXES
+  o fixed load.batches bug in summarize.batches
+
 Changes in 1.11.13 (2012-02-25)
 
   o modifications to accommodate single-probe probesets without errors

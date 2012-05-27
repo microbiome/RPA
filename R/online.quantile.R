@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2011-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -73,6 +73,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
     }
 
     # Add to overall probe-sum for quantile estimation
+    if (verbose) {message("Updating the quantiles...")}    
     if (is.null(qs)) {
       # Create new quantile basis
       qs <- rowSums(apply(pma, 2, sort))
@@ -80,6 +81,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
       # Add to existing quantile basis
       qs <- qs + rowSums(apply(pma, 2, sort))
     }
+    if (verbose) {message("Done.")}    
   }
 
   # Quantile basis is average (sum/n) over the individual arrays

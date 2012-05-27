@@ -11,15 +11,18 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
-                                      = 2, beta = 1), batches, cdf =
-                                      NULL, quantile.basis, bg.method
-                                      = "rma", epsilon = 1e-2,
+estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta = 1), 
+			    	      batches, cdf = NULL, quantile.basis, 
+				      bg.method = "rma", 
+				      epsilon = 1e-2,
                                       load.batches = FALSE,
-                                      save.hyperparameter.batches =
-                                      FALSE, mc.cores = 1, verbose =
-                                      TRUE, normalization.method =
-                                      "quantiles") {
+                                      save.hyperparameter.batches = FALSE, 
+				      mc.cores = 1, 
+				      verbose = TRUE, 
+				      normalization.method = "quantiles", 						  
+				      save.batches.dir = ".", 
+				      unique.run.identifier = NULL)
+{
 
   # Hyperparameter estimation through batches  
   # FIXME: For online version. Modify later general-purpose
@@ -46,7 +49,7 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
     if (load.batches) {
-      batch.file <- paste(names(batches)[[i]], ".RData", sep = "")      
+      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")      
       if (verbose) {message(paste("Load batch from file:", batch.file))}
       load(batch.file) # batch
     }
@@ -76,13 +79,13 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores)
     names(q) <- sets	    
 
-    if (verbose) {message("Update variance for each probeset")}
+    if (verbose) {message("Update probe parameters")}
     s2s <- mclapply(sets, function (set) {
       s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
     }, mc.cores = mc.cores) 
     names(s2s) <- sets
 
-    if (verbose) {message("Update alpha and beta")}    
+    #if (verbose) {message("Update alpha and beta")}    
     # Update alpha, beta (variance = beta/alpha at mode with large T =  ncol(q))
     alpha <- update.alpha(length(batches[[i]]), alpha)
     # When calculating point estimates it is ok to fit variance first, then
@@ -90,7 +93,7 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha
     betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
 
     if (save.hyperparameter.batches) {
-      batch.file <- paste(names(batches)[[i]], "-hyper.RData", sep = "")
+      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], "-hyper.RData", sep = "")
       if (verbose) {message(paste("Save hyperparameters into file:", batch.file))}    
       save(alpha, betas, file = batch.file)
     }
@@ -200,7 +203,7 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
 
 # FIXME: could be utilized in d.update.fast.c to speed up
 s2hat <- function (s2) { 1 / sum(1 / s2) }
-#s2hat.c <- cmpfun(s2hat) 
+
 
 s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 
@@ -216,9 +219,6 @@ s2.neglogp <- function (s2, ndot, alpha, beta.inv, k) {
 
 }
 
-
-#dchisq.c <- cmpfun(dchisq) 
-#dgamma.c <- cmpfun(dgamma) 
 
 s2obs <- function (dat, d, ndot) {
   # Center the probes to obtain approximation:
@@ -245,17 +245,8 @@ s2obs <- function (dat, d, ndot) {
   colSums(datc^2)/ndot
 }
 
-#s2obs.c <- cmpfun(s2obs) 
-
-
-########################################
-
 # Provide compiled version of approximate beta update
 beta.fast <- function (beta, R) {
   beta + colSums(R^2)/2
 }
-#beta.fast.c <- cmpfun(betahat.fast) 
-
-#######################################
-
 

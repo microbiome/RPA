@@ -3,10 +3,7 @@
 \title{Hyperparameter estimation}
 \description{Hyperparameter estimation}
 \usage{
-estimate.hyperparameters(sets = NULL, priors = list(alpha = 2, beta =
-1), batches, cdf = NULL, quantile.basis, bg.method = "rma", epsilon =
-1e-2, load.batches = FALSE, save.hyperparameter.batches =
-FALSE, mc.cores = 1, verbose = TRUE, normalization.method = "quantiles")
+estimate.hyperparameters(sets = NULL, priors = list(alpha = 2, beta = 1), batches, cdf = NULL, quantile.basis, bg.method = "rma", epsilon = 1e-2, load.batches = FALSE, save.hyperparameter.batches = FALSE, mc.cores = 1, verbose = TRUE, normalization.method = "quantiles", save.batches.dir = ".", unique.run.identifier = NULL)
 }
 \arguments{
   \item{sets}{Probesets to handle. All probesets by default.}
@@ -25,6 +22,9 @@ FALSE, mc.cores = 1, verbose = TRUE, normalization.method = "quantiles")
   \item{mc.cores}{Number of cores for parallel computation}
   \item{verbose}{Print progress information}
   \item{normalization.method}{Normalization method}
+  \item{save.batches.dir}{Specify the output directory for temporary batch saves.}
+  \item{unique.run.identifier}{Define identifier for this run for naming the temporary batch files. By default, a random id is generated.}
+
 }
 \details{Sweeps through the batches. Updates hyperparameters at each batch.}
 \value{

@@ -3,7 +3,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -26,15 +26,35 @@ rpa.online <- function (
               batch.size = 10, 
                  batches = NULL, 
           quantile.basis = NULL, 
-            save.batches = FALSE)
+            save.batches = TRUE,
+	    save.batches.dir = ".", 
+	    keep.batch.files = FALSE, 
+	    unique.run.identifier = NULL)
 
 {
 
-#cel.path = NULL; cel.files = cels; sets = NULL; cdf = cdf; bg.method = "rma"; priors = list(alpha = 2, beta = 1); epsilon = 1e-2; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 1; batches = NULL; quantile.basis = NULL; save.batches = TRUE
+#cel.path = NULL; cel.files = cels; sets = sets; cdf = cdf; bg.method = "rma"; priors = list(alpha = 1, beta = 1); epsilon = 1e-2; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 18; batches = NULL; quantile.basis = NULL; save.batches = TRUE; save.batches.dir = "."
 
   ###############################################################
 
   warning("rpa.online is an experimental version")
+
+  
+  if (save.batches) {
+
+    # Create the output directory if necessary
+    if (length(dir(save.batches.dir)) == 0) { 
+      system(paste("mkdir ", save.batches.dir)) 
+    }
+
+    # Add a unique identifier for this RPA run
+    if (is.null(unique.run.identifier)) {
+      unique.run.identifier <- paste("RPA-run-id-", rnorm(1), "-", sep = "")
+    }
+
+    message(paste("Storing intermediate batches in directory", save.batches.dir, "with the identifier", unique.run.identifier))
+
+  }
 
   if (is.null(batch.size)) {
     if (verbose) {message("Determining batch size")}
@@ -51,7 +71,7 @@ rpa.online <- function (
     batches <- get.batches(cel.files, batch.size, shuffle)
   }
   if (save.batches) {
-    blf <- "RPA-batchlist.RData"
+    blf <- paste(save.batches.dir, "/", unique.run.identifier, "RPA-batchlist.RData", sep = "")
     if (verbose) {message(paste("Saving batch list into file: ", blf))}
     save(batches, file = blf)    
   }
@@ -63,26 +83,26 @@ rpa.online <- function (
     quantile.basis <- qnorm.basis.online(batches, bg.method, cdf, save.batches = save.batches, batch.size, verbose = verbose)
   }
   if (save.batches) {
-    quantile.file <- "RPA-quantiles.RData"
-    if (verbose) {message(paste("Saving quantile basis into file: ", quantile.file))}
+    quantile.file <- paste(save.batches.dir, "/", unique.run.identifier, "RPA-quantiles.RData", sep = "")
+    if (verbose) { message(paste("Saving quantile basis into file: ", quantile.file)) }
     save(quantile.basis, file = quantile.file)
   }
 
   ###############################################################
     
-    hyper.parameters <- estimate.hyperparameters(sets, priors,
+  hyper.parameters <- estimate.hyperparameters(sets, priors,
                                                   batches, cdf,
                                                   quantile.basis,
                                                   bg.method, epsilon,
-                                                  load.batches =
-                                                  save.batches,
-                                                  save.hyperparameter.batches
-                                                  = save.batches,
+                                                  load.batches = save.batches,
+                                                  save.hyperparameter.batches = save.batches,                                                  
                                                   mc.cores = mc.cores,
-                                                  verbose = verbose)
+                                                  verbose = verbose, 	    
+						  save.batches.dir = save.batches.dir, 
+						  unique.run.identifier = unique.run.identifier)
   
   if (save.batches) {
-    hyper.file <- "RPA-hyperparameters.RData"
+    hyper.file <- paste(save.batches.dir, "/", unique.run.identifier, "RPA-hyperparameters.RData", sep = "")
     if (verbose) {message(paste("Saving hyperparameters into file: ", hyper.file))}
     save(hyper.parameters, file = hyper.file)
   }
@@ -92,13 +112,25 @@ rpa.online <- function (
   # Final ExpressioSet object 
   message("Summarizing probesets")
 
-  emat <- summarize.batches(sets = sets, variances =
-  hyper.parameters$variances, batches = batches, load.batches =
-  save.batches, mc.cores = mc.cores, cdf = cdf, bg.method =
-  bg.method, quantile.basis = quantile.basis, verbose = verbose)
+  emat <- summarize.batches(sets = sets, 
+       	  		    variances = hyper.parameters$variances, 
+			    batches = batches, 
+			    load.batches = save.batches, 
+			    mc.cores = mc.cores, 
+			    cdf = cdf, 
+			    bg.method = bg.method, 
+			    quantile.basis = quantile.basis, 
+			    verbose = verbose)
   
   ##################################################################
 
+  if (!keep.batch.files) {
+    message(paste("Removing the temporary batch files from directory", save.batches.dir, "with the identifier", unique.run.identifier))
+    system(paste("rm ", save.batches.dir, "/", unique.run.identifier, "*", sep = ""))
+  } else {
+    message(paste("Keeping the temporary batch files in directory", save.batches.dir, "with the identifier", unique.run.identifier))
+  }
+  
   # Arrange CEL files in the original order and Coerce expression
   # values in the rpa object into an ExpressionSet object and return
   # expression set
@@ -132,7 +164,7 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = F
 
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
-    if (!is.null(load.batches)) {
+    if (load.batches) {
       batch.file <- paste(names(batches)[[i]], ".RData", sep = "")
       if (verbose) {message(paste("Load preprocessed data for this batch from: ", batch.file))}
       load(batch.file) # batch

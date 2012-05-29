@@ -7,7 +7,7 @@
 \usage{
 online.quantile(abatch, n)
 qnorm.basis.online(cel.files, bg.method = "rma", cdf = NULL,
-save.batches = FALSE, batch.size = 2, verbose = TRUE)
+save.batches = FALSE, batch.size = 2, verbose = TRUE, save.batches.dir = ".", unique.run.identifier = NULL)
 }
 \arguments{
   \item{abatch}{AffyBatch}
@@ -21,6 +21,8 @@ save.batches = FALSE, batch.size = 2, verbose = TRUE)
   identifiers in the batch list (as given by get.batches function).}
   \item{batch.size}{Batch size}
   \item{verbose}{Print progress information}
+  \item{save.batches.dir}{Specify the output directory for temporary batch saves.}
+  \item{unique.run.identifier}{Define identifier for this run for naming the temporary batch files. By default, a random id is generated.}
 }
 \details{"online.quantile": Ordinary quantile normalization is
   exhaustively memory-consuming in alrge data sets. Then the quantiles

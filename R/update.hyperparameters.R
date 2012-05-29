@@ -26,14 +26,14 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
 
   # Hyperparameter estimation through batches  
   # FIXME: For online version. Modify later general-purpose
-  if (verbose) {message("Get probeset indices")}
+  if (verbose) { message("Get probeset indices") }
   set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
-  if (is.null(sets)) {sets <- names(set.inds)}
+  if ( is.null(sets) ) { sets <- names(set.inds) }
   
   # Initialize hyperparameters
   # Note: alpha is scalar and same for all probesets 
   # alpha <- alpha + N/2 at each batch
-  if (verbose) {message("Initialize priors")}
+  if (verbose) { message("Initialize priors") }
   alpha <- priors$alpha # initialize 
   betas <- mclapply(sets, function (set) { 
     rep(priors$beta, length(set.inds[[set]])) 
@@ -43,18 +43,18 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
   for (i in 1:length(batches)) {
 
     if (verbose) {
-      message(paste("Updating hyperparameters on batch", i, "/", length(batches)))
+      message(paste("Updating hyperparameters; batch", i, "/", length(batches)))
     }
     
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
     if (load.batches) {
       batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")      
-      if (verbose) {message(paste("Load batch from file:", batch.file))}
+      if (verbose) { message(paste("Load batch from file:", batch.file)) }
       load(batch.file) # batch
     }
 
-    if (verbose) {message("Pick probe-level values")}
+    if (verbose) { message("Pick probe-level values") }
     
     q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis,
                           bg.method, normalization.method, batch,
@@ -75,11 +75,11 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
     q <- matrix(q[, -cind] - q[, cind], nrow(q))
     # T <- ncol(q) # Number of arrays expect reference
 
-    if (verbose) {message("Get probes x samples matrices for each probeset")}
+    if (verbose) { message("Get probes x samples matrices for each probeset") }
     q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores)
     names(q) <- sets	    
 
-    if (verbose) {message("Update probe parameters")}
+    if (verbose) { message("Update probe parameters") }
     s2s <- mclapply(sets, function (set) {
       s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
     }, mc.cores = mc.cores) 

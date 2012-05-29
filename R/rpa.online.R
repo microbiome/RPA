@@ -39,17 +39,17 @@ rpa.online <- function (
 
   warning("rpa.online is an experimental version")
 
+  # Add a unique identifier for this RPA run
+  if (is.null(unique.run.identifier)) {
+    unique.run.identifier <- paste("RPA-run-id-", rnorm(1), "-", sep = "")
+  }
+
   
   if (save.batches) {
 
     # Create the output directory if necessary
     if (length(dir(save.batches.dir)) == 0) { 
       system(paste("mkdir ", save.batches.dir)) 
-    }
-
-    # Add a unique identifier for this RPA run
-    if (is.null(unique.run.identifier)) {
-      unique.run.identifier <- paste("RPA-run-id-", rnorm(1), "-", sep = "")
     }
 
     message(paste("Storing intermediate batches in directory", save.batches.dir, "with the identifier", unique.run.identifier))
@@ -80,7 +80,7 @@ rpa.online <- function (
 
   if (is.null(quantile.basis)) {
     message("Calculating the basis for quantile normalization")    
-    quantile.basis <- qnorm.basis.online(batches, bg.method, cdf, save.batches = save.batches, batch.size, verbose = verbose)
+    quantile.basis <- qnorm.basis.online(batches, bg.method, cdf, save.batches = save.batches, batch.size, verbose = verbose, save.batches.dir = save.batches.dir, unique.run.identifier = unique.run.identifier)
   }
   if (save.batches) {
     quantile.file <- paste(save.batches.dir, "/", unique.run.identifier, "RPA-quantiles.RData", sep = "")
@@ -120,7 +120,9 @@ rpa.online <- function (
 			    cdf = cdf, 
 			    bg.method = bg.method, 
 			    quantile.basis = quantile.basis, 
-			    verbose = verbose)
+			    verbose = verbose, 
+			    save.batches.dir = save.batches.dir, 
+			    unique.run.identifier = unique.run.identifier)
   
   ##################################################################
 
@@ -139,10 +141,11 @@ rpa.online <- function (
 }
 
 
-summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis) {
+summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis, save.batches.dir = ".", unique.run.identifier = NULL) {
 
 #sets = sets; variances = hyper.parameters$variances; batches = batches; load.batches = save.batches; mc.cores = mc.cores; cdf = cdf; bg.method = bg.method; quantile.basis = quantile.basis; verbose = verbose; normalization.method = "quantiles"
-  
+     
+
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}
   set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
@@ -165,16 +168,16 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = F
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
     if (load.batches) {
-      batch.file <- paste(names(batches)[[i]], ".RData", sep = "")
+      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")
       if (verbose) {message(paste("Load preprocessed data for this batch from: ", batch.file))}
       load(batch.file) # batch
     }
 
     # Get probes x samples matrices for each probeset
     # No need to remove the reference sample for d.update in the summarization step!
-    if (verbose) {message("Extract probe-level data")}      
+    if (verbose) { message("Extract probe-level data") }       
     q <- get.probe.matrix(cels = batch.cels, cdf = cdf, quantile.basis = quantile.basis, bg.method = bg.method, batch = batch, verbose = verbose)
-    #if (verbose) {message("Probeset matrices")}          
+    #if (verbose) { message("Probeset matrices") }          
     q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores) 
     names(q) <- sets
 
@@ -196,9 +199,9 @@ get.probe.matrix <- function (cels, cdf = NULL, quantile.basis, bg.method = "rma
       # been already calculated for quantile.basis, which is here
       # simply allocated for each array
     
-      if (verbose) {message("Set quantile data on each array")}
+      if (verbose) { message("Set quantile data on each array") }
       q <- apply(batch, 2, function (o) {quantile.basis[o]}) 
-      if (verbose) {message("...Done.")}
+      if (verbose) { message("...Done.") }
       
   } else {
   
@@ -227,7 +230,7 @@ get.probe.matrix <- function (cels, cdf = NULL, quantile.basis, bg.method = "rma
       if (normalization.method == "none") {
         message("Normalization skipped..")
       } else if (normalization.method == "quantiles") {
-        if (verbose) {message("Normalizing")}
+        if (verbose) { message("Normalizing") }
         pm(abatch) <- set.quantiles(pm(abatch), quantile.basis)
       } 
   

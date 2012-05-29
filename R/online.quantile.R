@@ -12,7 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 2, verbose = TRUE) {
+qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 2, verbose = TRUE, save.batches.dir = ".", unique.run.identifier = NULL) {
 
   # cel.files = batches; save.batches = batch.file.id
   
@@ -67,7 +67,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
       if (verbose) {message("Saving the batch")}
       batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
-      bf <- paste(names(batches)[[i]], ".RData", sep = "")
+      bf <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")
       save(batch, file = bf)
       if (verbose) {message(paste("Stored batch data in: ", bf))}      
     }

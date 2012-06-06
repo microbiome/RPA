@@ -23,11 +23,11 @@ rpa.online <- function (
                 mc.cores = 1,
                  verbose = TRUE,                          
                  shuffle = TRUE,                          
-              batch.size = 10, 
+              batch.size = 100, 
                  batches = NULL, 
           quantile.basis = NULL, 
             save.batches = TRUE,
-	    save.batches.dir = ".", 
+	    save.batches.dir, 
 	    keep.batch.files = FALSE, 
 	    unique.run.identifier = NULL)
 

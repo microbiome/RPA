@@ -12,9 +12,9 @@
 
 \usage{rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf =
                  NULL, bg.method = "rma", priors = list(alpha = 2, beta = 1), epsilon = 1e-2, mc.cores = 1,                 
-                 verbose = TRUE, shuffle = TRUE, batch.size = 10,
+                 verbose = TRUE, shuffle = TRUE, batch.size = 100,
                  batches = NULL, quantile.basis = NULL, save.batches = TRUE, 
-		 save.batches.dir = ".", keep.batch.files = FALSE, unique.run.identifier = NULL)}
+		 save.batches.dir, keep.batch.files = FALSE, unique.run.identifier = NULL)}
 
 \arguments{
   
@@ -59,7 +59,7 @@ size using Bayesian online-updates for probe-specific parameters.}
 
   \item{save.batches}{Save batches to speed up preprocessing.}
 
-  \item{save.batches.dir}{Specify the output directory for temporary batch saves.}
+  \item{save.batches.dir}{Output directory for temporary batch saves.}
 
   \item{keep.batch.files}{Logical. Keep (TRUE) or remove (FALSE) the batch files after preprocessing.}
 

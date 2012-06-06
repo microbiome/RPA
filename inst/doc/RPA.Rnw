@@ -125,6 +125,26 @@ ReadAffy function of the affy package. The output is an ExpressionSet
 object, which allows downstream analysis of the results using standard
 R/BioC tools for gene expression data.
 
+\subsection{Bayesian online-learning version for scalable preprocessing}
+
+The model has a natural extension for scalable preprocessing of
+arbitrarily large microarray collections based on Bayesian
+hyperparameter updates. The algorithm reads the data in batches (see
+help(rpa.online) for details) and updates the hyperparameters before
+processing the next batch. The results agree to a high degree (\(r >
+99.5\%)\) with the standard RPA model in our experiments. To speed up
+processing, the intermediate results are saved to temporary files in a
+user-specified directory. To preprocess large CEL file collections,
+provide the list of CEL files with full paths (cel.files). The
+temporary files are by default stored in the working directory
+("."). The output is of the same form than in the standard RPA
+function.
+
+<<rpaonline, results = hide, eval = FALSE>>=
+eset <- rpa.online(cel.files, save.batches.dir = ".")
+@
+
+
 \section{Probe performance analysis}
 
 Use {\it RPA.pointestimate} to investigate particular probesets:

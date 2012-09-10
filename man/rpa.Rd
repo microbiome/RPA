@@ -7,7 +7,7 @@
   'cind' is not specified, uses the first array of affybatch as the
   reference.}
 
-\usage{rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL)}
+\usage{rpa(abatch = NULL, sets = NULL, priors = NULL, epsilon = 1e-2, cind = 1, tau2.method = "robust", d.method = "fast", verbose = FALSE, bg.method = "rma", normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL, cel.path = NULL)}
 
 \arguments{
 
@@ -18,11 +18,11 @@
 
   \item{priors }{An 'rpa.priors' object. Can be used to set
 		user-specified priors for the model parameters. Not
-		used sigma2.method = "var". The prior parameters alpha
+		used tau2.method = "var". The prior parameters alpha
 		and beta are prior parameters for inverse Gamma
 		distribution of probe-specific
 		variances. Noninformative prior is obtained with
-		alpha, beta -> 0.  Not used with sigma2.method
+		alpha, beta -> 0.  Not used with tau2.method
 		'var'. Scalar alpha and beta specify an identical
 		inverse Gamma prior for all probes, which regularizes
 		the solution. Can be also specified as lists, each
@@ -39,28 +39,28 @@
     	       since they indicate the differential expression of the
     	       reference array against itself.}
 
-  \item{sigma2.method }{
+  \item{tau2.method }{
 
-    Optimization method for sigma2 (probe-specific variances). This
+    Optimization method for tau2 (probe-specific variances). This
     parameter is denoted by tau^2 in the vignette and manuscript.
 
-	"robust": (default) update sigma2 by posterior mean,
+	"robust": (default) update tau2 by posterior mean,
 		regularized by informative priors that are identical
 		for all probes (user-specified by
 		setting scalar values for alpha, beta). This
 		regularizes the solution, and avoids overfitting where
 		a single probe obtains infinite reliability. This is a
-	        potential problem in the other sigma2 update
+	        potential problem in the other tau2 update
 	        methods with non-informative variance priors. The
 		default values alpha = 2; beta = 1 are
 	        used if alpha and beta are not specified.
    
-        "mode": update sigma2 with posterior mean
+        "mode": update tau2 with posterior mean
 
-	"mean": update sigma2 with posterior mean
+	"mean": update tau2 with posterior mean
 	
-	"var": update sigma2 with variance around d. Applies the fact
-               that sigma2 cost function converges to variance with
+	"var": update tau2 with variance around d. Applies the fact
+               that tau2 cost function converges to variance with
                large sample sizes. 
 
 		}
@@ -107,7 +107,7 @@
 \references{See citation("RPA").}
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 
-\note{The choices sigma2.method = "robust" and d.method = "fast" are
+\note{The choices tau2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative prior, d.method =
 "basic" may be preferable. For very large expression data collections,
 see rpa.online function.}

@@ -10,7 +10,8 @@ export(
        #get.set.inds,
        hyperparameter.update,
        online.quantile,
-       plot.rpa,              
+       plot.rpa,          
+       probe.performance,    
        qnorm.basis.online,
        rpa,
        RPA.dcost,
@@ -26,7 +27,7 @@ export(
        s2.update
 )
 
-#RPA.sigma2.update,              
+#RPA.tau2.update,              
 #initialize.priors,                                        
 #d.update.fast
 
@@ -46,5 +47,6 @@ exportMethods(
 "[[",
 show
 )
+
 
 

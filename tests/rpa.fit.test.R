@@ -17,4 +17,4 @@ estimated <- rpa.fit(dat, alpha = alpha, beta = beta)
 # Check the results
 rpa.plot(dat, rpa.fit.object = estimated, toydata.object = real, plots = "toydata")
 
-# FIXME: compare sigma2.method robust and fast performance numerically
+# FIXME: compare tau2.method robust and fast performance numerically

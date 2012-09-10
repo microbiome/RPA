@@ -30,11 +30,11 @@
   
   \item{priors }{An 'rpa.priors' object. Can be used to set
 		user-specified priors for the model parameters. Not
-		used sigma2.method = "var". The prior parameters alpha
+		used tau2.method = "var". The prior parameters alpha
 		and beta are prior parameters for inverse Gamma
 		distribution of probe-specific
 		variances. Noninformative prior is obtained with
-		alpha, beta -> 0.  Not used with sigma2.method
+		alpha, beta -> 0.  Not used with tau2.method
 		'var'. Scalar alpha and beta specify an identical
 		inverse Gamma prior for all probes, which regularizes
 		the solution. Can be also specified as lists, each

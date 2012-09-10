@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -22,7 +22,7 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlig
   Np <- nrow(dat)
 
   mu <- rpa.fit.object$mu
-  sd <- sqrt(rpa.fit.object$sigma2)
+  sd <- sqrt(rpa.fit.object$tau2)
   af <- rpa.fit.object$affinity
   
   # image limits
@@ -88,7 +88,7 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlig
     barplot(rbind(real$affinity, estimated$affinity), 
                   beside = TRUE, main = "Probe affinity", xlab = "Probe index", ylab = "Affinity")
 
-    tab <- rbind(real = real$variance, estimated = estimated$sigma2)
+    tab <- rbind(real = real$variance, estimated = estimated$tau2)
     barplot(tab, beside = TRUE, 
             main = "Probe variance", 
             xlab = "Probe index", ylab = "Variance", legend = TRUE)

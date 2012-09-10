@@ -18,7 +18,7 @@ RPA.pointestimate <- function (abatch,
                                priors = NULL,
                               epsilon = 1e-2, 
                                  cind = 1,
-                        sigma2.method = "robust",
+                        tau2.method = "robust",
                              d.method = "fast",
                               verbose = TRUE,
                             bg.method = "rma",
@@ -27,10 +27,10 @@ RPA.pointestimate <- function (abatch,
 				 )                                      
 {
 
-# Find posterior mode for RPA model parameters d (mean) and sigma2 (variances)
+# Find posterior mode for RPA model parameters d (mean) and tau2 (variances)
 # and then estimate also probe affinities.
 
-#abatch<-Dilution; sets = NULL; myseed = 101; priors = NULL; epsilon = 1e-2; cind = 1; sigma2.method = "robust"; d.method = "fast"; verbose = TRUE; bg.method = "rma"; normalization.method = "quantiles.robust"; cdf = NULL
+#abatch<-Dilution; sets = NULL; myseed = 101; priors = NULL; epsilon = 1e-2; cind = 1; tau2.method = "robust"; d.method = "fast"; verbose = TRUE; bg.method = "rma"; normalization.method = "quantiles.robust"; cdf = NULL
 
   #################################################################
 
@@ -72,8 +72,8 @@ RPA.pointestimate <- function (abatch,
   rownames(d.results) <- sets
   colnames(d.results) <- colnames(exprs(abatch))
 
-  sigma2.results <- vector(length = Nsets, mode = "list")  
-  names(sigma2.results) <- sets
+  tau2.results <- vector(length = Nsets, mode = "list")  
+  names(tau2.results) <- sets
 
   affinity.results <- vector(length = Nsets, mode = "list")  
   names(affinity.results) <- sets
@@ -96,11 +96,11 @@ RPA.pointestimate <- function (abatch,
     # Pick the priors for this set (gives NULL if no prior has been defined)
     beta  <- priors[[set]]$beta
         
-    res <- rpa.fit(matrix(preproc$q[pmindices,], length(pmindices)), cind, epsilon, alpha, beta, sigma2.method, d.method)
+    res <- rpa.fit(matrix(preproc$q[pmindices,], length(pmindices)), cind, epsilon, alpha, beta, tau2.method, d.method)
     
     #Store results
     d.results[i, ] <- res$mu # note this returns signal in original data domain
-    sigma2.results[[i]] <- res$sigma2
+    tau2.results[[i]] <- res$tau2
     affinity.results[[i]] <- res$affinity
     mu.real[[i]] <- res$mu.real
     # mu.real can be estimated afterwards since
@@ -110,7 +110,7 @@ RPA.pointestimate <- function (abatch,
   # Create new class instance
   # FIXME: with large data sets it exhaustive to store both abatch and preproc$q as these
   # are redundant. Even abatch is unnecessary as it is available from the input list already.
-  rpa.res <- new("rpa", list(d = d.results, mu.real = mu.real, sigma2 = sigma2.results, affinity = affinity.results, cind = cind, sets = sets, data = preproc$q, cdf = cdf, abatch = abatch))
+  rpa.res <- new("rpa", list(d = d.results, mu.real = mu.real, tau2 = tau2.results, affinity = affinity.results, cind = cind, sets = sets, data = preproc$q, cdf = cdf, abatch = abatch))
 
   # return result object
   rpa.res

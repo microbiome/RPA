@@ -1,4 +1,3 @@
-
 # This file is a part of the RPA program
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
@@ -22,7 +21,7 @@ rpa.online <- function (
                  epsilon = 1e-2,
                 mc.cores = 1,
                  verbose = TRUE,                          
-                 shuffle = TRUE,                          
+                 shuffle = TRUE,
               batch.size = 100, 
                  batches = NULL, 
           quantile.basis = NULL, 
@@ -43,7 +42,6 @@ rpa.online <- function (
   if (is.null(unique.run.identifier)) {
     unique.run.identifier <- paste("RPA-run-id-", rnorm(1), "-", sep = "")
   }
-
   
   if (save.batches) {
 
@@ -95,7 +93,7 @@ rpa.online <- function (
                                                   quantile.basis,
                                                   bg.method, epsilon,
                                                   load.batches = save.batches,
-                                                  save.hyperparameter.batches = save.batches,                                                  
+                                                  save.hyperparameter.batches = save.batches,
                                                   mc.cores = mc.cores,
                                                   verbose = verbose, 	    
 						  save.batches.dir = save.batches.dir, 
@@ -112,19 +110,22 @@ rpa.online <- function (
   # Final ExpressioSet object 
   message("Summarizing probesets")
 
+  # To speed up, we approximate the solution by directly calculating weighted
+  # sum of the probes and skip affinity estimation
   emat <- summarize.batches(sets = sets, 
        	  		    variances = hyper.parameters$variances, 
 			    batches = batches, 
 			    load.batches = save.batches, 
-			    mc.cores = mc.cores, 
+		 	    mc.cores = mc.cores, 
 			    cdf = cdf, 
 			    bg.method = bg.method, 
 			    quantile.basis = quantile.basis, 
 			    verbose = verbose, 
 			    save.batches.dir = save.batches.dir, 
-			    unique.run.identifier = unique.run.identifier)
+			    unique.run.identifier = unique.run.identifier, 
+			    save.batches = save.batches)
   
-  ##################################################################
+  #################################################################
 
   if (!keep.batch.files) {
     message(paste("Removing the temporary batch files from directory", save.batches.dir, "with the identifier", unique.run.identifier))
@@ -141,11 +142,10 @@ rpa.online <- function (
 }
 
 
-summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis, save.batches.dir = ".", unique.run.identifier = NULL) {
+summarize.batches <- function (sets = NULL, variances, batches, load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method = "quantiles", verbose = TRUE, quantile.basis, save.batches.dir = ".", unique.run.identifier = NULL, save.batches = FALSE) {
 
-#sets = sets; variances = hyper.parameters$variances; batches = batches; load.batches = save.batches; mc.cores = mc.cores; cdf = cdf; bg.method = bg.method; quantile.basis = quantile.basis; verbose = verbose; normalization.method = "quantiles"
+  #sets = sets; variances = hyper.parameters$variances; batches = batches; load.batches = save.batches; mc.cores = mc.cores; cdf = cdf; bg.method = bg.method; quantile.basis = quantile.basis; verbose = verbose; normalization.method = "quantiles"
      
-
   # FIXME: remove normalization method from here as unnecessary?
   if (verbose) {message("Pick PM indices")}
   set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
@@ -169,21 +169,43 @@ summarize.batches <- function (sets = NULL, variances, batches, load.batches = F
     batch <- NULL
     if (load.batches) {
       batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")
-      if (verbose) {message(paste("Load preprocessed data for this batch from: ", batch.file))}
+      if (verbose) { message(paste("Load preprocessed data for this batch from: ", batch.file)) }
       load(batch.file) # batch
     }
-
+    
     # Get probes x samples matrices for each probeset
-    # No need to remove the reference sample for d.update in the summarization step!
-    if (verbose) { message("Extract probe-level data") }       
+    # No need to remove the reference sample for d.update here in the summarization step!
+    # Since probe-specific variance is now known (from the estimation above), the probeset-level signal
+    # estimate is obtained as a weighted sum of the probes, weighted by the probe-specific variances
+    if ( verbose ) { message("Extract probe-level data") }       
     q <- get.probe.matrix(cels = batch.cels, cdf = cdf, quantile.basis = quantile.basis, bg.method = bg.method, batch = batch, verbose = verbose)
     #if (verbose) { message("Probeset matrices") }          
     q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores) 
     names(q) <- sets
 
-    # Get summary estimate for each probeset using the posterior variance
+    # Get the first summary estimates for each probeset using the posterior variance
+    # (>25-fold speedup obtained with sapply)
     emat[sets, batch.cels] <- t(sapply(mclapply(sets, function(set) {d.update.fast(q[[set]], variances[[set]])}, mc.cores = mc.cores), identity))
-    # >25-fold speedup with sapply
+
+    # Get corresponding affinity estimates (to speed up, estimate just based on the first batch)
+    # as an average over affinity estimates from individual samples; return list of affinity estimates for
+    # each probeset 
+    if (i == 1) {
+      affinities <- lapply(sets, function (set) {estimate.affinities(q[[set]], emat[set, batch.cels])})
+      names(affinities) <- sets
+
+      if (save.batches) {
+        affinity.file <- paste(save.batches.dir, "/", unique.run.identifier, "RPA-affinities.RData", sep = "")
+        if (verbose) {message(paste("Saving affinities into file: ", affinity.file))}
+        save(affinities, file = affinity.file)
+      }
+    }
+
+    # TODO: Given the affinities, calculate the final summary estimates
+    # NOW: approximation is sufficiently good already as the weighted sum of the probes and helps to speed up
+    # computation, so postponing this step as non-critical
+    # sapply(sets, function (set) {(q[[set]], emat[set,])})...
+    
   }
 
   # Coerce expression values in the rpa object into an ExpressionSet object

@@ -1,4 +1,3 @@
-
 # This file is a part of the RPA program
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
@@ -16,7 +15,7 @@ RPA.iteration <- function(S,
                           epsilon = 1e-3,
                             alpha = NULL,
                              beta = NULL,
-                    sigma2.method = "fast",
+                    tau2.method = "fast",
                          d.method = "fast",
                           maxloop = 1e6)
 {
@@ -26,41 +25,41 @@ RPA.iteration <- function(S,
   T <- nrow(S) # Number of arrays (except reference)
 
   # Accommodate single-probe probesets
-  if (P == 1) { return(list(d = as.vector(S), sigma2 = 0, alpha = T/2, beta = 0)) }
+  if (P == 1) { return(list(d = as.vector(S), tau2 = 0, alpha = T/2, beta = 0)) }
 
   # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
   if (all(is.nan(S) | is.na(S))) { 
-    return(list(d = rep(NA, T), sigma2 = rep(NA, P))) 
+    return(list(d = rep(NA, T), tau2 = rep(NA, P))) 
   }
 
-  # uninformative priors for sigma2.methods mean, mode, var;
+  # uninformative priors for tau2.methods mean, mode, var;
   # informative for 'robust', or alpha, beta are provided by user
-  alpha.prior <- alpha <- set.alpha(alpha, sigma2.method, P)
-  beta.prior <- beta <- set.beta(beta, sigma2.method, P)
+  alpha.prior <- alpha <- set.alpha(alpha, tau2.method, P)
+  beta.prior <- beta <- set.beta(beta, tau2.method, P)
 
-  # Confirm that alpha is valid for sigma2.method 
-  if (sigma2.method == "mean" || sigma2.method == "robust") {
-    ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this sigma2.method"))
+  # Confirm that alpha is valid for tau2.method 
+  if (tau2.method == "mean" || tau2.method == "robust") {
+    ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this tau2.method"))
   } else {}
 
   ###############################
 
-  # initialize sigma2 with user-defined priors
+  # initialize tau2 with user-defined priors
 
-  if (sigma2.method == "var") {
+  if (tau2.method == "var") {
     s2.meth <- "mean"
   } else {
-    s2.meth <- sigma2.method
+    s2.meth <- tau2.method
   }
 
   # FIXME: add chance to give user-defined priors in here!
-  sigma2 <- RPA.sigma2.update(NULL, alpha.prior, beta.prior, s2.meth)
+  tau2 <- RPA.tau2.update(NULL, alpha.prior, beta.prior, s2.meth)
   # initialize with large initial variance if not 
-  if (length(sigma2) == 0) {sigma2 <- rep(3*sd(as.vector(S)), P)} 
+  if (length(tau2) == 0) {tau2 <- rep(3*sd(as.vector(S)), P)} 
 
   # check convergence at first iteration, 
   # not used in calculations
-  sigma2.old <- rep(Inf, P)
+  tau2.old <- rep(Inf, P)
   
   ###############################
 
@@ -76,12 +75,12 @@ RPA.iteration <- function(S,
 
   if (d.method == "fast") {
 
-    while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
+    while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
 
-      sigma2.old <- sigma2
+      tau2.old <- tau2
 
-      # update d, given sigma2
-      d <- d.update.fast(t(S), sigma2)
+      # update d, given tau2
+      d <- d.update.fast(t(S), tau2)
 
       # Estimate noise 
       R <- S - d
@@ -89,8 +88,8 @@ RPA.iteration <- function(S,
       # beta update (feed in beta prior, not updates from this loop!)
       beta <- update.beta(R, beta.prior)
 
-      # update sigma2
-      sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
+      # update tau2
+      tau2 <- RPA.tau2.update(R, alpha, beta, tau2.method)
 
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
@@ -102,14 +101,14 @@ RPA.iteration <- function(S,
       # initialize d for the first iteration
       d <- rowMeans(S)  
 
-      while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
+      while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
 
         # separate while loops for d.methods to avoid logical comparisons 
         # during iteration	
-	sigma2.old <- sigma2
+	tau2.old <- tau2
 
         # update d
-        d <- optim(d, fn = RPA.dcost, method = "BFGS", sigma2 = sigma2, S = S)$par
+        d <- optim(d, fn = RPA.dcost, method = "BFGS", tau2 = tau2, S = S)$par
 
         # Estimate noise 
         R <- S - d
@@ -117,8 +116,8 @@ RPA.iteration <- function(S,
         # beta update (feed in beta prior, not updates from this loop!)
         beta <- update.beta(R, beta.prior)
 
-        # update sigma2
-        sigma2 <- RPA.sigma2.update(R, alpha, beta, sigma2.method)
+        # update tau2
+        tau2 <- RPA.tau2.update(R, alpha, beta, tau2.method)
 
         # follow iteration count to avoid potentially infinite loops
         loopcnt <- loopcnt + 1 
@@ -126,7 +125,7 @@ RPA.iteration <- function(S,
       }
    } 
 
-  list(d = d, sigma2 = sigma2, alpha = alpha, beta = beta)
+  list(d = d, tau2 = tau2, alpha = alpha, beta = beta)
 }
 
 #################################################################################
@@ -145,27 +144,27 @@ RPA.iteration.fast <- function(S,
 
   # Check: if affybatch/probeset is erroneous and contains just NAs or NaNs then return NA vector
   if (all(is.nan(S) | is.na(S))) { 
-    return(list(d = rep(NA, nrow(S)), sigma2 = rep(NA, ncol(S)))) 
+    return(list(d = rep(NA, nrow(S)), tau2 = rep(NA, ncol(S)))) 
   }
 
   # Initialize variances by the original user-specified priors 
-  sigma2 <- beta.prior/alpha.prior # approx. mean and mode when sample size is largish
+  tau2 <- beta.prior/alpha.prior # approx. mean and mode when sample size is largish
 
   # check convergence at first iteration, 
   # not used in calculations
-  sigma2.old <- rep(-1e6, length(sigma2))
+  tau2.old <- rep(-1e6, length(tau2))
   
   ###############################
 
   # optimize until convergence
   loopcnt <- 0
 
-  while ((max(abs(c(sigma2 - sigma2.old))) > epsilon) && loopcnt < maxloop) {
+  while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
 
-      sigma2.old <- sigma2
+      tau2.old <- tau2
 
-      # update d, given sigma2
-      d <- d.update.fast(t(S), sigma2)
+      # update d, given tau2
+      d <- d.update.fast(t(S), tau2)
 
       # Estimate noise 
       R <- S - d
@@ -174,9 +173,9 @@ RPA.iteration.fast <- function(S,
       beta.posterior <- beta.fast(beta.prior, R) 
       #betahat.f(beta.prior, R) # update.beta(R, beta.prior)
 
-      # update sigma2 / NOTE: use posterior alpha and beta here!
-      sigma2 <- beta.posterior/alpha.posterior
-      #RPA.sigma2.update(R, alpha.posterior, beta.posterior, sigma2.method = fast)
+      # update tau2 / NOTE: use posterior alpha and beta here!
+      tau2 <- beta.posterior/alpha.posterior
+      #RPA.tau2.update(R, alpha.posterior, beta.posterior, tau2.method = fast)
 
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
@@ -184,5 +183,5 @@ RPA.iteration.fast <- function(S,
   }
 
 
-  list(d = d, sigma2 = sigma2, beta = beta.posterior)
+  list(d = d, tau2 = tau2, beta = beta.posterior)
 }

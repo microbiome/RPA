@@ -3,20 +3,20 @@
 \alias{RPA.dcost}
 \title{Cost function for d.}
 \description{Internal function.}
-\usage{RPA.dcost(d, sigma2, S)}
+\usage{RPA.dcost(d, tau2, S)}
 
 \arguments{
   
   \item{d }{A vector. Estimated 'true' signal underlying the noisy
             probe-level observations.}
   
-  \item{sigma2 }{A vector of probe-specific variances.}
+  \item{tau2 }{A vector of probe-specific variances.}
 
   \item{S }{Matrix of probe-level observations for a single probeset:
             samples x probes.}
 }
 
-\value{Cost for d, given S and sigma2.}
+\value{Cost for d, given S and tau2.}
 
 \references{Probabilistic Analysis of Probe Reliability in Differential
 Gene Expression Studies with Short Oligonucleotide Arrays.  Lahti et

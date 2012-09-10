@@ -5,7 +5,7 @@
   affinity parameters.}
 \usage{
 rpa.fit(dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL,
-sigma2.method = "robust", d.method = "fast")
+tau2.method = "robust", d.method = "fast")
 }
 
 \arguments{
@@ -16,31 +16,31 @@ sigma2.method = "robust", d.method = "fast")
   
   \item{alpha, beta }{Priors for inverse Gamma distribution of
   probe-specific variances. Noninformative prior is obtained with alpha,
-  beta -> 0.  Not used with sigma2.method 'var'. Scalar alpha and beta
+  beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta
   are specify equal inverse Gamma prior for all probes to regularize the
   solution. The defaults depend on the method.}
 
-  \item{sigma2.method }{
+  \item{tau2.method }{
 
-    Optimization method for sigma2 (probe-specific variances).
+    Optimization method for tau2 (probe-specific variances).
 
-	"robust": (default) update sigma2 by posterior mean,
+	"robust": (default) update tau2 by posterior mean,
 		regularized by informative priors that are identical
 		for all probes (user-specified by
 		setting scalar values for alpha, beta). This
 		regularizes the solution, and avoids overfitting where
 		a single probe obtains infinite reliability. This is a
-	        potential problem in the other sigma2 update
+	        potential problem in the other tau2 update
 	        methods with non-informative variance priors. The
 		default values alpha = 2; beta = 1 are
 	        used if alpha and beta are not specified.
    
-        "mode": update sigma2 with posterior mean
+        "mode": update tau2 with posterior mean
 
-	"mean": update sigma2 with posterior mean
+	"mean": update tau2 with posterior mean
 	
-	"var": update sigma2 with variance around d. Applies the fact
-               that sigma2 cost function converges to variance with
+	"var": update tau2 with variance around d. Applies the fact
+               that tau2 cost function converges to variance with
                large sample sizes. 
 
 		}
@@ -69,7 +69,7 @@ sigma2.method = "robust", d.method = "fast")
 
   \item{mu}{Fitted signal in original data: mu.real + d}
   \item{mu.real}{Shifting parameter of the reference sample}
-  \item{sigma2}{Probe-specific stochastic noise}
+  \item{tau2}{Probe-specific stochastic noise}
   \item{affinity}{Probe-specific affinities}
   \item{data}{Probeset data matrix}
   \item{alpha, beta}{prior parameters}
@@ -93,7 +93,7 @@ some flexibility through probe-specific weights.}
 
 \seealso{rpa, RPA.pointestimate, estimate.affinities}
 \examples{
-## res <- rpa.fit(dat, cind, epsilon, alpha, beta, sigma2.method, d.method, affinity.method)
+## res <- rpa.fit(dat, cind, epsilon, alpha, beta, tau2.method, d.method, affinity.method)
 }
 \keyword{ utilities }
 

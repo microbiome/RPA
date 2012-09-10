@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2011 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -14,7 +14,7 @@
 
 initialize.priors <- function (abatch, sets, alpha = 1e-6, beta = 1e-6, d = NULL) {
 
-  # set priors for d and sigma2
+  # set priors for d and tau2
   # prior for d omitted in the current package version
 
   priors <- vector(length = length(sets), mode = "list")

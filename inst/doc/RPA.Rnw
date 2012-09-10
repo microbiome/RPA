@@ -1,4 +1,3 @@
-
 % \VignetteIndexEntry{RPA}
 %The above line is needed to remove a warning in R CMD check
 \documentclass[12pt]{article}
@@ -156,7 +155,7 @@ rpa.results <- RPA.pointestimate(Dilution, sets)
 @
 
 The rpa.results object contains probe-specific affinity and variance
-estimates (affinity, sigma2), the probeset-level summary estimate
+estimates (affinity (\(\muj\)), tau2 (\(\taujSq\))), the probeset-level summary estimate
 (\(d\)) and other information. The results can be visualized with
 
 <<visu, fig = FALSE, echo = TRUE, print = FALSE, results = hide, eval = FALSE>>=
@@ -179,20 +178,34 @@ dat <- plot(rpa.results, set = "1000_at", plots = "all")
 \end{figure}
 
 
-\subsection{Estimating probe reliability}
+\subsection{Estimating probe performance}
 
-The noise level of individual probes can be quantified based on the
-probe-specific variance parameter (\(\taujSq\)):
+The performance of individual probes can be quantified based on the
+probe-specific parameter estimates regarding probe affinity \(\muj\) and probe-specific stochastic noise (\(\taujSq\)). The example below shows how to do this for the standard RPA model. For the online-learning version (rpa.online), investigate the output files for the hyperparameters and affinity (*RPA-affinities.RData and *RPA-hyperparameters.RData).
 
 <<noise,results=hide>>=
-noise <- get.probe.noise.estimates(rpa.results)
+# Load libraries
+require(affy)
+require(affydata)
+require(RPA)
+
+# Load example data
+data(Dilution)
+
+# Define the probesets to check
+sets <- geneNames(Dilution)[1:2]
+
+# Robust Probabilistic Averaging model
+rpa.results <- RPA.pointestimate(Dilution, sets)
+
+# Provide a table of probe affinity and variance parameters
+probe.parameter.table <- probe.performance(rpa.results)
 @ 
 
-The precision \(\frac{1}{\taujSq}\), can be used to quantitate probe
+The precision \(\frac{1}{\taujSq}\), can be used to quantify probe
 reliability. Comparison of probe-specific variances across probesets
 may benefit from probeset-specific normalization; see
 help(get.probe.noise.estimates) for details.
-
 
 \subsection{Setting probe-specific priors}
 

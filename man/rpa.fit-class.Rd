@@ -29,7 +29,7 @@ Objects can be created by calls of the form \code{new("rpa.fit", ...)}.
    the differential signal domain used to learn the probe-specific
    variance parameters. See model description in vignette for details.}
 
-  \item{sigma2 }{A list. Each element corresponds to a probeset, and
+  \item{tau2 }{A list. Each element corresponds to a probeset, and
 		 contains a vector that gives the estimated variance
 		 (noise level) for each probe in that probeset.}
     
@@ -38,7 +38,7 @@ Objects can be created by calls of the form \code{new("rpa.fit", ...)}.
 		 estimated affinity effect for each probe in that
 		 probeset.}
   \item{data }{Original probe-level data.}
-  \item{alpha, beta }{Inverse Gamma prior parameters for variance (sigma2).}
+  \item{alpha, beta }{Inverse Gamma prior parameters for variance (tau2).}
 
 
   }

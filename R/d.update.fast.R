@@ -11,7 +11,6 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-
 d.update.fast <- function (St, s2) {
 
   # St: probes x arrays  
@@ -20,8 +19,7 @@ d.update.fast <- function (St, s2) {
   # the d converges to the weighted mean 
   # over the probes, weighted by probe variances	 
   colSums(St / s2) / sum(1 / s2)
+
 }
 
 
-#require(compiler)
-#d.update.fast.c <- cmpfun(d.update.fast) 

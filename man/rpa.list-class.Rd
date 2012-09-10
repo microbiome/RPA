@@ -26,7 +26,7 @@ An extended list. Contains the following information for one probeset.
 
     \item{mu.real }{Deviation between the signal shape and the real signal level. Here d is the sum of mu.real and shape; affinities are calculated around d = mu.real + shape. Note that in Lahti11 paper d denotes the shape; we will polish the notation later.}
 	    
-    \item{sigma2 }{Contains a vector that gives the estimated variance
+    \item{tau2 }{Contains a vector that gives the estimated variance
 	           for each probe in the investigated probeset.}
 
 

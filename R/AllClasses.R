@@ -1,13 +1,13 @@
 setClass("rpa", 	 
-	 representation(d = "array", mu.real = "list", sigma2 = "list", affinity = "list", cind = "numeric", sets = "character", data = "array", cdf = "character", abatch = "AffyBatch"), 
+	 representation(d = "array", mu.real = "list", tau2 = "list", affinity = "list", cind = "numeric", sets = "character", data = "array", cdf = "character", abatch = "AffyBatch"), 
 	 contains = "list")
 
 setClass("rpa.fit", 	 
-	 representation(mu = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", data = "array", alpha = "numeric", beta = "numeric"), 
+	 representation(mu = "array", mu.real = "numeric", tau2 = "list", affinity = "list", data = "array", alpha = "numeric", beta = "numeric"), 
 	 contains = "list")
 
 setClass("rpa.list",
-         representation(d = "array", mu.real = "numeric", sigma2 = "list", affinity = "list", cind = "numeric", set = "character", data="array"), 
+         representation(d = "array", mu.real = "numeric", tau2 = "list", affinity = "list", cind = "numeric", set = "character", data="array"), 
 	 contains = "list")
 
 #setClass("rpa.priors",

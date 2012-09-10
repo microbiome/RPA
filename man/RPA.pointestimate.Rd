@@ -10,7 +10,7 @@ sets.}
 \description{Computes point estimate}
 
 \usage{RPA.pointestimate(abatch, sets = NULL, myseed = 101, priors =
-NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
+NULL, epsilon = 1e-2, cind = 1, tau2.method = "robust", d.method =
 "fast", verbose = TRUE, bg.method = "rma", normalization.method =
 "quantiles.robust", cdf = NULL)}
 
@@ -30,9 +30,9 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 		 vector corresponding to one probeset, specifying beta
 		 for each probe. Can be used to set user-specified
 		 priors for the model parameters. Not applicable for
-		 sigma2.method = "var". Noninformative prior is
+		 tau2.method = "var". Noninformative prior is
 		 obtained with alpha, beta -> 0.  Not used with
-		 sigma2.method 'var'. Can be used to regularize the
+		 tau2.method 'var'. Can be used to regularize the
 		 solution with small sample size, or in batch-wise
 		 online-updates with large sample size. If priors are
 		 not provided for certain probesets (NULL), default
@@ -46,27 +46,27 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 	       reference in computing probe-level differential
 	       expression.}
 
-  \item{sigma2.method }{
+  \item{tau2.method }{
 
-    Optimization method for sigma2 (probe-specific variances).
+    Optimization method for tau2 (probe-specific variances).
 
-	"robust": (default) update sigma2 by posterior mean,
+	"robust": (default) update tau2 by posterior mean,
 		regularized by informative priors that are identical
 		for all probes (user-specified by
 		setting scalar values for alpha, beta). This
 		regularizes the solution and avoids overfitting where
 		a single probe obtains infinite reliability. This is a
-	        potential problem in the other sigma2 update
+	        potential problem in the other tau2 update
 	        methods with non-informative variance priors. The
 		default values alpha = 2; beta = 1 are
 	        used if alpha and beta are not specified.
    
-        "mode": update sigma2 with posterior mean
+        "mode": update tau2 with posterior mean
 
-	"mean": update sigma2 with posterior mean
+	"mean": update tau2 with posterior mean
 	
-	"var": update sigma2 with variance around d. Applies the fact
-               that sigma2 cost function converges to variance with
+	"var": update tau2 with variance around d. Applies the fact
+               that tau2 cost function converges to variance with
                large sample sizes. 
 
 		}
@@ -106,11 +106,11 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
   expression between the user-specified reference array (cind) and the
   other arrays in the data set. The model assumes P observations for
   each transcript target (i.e. a probeset) with Gaussian noise which is
-  specific for each probe (variance is specified by sigma2). The mean
+  specific for each probe (variance is specified by tau2). The mean
   (affinity) parameters of the Gaussian noise model cancel out in
   calculating probe-level differential expression.  RPA.pointestimate
-  gives a point estimate for d and sigma2. The 'prior' parameter is not
-  applicable with sigma2.method = "var". The d.method = "fast" is
+  gives a point estimate for d and tau2. The 'prior' parameter is not
+  applicable with tau2.method = "var". The d.method = "fast" is
   recommended with large sample size.}
 
 \value{
@@ -124,7 +124,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 	    investigated probeset. Note that the reference array is 
 	    not included.}
   
-  \item{sigma2 }{A list. Each element corresponds to a probeset, and
+  \item{tau2 }{A list. Each element corresponds to a probeset, and
                  contains a vector that gives the estimated variance for
                  each probe in that probeset. This corresponds to the
                  parameter tau^2 in the vignette and manuscript.}
@@ -143,7 +143,7 @@ NULL, epsilon = 1e-2, cind = 1, sigma2.method = "robust", d.method =
 
 \author{Leo Lahti \email{leo.lahti@iki.fi}}
 
-\note{sigma2.method = "robust" and d.method = "fast" are
+\note{tau2.method = "robust" and d.method = "fast" are
 recommended. With small sample size and informative priors, d.method =
 "basic" may be preferable, with large sample size d.method = "fast"
 should have considerable speedups and comparable accuracy.}

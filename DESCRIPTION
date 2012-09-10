@@ -1,18 +1,22 @@
 Package: RPA
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.13.05
-Date: 2012-07-14
+Version: 1.13.06
+Date: 2012-09-08
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
-Depends: R (>= 2.15.0), affy, affydata, methods, parallel
+Depends:
+    R (>= 2.15.1),
+    affy,
+    affydata,
+    methods,
+    parallel
 biocViews: GeneExpression, Microarray, Preprocessing, QualityControl
 Description: Probabilistic analysis of probe reliability and
-	     differential gene expression on short oligonucleotide
-	     arrays. Lahti et al. "Probabilistic Analysis of Probe
-	     Reliability in Differential Gene Expression Studies with
-	     Short Oligonucleotide Arrays", TCBB/IEEE, 2011.
-	     http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
+    differential gene expression on short oligonucleotide
+    arrays. Lahti et al. "Probabilistic Analysis of Probe
+    Reliability in Differential Gene Expression Studies with
+    Short Oligonucleotide Arrays", TCBB/IEEE, 2011.
+    http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
 License: FreeBSD
 LazyLoad: yes
-

@@ -11,30 +11,30 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
+RPA.tau2.update <- function (R, alpha, beta, tau2.method = "robust") {
 
   # FIXME: online mode not necessarily needed at all here
   # FIXME: speedup by defining the method outside this looping function
 
-  # sigma2 values are notably smaller with 
-  # sigma2.method = "fast" than sigma2.method = "robust"
+  # tau2 values are notably smaller with 
+  # tau2.method = "fast" than tau2.method = "robust"
   # This is because different priors for alpha are used
   # they lead to similar probe weights, though so not so much effect on probeset level estimates
 
   # R <- S - d: arrays x probes matrix; observations vs. estimated real signal
   # Note: alpha here is alphahat = T/2 + alpha w.r.t. user-defined alpha prior
 
-  # alpha > 1 required in sigma2.method 'mode' and 'robust'
-  if (sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust") {
+  # alpha > 1 required in tau2.method 'mode' and 'robust'
+  if (tau2.method == "mean" || tau2.method == "online" || tau2.method == "robust") {
     # mean for invgam(sig^2 | alpha,beta)
     s2 <- beta / (alpha - 1) # FIXME: speedup by precalculating alpha - 1?
-  } else if (sigma2.method == "mode") {
+  } else if (tau2.method == "mode") {
     # mode for invgam(sig^2 | alpha,beta)
     s2 <- beta / (alpha + 1) 
-  } else if (sigma2.method == "fast") {
+  } else if (tau2.method == "fast") {
     # this is often also used
     s2 <- beta / alpha 
-  } else if (sigma2.method == "var") {
+  } else if (tau2.method == "var") {
     # Assume uninformative priors alpha, beta -> 0	  
     # NOTE: RPA converges to variance with large sample size
     # priors not used
@@ -48,10 +48,10 @@ RPA.sigma2.update <- function (R, alpha, beta, sigma2.method = "robust") {
     #s2 <- colSums(centerData(R)^2)/(nrow(R) - 1) 
     s2 <- colSums(R^2)/(nrow(R) - 1) 
   } else { 
-    stop("Invalid sigma2.method provided!") 
+    stop("Invalid tau2.method provided!") 
   }
 
-  # return updated sigma2
+  # return updated tau2
   s2
 }
 

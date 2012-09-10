@@ -4,15 +4,15 @@
 
 \alias{RPA.iteration}
 
-\title{Estimating model parameters d and sigma2.}
+\title{Estimating model parameters d and tau2.}
 
 \description{Finds point estimates of the model parameters d (estimated
-true signal underlying probe-level observations), and sigma2
+true signal underlying probe-level observations), and tau2
 (probe-specific variances).}
 
 \usage{RPA.iteration(S, epsilon = 1e-3, 
                      alpha = NULL, beta = NULL,
-                     sigma2.method = "fast", d.method = "fast",
+                     tau2.method = "fast", d.method = "fast",
                      maxloop = 1e6)}
 
 \arguments{
@@ -25,31 +25,31 @@ true signal underlying probe-level observations), and sigma2
   
   \item{alpha, beta }{Priors for inverse Gamma distribution of
   probe-specific variances. Noninformative prior is obtained with alpha,
-  beta -> 0.  Not used with sigma2.method 'var'. Scalar alpha and beta
+  beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta
   are specify equal inverse Gamma prior for all probes to regularize the
   solution. The defaults depend on the method.}
 
-  \item{sigma2.method }{
+  \item{tau2.method }{
 
-    Optimization method for sigma2 (probe-specific variances).
+    Optimization method for tau2 (probe-specific variances).
 
-	"robust": (default) update sigma2 by posterior mean,
+	"robust": (default) update tau2 by posterior mean,
 		regularized by informative priors that are identical
 		for all probes (user-specified by
 		setting scalar values for alpha, beta). This
 		regularizes the solution, and avoids overfitting where
 		a single probe obtains infinite reliability. This is a
-	        potential problem in the other sigma2 update
+	        potential problem in the other tau2 update
 	        methods with non-informative variance priors. The
 		default values alpha = 2; beta = 1 are
 	        used if alpha and beta are not specified.
    
-        "mode": update sigma2 with posterior mean
+        "mode": update tau2 with posterior mean
 
-	"mean": update sigma2 with posterior mean
+	"mean": update tau2 with posterior mean
 	
-	"var": update sigma2 with variance around d. Applies the fact
-               that sigma2 cost function converges to variance with
+	"var": update tau2 with variance around d. Applies the fact
+               that tau2 cost function converges to variance with
                large sample sizes. 
 
 		}
@@ -75,9 +75,9 @@ true signal underlying probe-level observations), and sigma2
 
 \details{Assuming data set S with P observations of signal d with
 Gaussian noise that is specific for each observation (specified by a
-vector sigma2 of length P), this method gives a point estimate of d
-and sigma2. Probe-level variance priors alpha, beta can be used with
-sigma2.methods 'robust', 'mode', and 'mean'.  The d.method = "fast" is
+vector tau2 of length P), this method gives a point estimate of d
+and tau2. Probe-level variance priors alpha, beta can be used with
+tau2.methods 'robust', 'mode', and 'mean'.  The d.method = "fast" is
 the recommended method for point computing point estimates with large
 sample size.}
 
@@ -88,7 +88,7 @@ sample size.}
   \item{d }{A vector. Estimated 'true' signal underlying the noisy
   probe-level observations.}
   
-  \item{sigma2 }{A vector. Estimated variances for each measurement (or
+  \item{tau2 }{A vector. Estimated variances for each measurement (or
   probe).}
   
 }

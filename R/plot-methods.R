@@ -8,7 +8,7 @@ plot.rpa.list <- function (x, y, ...) {
 
       set <- x$set # probe set
        mu <- x$d # 'Absolute' expression level
-       sd <- sqrt(x$sigma2) # probe standard deviation	 
+       sd <- sqrt(x$tau2) # probe standard deviation	 
 
       par(mfrow = c(2,1))
       barplot(sd, main = paste(set,"/ Probe noise (standard deviation)"),
@@ -34,13 +34,13 @@ plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgre
   pmindices <- which(probeNames(abatch) == set)
   
      d <- x[[set]]$d
-    s2 <- x[[set]]$sigma2
+    s2 <- x[[set]]$tau2
   cind <- x[[set]]$cind
    dat <- x$data[pmindices,]
   mu.real <- x[[set]]$mu.real
   affinity <- x[[set]]$affinity
   
-  rpa.fit.object <- new("rpa.fit", list(mu = d, mu.real = mu.real, sigma2 = s2, affinity = affinity, data = dat))
+  rpa.fit.object <- new("rpa.fit", list(mu = d, mu.real = mu.real, tau2 = s2, affinity = affinity, data = dat))
 
   if (is.null(main)) {
     main <- paste("Probe signals and the summary estimate (", set, ")", sep = "")

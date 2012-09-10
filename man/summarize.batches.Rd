@@ -3,9 +3,9 @@
 \title{Summarize batches}
 \description{Probeset summarization in batches}
 \usage{
-summarize.batches(sets, variances, batches, load.batches = FALSE,
+summarize.batches(sets = NULL, variances, batches, load.batches = FALSE,
 mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method =
-"quantiles", verbose = TRUE, quantile.basis, save.batches.dir = ".", unique.run.identifier = NULL)
+"quantiles", verbose = TRUE, quantile.basis, save.batches.dir = ".", unique.run.identifier = NULL, save.batches = FALSE)
 }
 \arguments{
   \item{sets}{Probesets to summarize}
@@ -20,6 +20,8 @@ mc.cores = 1, cdf = NULL, bg.method = "rma", normalization.method =
   \item{quantile.basis}{Basis for quantile normalization}
   \item{save.batches.dir}{Specify the output directory for temporary batch saves.}
   \item{unique.run.identifier}{Define identifier for this run for naming the temporary batch files. By default, a random id is generated.}
+  \item{save.batches}{Save batches?}
+
 }
 \details{Sweeps through the batches. Summarizes the probesets within
   each batch based on the precalculated model parameters using point

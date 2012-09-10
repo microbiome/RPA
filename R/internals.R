@@ -11,10 +11,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-set.alpha <- function (alpha = NULL, sigma2.method, P){ 
+set.alpha <- function (alpha = NULL, tau2.method, P){ 
   
   # set uninformative prior if not given
-  if ((sigma2.method == "mean" || sigma2.method == "online" || sigma2.method == "robust")) {
+  if ((tau2.method == "mean" || tau2.method == "online" || tau2.method == "robust")) {
     if (is.null(alpha)) { 
       alpha <- 1 + 1e-6
     } else if (any(alpha <= 1)) {
@@ -27,12 +27,12 @@ set.alpha <- function (alpha = NULL, sigma2.method, P){
   alpha
 }
 
-set.beta <- function (beta, sigma2.method, P) {
+set.beta <- function (beta, tau2.method, P) {
 
   # if beta is scalar, set identical prior for all probes with this value
-  if (is.null(beta) && !sigma2.method == "robust") {
+  if (is.null(beta) && !tau2.method == "robust") {
     beta <- rep.int(1e-6, P)
-  } else if (is.null(beta) && sigma2.method == "robust") {
+  } else if (is.null(beta) && tau2.method == "robust") {
     beta <- rep.int(1, P)
   } else if (length(beta) == 1) {
     beta <- rep.int(beta, P)

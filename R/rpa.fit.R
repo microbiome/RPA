@@ -10,14 +10,14 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  
-rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, sigma2.method = "robust", d.method = "fast") {
+rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, tau2.method = "robust", d.method = "fast") {
 
   # dat: original data (probes x samples)
-  #cind = 1; epsilon = 1e-2; alpha = NULL; beta = NULL; sigma2.method = "fast"; d.method = "fast"
+  # cind = 1; epsilon = 1e-2; alpha = NULL; beta = NULL; tau2.method = "fast"; d.method = "fast"
 
   # Fits RPA on fold-change data calculated against the reference sample.
-  # After estimating the RPA fold-changes, also fits the mean in the
-  # original data domain since this is often desired.
+  # After estimating the RPA fold-changes; fits the mean in the
+  # original data domain since this is typically desired.
 
   if (sum(is.na(dat)) > 0) {
     warning(paste("Data has ", mean(is.na(dat)), " fraction of missing values: imputing"))
@@ -33,7 +33,7 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
     return(new("rpa.fit",
 		list(mu = as.vector(dat), 
 		mu.real = as.vector(dat)[[cind]], 
-           	sigma2 = 0, 
+           	tau2 = 0, 
            	affinity = 0, 
            	data = dat,
 	   	alpha = ncol(dat)/2,
@@ -42,24 +42,29 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
 
   # Fit RPA
   S <- t(matrix(dat[, -cind] - dat[, cind], nrow = nrow(dat)))
-  estimated <- RPA.iteration(S, epsilon, alpha, beta, sigma2.method, d.method)
+  estimated <- RPA.iteration(S, epsilon, alpha, beta, tau2.method, d.method)
 
   # Estimate overall signal
   if (d.method == "fast") {
-    mu <- d.update.fast(dat, estimated$sigma2)
+
+    mu <- d.update.fast(dat, estimated$tau2)
     affinity <- estimate.affinities(dat, mu)
     mu.abs <- mean(mu[-cind] - estimated$d) # Difference between total signal and shape variable
+
   } else if (d.method == "basic") {
+
     # add the reference
     d <- rep.int(0, ncol(dat))
     names(d) <- colnames(dat)
     d[rownames(S)] <- estimated$d
     prs <- t(dat) - d
+
     # overall signal level is obtained by weighted mean
-    # weighted by probe-specific affinities
+    # weighted by probe-specific variances
     # finally take mean over all arrays to get robust estimate
     # (all rows should give approximately same result)
-    mu.abs <- mean(rowSums(prs/estimated$sigma2)/sum(1/estimated$sigma2))
+    mu.abs <- mean(rowSums(prs/estimated$tau2)/sum(1/estimated$tau2))
+
     # prs = mu.abs + af + noise; dat = d + mu.abs + af + noise
     affinity <- colMeans(prs) - mu.abs
     mu <- mu.abs + d
@@ -70,12 +75,12 @@ rpa.fit <- function (dat, cind = 1, epsilon = 1e-2, alpha = NULL, beta = NULL, s
   # d: differential signal between reference sample and other samples
   # mu: fitted signal in original data domain
   # affinity: probe-specific affinities
-  # sigma2: probe-specific stochastic noise
-  # model for probe p: x_p = mu.orig + affinity_p + noise_p; noise ~ N(0, sigma2_p)
+  # tau2: probe-specific stochastic noise
+  # model for probe p: x_p = mu.orig + affinity_p + noise_p; noise ~ N(0, tau2_p)
 
   new("rpa.fit",
       list(mu = mu, mu.real = mu.abs, 
-           sigma2 = estimated$sigma2, 
+           tau2 = estimated$tau2, 
            affinity = affinity, 
            data = dat,
 	   alpha = estimated$alpha,

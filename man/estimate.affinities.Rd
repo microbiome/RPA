@@ -3,20 +3,20 @@
 \title{Probe affinity estimation}
 \description{Estimates probe-specific affinity parameters.}
 \usage{
-estimate.affinities(dat, mu)
+estimate.affinities(dat, a)
 }
 
 \arguments{
   \item{dat}{Input data set: probes x samples.}
-  \item{mu}{Estimated expression signal from RPA model.}
+  \item{a}{Estimated expression signal from RPA model.}
 }
 \details{
 
   To estimate means in the original data domain let us assume that
   each probe-level observation x is of the following form:
-  x = d + mu + noise,
+  x = d + v + noise,
   where x and d are vectors over samples,
-  mu is a scalar (vector with identical elements)
+  v is a scalar (vector with identical elements)
   noise is Gaussian with zero mean and probe-specific variance parameters tau2 
   Then the parameter mu will indicate how much probe-level observation
   deviates from the estimated signal shape d.
@@ -62,7 +62,7 @@ flexibility through probe-specific weights.}
 
 \seealso{rpa.fit}
 \examples{
-##  mu <- estimate.affinities(dat, mu)
+##  mu <- estimate.affinities(dat, a)
 }
 \keyword{ utilities }
 

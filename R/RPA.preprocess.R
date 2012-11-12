@@ -61,6 +61,7 @@ get.set.inds <- function (cel.files, cdf = NULL, sets = NULL) {
 
   # Get probe position indices
   abatch <- ReadAffy(filenames = cel.files[1:2], compress=getOption("BioC")$affy$compress.cel)
+
   # Set alternative CDF environment if given
   if (!is.null(cdf)) { abatch@cdfName <- cdf }    
 

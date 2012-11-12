@@ -39,7 +39,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
   }
   
   if (!is.null(save.batches)) {
-    warning(paste("Saving background corrected data for quantile normalization into temporary files to speed up preprocessing in later steps.", sep = ""))
+    message(paste("Saving background corrected data for quantile normalization into temporary files to speed up preprocessing in later steps.", sep = ""))
   }
 
   # Process each batch separately
@@ -67,13 +67,13 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
       if (verbose) {message("Saving the batch")}
       batch <- apply(pma, 2, rank)
       colnames(batch) <- batches[[i]]
-      bf <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")
+      bf <- paste(save.batches.dir, "/", unique.run.identifier, "-", names(batches)[[i]], ".RData", sep = "")
       save(batch, file = bf)
-      if (verbose) {message(paste("Stored batch data in: ", bf))}      
+      if ( verbose ) { message(paste("Stored batch data in: ", bf)) }      
     }
 
     # Add to overall probe-sum for quantile estimation
-    if (verbose) {message("Updating the quantiles...")}    
+    if ( verbose ) { message("Updating the quantiles...") }    
     if (is.null(qs)) {
       # Create new quantile basis
       qs <- rowSums(apply(pma, 2, sort))
@@ -107,7 +107,7 @@ online.quantile <- function (abatch, n) {
     s <- n
   }
 
-  cat("Calculating quantile basis..\n")
+  message("Calculating quantile basis..\n")
   # FIXME: provide robust version
   qb <- get.quantile.basis(pm(abatch)[,s])
 

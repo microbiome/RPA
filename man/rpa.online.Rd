@@ -11,10 +11,10 @@
   procedure. Returns an expressionSet object preprocessed with RPA.}
 
 \usage{rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf =
-                 NULL, bg.method = "rma", priors = list(alpha = 2, beta = 1), epsilon = 1e-2, mc.cores = 1,                 
+                 NULL, bg.method = "rma", priors = list(alpha = 1, beta = 1), epsilon = 1e-2, mc.cores = 1,                 
                  verbose = TRUE, shuffle = TRUE, batch.size = 100,
                  batches = NULL, quantile.basis = NULL, save.batches = TRUE, 
-		 save.batches.dir, keep.batch.files = FALSE, unique.run.identifier = NULL)}
+		 save.batches.dir, keep.batch.files = FALSE, unique.run.identifier = NULL, rseed = 23)}
 
 \arguments{
   
@@ -64,6 +64,8 @@ size using Bayesian online-updates for probe-specific parameters.}
   \item{keep.batch.files}{Logical. Keep (TRUE) or remove (FALSE) the batch files after preprocessing.}
 
   \item{unique.run.identifier}{Define identifier for this run for naming the temporary batch files. By default, a random id is generated.}
+
+  \item{rseed}{Random seed.}
 
 }
 

@@ -49,7 +49,7 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
     # Get background corrected, quantile normalized, and logged probe-level matrix
     batch <- NULL
     if (load.batches) {
-      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], ".RData", sep = "")      
+      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, "-", names(batches)[[i]], ".RData", sep = "")      
       if (verbose) { message(paste("Load batch from file:", batch.file)) }
       load(batch.file) # batch
     }
@@ -104,7 +104,7 @@ estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta
   # variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
   # names(variances) <- names(betas) 
 
-  list(alpha = alpha, betas = betas, variances = s2s)  
+  list(alpha = alpha, betas = betas, tau2 = s2s)  
 
 }
 

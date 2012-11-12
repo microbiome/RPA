@@ -3,15 +3,18 @@ import(affy)
 ##export everything that does not start with a .
 ##exportPattern("^[^\\.]")
 export(
+       collect.hyperparameters,
        estimate.affinities,
        estimate.hyperparameters,       
        get.batches,
        get.probe.noise.estimates,
+       get.probe.parameters,
        #get.set.inds,
        hyperparameter.update,
        online.quantile,
        plot.rpa,          
        probe.performance,    
+       probetable,    
        qnorm.basis.online,
        rpa,
        RPA.dcost,

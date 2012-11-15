@@ -180,7 +180,7 @@ rpa.online <- function (
   # Garbage collection
   gc()
 
-  list(expressionSet = eset, hyper.parameters = hyper.parameters, hyper.parameters.evolution = hyper.parameters.evolution, params = params)
+  list(expressionSet = eset, hyper.parameters = hyper.parameters, hyper.parameters.evolution = hyper.parameters.evolution, params = params, sessionInfo = sessionInfo())
 
 }
 

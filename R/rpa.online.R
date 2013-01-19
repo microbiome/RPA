@@ -33,7 +33,7 @@ rpa.online <- function (
 
 {
 
-#cel.path = NULL; cel.files = cels; sets = sets; cdf = cdf; bg.method = "rma"; priors = list(alpha = 1, beta = 1); epsilon = 1e-2; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = 18; batches = NULL; quantile.basis = NULL; save.batches = TRUE; save.batches.dir = "."
+#fs <- list.files("~/Rpackages/RPA/RPA/R/", full.names = T); for (f in fs) {source(f)}; cel.path = NULL; cel.files = cels; sets = NULL; cdf = NULL; bg.method = "rma"; priors = list(alpha = 1, beta = 1); epsilon = 1e-2; mc.cores = 4; verbose = TRUE; shuffle = TRUE; batch.size = bs; batches = NULL; quantile.basis = NULL; save.batches = TRUE; save.batches.dir = "."; keep.batch.files = FALSE; unique.run.identifier = NULL; rseed = 23
 
   ###############################################################
 
@@ -43,7 +43,6 @@ rpa.online <- function (
   if (is.null(unique.run.identifier)) {
     unique.run.identifier <- paste("RPA-run-id-", rnorm(1), sep = "")
   }
-  
 
   if (!is.null(cel.path) && is.null(cel.files)) {
     message(paste("Preprocessing all CEL files from", cel.path))

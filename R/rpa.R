@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -61,9 +61,12 @@ rpa <- function (abatch = NULL,
     # (note: in the new version this is done in the original data domain, 
     # including the reference array)
     dat <- matrix(preproc$q[pmindices,], length(pmindices))
+
     res <- rpa.fit(dat, cind, epsilon, alpha, beta, tau2.method, d.method)
+
     mu.results[i, ] <- res$mu
-    # Store the results (only mean parameter and in the original data domain)    
+
+    # Store the results (only mean parameter and in the original data domain) 
      
   }
 

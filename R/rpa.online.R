@@ -120,9 +120,9 @@ rpa.online <- function (
   hyper.parameters <- get.probe.parameters(affinities, unique.run.identifier, save.batches.dir, mode = "list") 
   hyper.parameters.evolution <- collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, batch.size)
 
-  #################################################################
+  # -----------------------------------------------------------------
 
-  # Given the affinities, calculate the final summary estimates
+  # Calculate the final summary estimates
   message("Summarizing probesets")
   emat <- summarize.batches(sets = sets, 
        	  		    variances = hyper.parameters$tau2, 
@@ -138,7 +138,7 @@ rpa.online <- function (
 			    save.batches = save.batches, 
 			    affinities = affinities)
 
-  ###############################################################
+  # -----------------------------------------------------------------
 
   if (!keep.batch.files) {
     message(paste("Removing the temporary batch files from directory", save.batches.dir, "with the identifier", unique.run.identifier))

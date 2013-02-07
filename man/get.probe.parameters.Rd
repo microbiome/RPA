@@ -1,0 +1,31 @@
+\name{get.probe.parameters}
+\alias{get.probe.parameters}
+\title{get.probe.parameters}
+\usage{
+  get.probe.parameters(affinities, unique.run.identifier,
+    save.batches.dir = ".", mode = "list")
+}
+\arguments{
+  \item{affinities}{probe affinities}
+
+  \item{unique.run.identifier}{Batch file identifier
+  string}
+
+  \item{save.batches.dir}{Batch file directory}
+
+  \item{mode}{"list" or "table"}
+}
+\description{
+  Get probe-level hyperparameter from batch files
+}
+\examples{
+# df <- get.probe.parameters(unique.run.identifier, save.batches.dir = ".", mode = "list")
+}
+\author{
+  Leo Lahti \email{leo.lahti@iki.fi}
+}
+\references{
+  See citation("RPA")
+}
+\keyword{utilities}
+

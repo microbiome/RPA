@@ -11,6 +11,56 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+#' RPA.iteration
+#' Estimating model parameters d and tau2.
+#'
+#' @param S Matrix of probe-level observations for a single probeset: samples x probes.
+#' @param epsilon Convergence tolerance. The iteration is deemed converged when the change in all parameters is < epsilon.
+#' @param alpha alpha prior for inverse Gamma distribution of probe-specific variances. Noninformative prior is obtained with alpha, beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta are specify equal inverse Gamma prior for all probes to regularize the solution. The defaults depend on the method.
+#' @param beta beta prior for inverse Gamma distribution of probe-specific variances. Noninformative prior is obtained with alpha, beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta are specify equal inverse Gamma prior for all probes to regularize the solution. The defaults depend on the method.
+#' @param tau2.method Optimization method for tau2 (probe-specific variances).
+#'
+#'	"robust": (default) update tau2 by posterior mean,
+#'		regularized by informative priors that are identical
+#'		for all probes (user-specified by
+#'		setting scalar values for alpha, beta). This
+#'		regularizes the solution, and avoids overfitting where
+#'		a single probe obtains infinite reliability. This is a
+#'	        potential problem in the other tau2 update
+#'	        methods with non-informative variance priors. The
+#'		default values alpha = 2; beta = 1 are
+#'	        used if alpha and beta are not specified.
+#' 
+#'        "mode": update tau2 with posterior mean
+#'
+#'	"mean": update tau2 with posterior mean
+#'	
+#'	"var": update tau2 with variance around d. Applies the fact
+#'             that tau2 cost function converges to variance with
+#'               large sample sizes. 
+#'
+#' @param d.method Method to optimize d.
+#'        "fast": (default) weighted mean over the probes, weighted by
+#'		probe variances The solution converges to this with
+#'		large sample size.
+#'
+#'        "basic": optimization scheme to find a mode used in Lahti et
+#'        	 al. TCBB/IEEE; relatively slow; this is the preferred 
+#'		 method with small sample sizes.
+#'                	      
+#' @param maxloop Maximum number of iterations in the estimation process.
+#'
+#' @details Finds point estimates of the model parameters d (estimated true signal underlying probe-level observations), and tau2 (probe-specific variances). Assuming data set S with P observations of signal d with Gaussian noise that is specific for each observation (specified by a vector tau2 of length P), this method gives a point estimate of d and tau2. Probe-level variance priors alpha, beta can be used with tau2.methods 'robust', 'mode', and 'mean'.  The d.method = "fast" is the recommended method for point computing point estimates with large samples size.
+#'
+#' @returns A list with the following elements: d:  A vector. Estimated 'true' signal underlying the noisy probe-level observations.; tau2: A vector. Estimated variances for each measurement (or probe).
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords utilities
+
 RPA.iteration <- function(S,
                           epsilon = 1e-3,
                             alpha = NULL,
@@ -20,6 +70,9 @@ RPA.iteration <- function(S,
                           maxloop = 1e6)
 {
 
+
+  # FIXME: remove d.method and tau2.method from options
+  # S <- q; maxloop <- 1e6
 
   P <- ncol(S) # number of probes
   T <- nrow(S) # Number of arrays (except reference)
@@ -40,7 +93,7 @@ RPA.iteration <- function(S,
   # Confirm that alpha is valid for tau2.method 
   if (tau2.method == "mean" || tau2.method == "robust") {
     ifelse(all(alpha > 1), TRUE, stop("alpha > 1 - (N.arrays - 1) / 2 required for this tau2.method"))
-  } else {}
+  } 
 
   ###############################
 
@@ -73,19 +126,21 @@ RPA.iteration <- function(S,
   # optimize until convergence
   loopcnt <- 0
 
-  if (d.method == "fast") {
+  # initialize d for the first iteration
+  d <- rowMeans(S)  
 
-    while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
+  while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
 
       tau2.old <- tau2
 
       # update d, given tau2
-      d <- d.update.fast(t(S), tau2)
+      d <- d.update.fast(t(S), tau2) # d.method = "fast"
+      # d <- optim(d, fn = RPA.dcost, method = "BFGS", tau2 = tau2, S = S)$par # d.method = "basic"
 
       # Estimate noise 
       R <- S - d
 
-      # beta update (feed in beta prior, not updates from this loop!)
+      # beta update (feed in beta prior, no updates from this loop!)
       beta <- update.beta(R, beta.prior)
 
       # update tau2
@@ -93,37 +148,7 @@ RPA.iteration <- function(S,
 
       # follow iteration count to avoid potentially infinite loops
       loopcnt <- loopcnt + 1 
-
-    }
-
-  } else if (d.method == "basic") {
-
-      # initialize d for the first iteration
-      d <- rowMeans(S)  
-
-      while ((max(abs(c(tau2 - tau2.old))) > epsilon) && loopcnt < maxloop) {
-
-        # separate while loops for d.methods to avoid logical comparisons 
-        # during iteration	
-	tau2.old <- tau2
-
-        # update d
-        d <- optim(d, fn = RPA.dcost, method = "BFGS", tau2 = tau2, S = S)$par
-
-        # Estimate noise 
-        R <- S - d
-
-        # beta update (feed in beta prior, not updates from this loop!)
-        beta <- update.beta(R, beta.prior)
-
-        # update tau2
-        tau2 <- RPA.tau2.update(R, alpha, beta, tau2.method)
-
-        # follow iteration count to avoid potentially infinite loops
-        loopcnt <- loopcnt + 1 
-
-      }
-   } 
+  }
 
   list(d = d, tau2 = tau2, alpha = alpha, beta = beta)
 }

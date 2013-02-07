@@ -11,102 +11,50 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-estimate.hyperparameters <- function (sets = NULL, priors = list(alpha = 2, beta = 1), 
-			    	      batches, cdf = NULL, quantile.basis, 
-				      bg.method = "rma", 
-				      epsilon = 1e-2,
-                                      load.batches = FALSE,
-                                      save.hyperparameter.batches = FALSE, 
-				      mc.cores = 1, 
-				      verbose = TRUE, 
-				      normalization.method = "quantiles", 						  
-				      save.batches.dir = ".", 
-				      unique.run.identifier = NULL)
-{
 
-  # Hyperparameter estimation through batches  
-  # FIXME: For online version. Modify later general-purpose
-  if (verbose) { message("Get probeset indices") }
-  set.inds <- get.set.inds(batches[[1]][1:2], cdf, sets)
-  if ( is.null(sets) ) { sets <- names(set.inds) }
-  
-  # Initialize hyperparameters
-  # Note: alpha is scalar and same for all probesets 
-  # alpha <- alpha + N/2 at each batch
-  if (verbose) { message("Initialize priors") }
-  alpha <- priors$alpha # initialize 
-  betas <- mclapply(sets, function (set) { 
-    rep(priors$beta, length(set.inds[[set]])) 
-  }, mc.cores = mc.cores)
-  names(betas) <- sets
-
-  for (i in 1:length(batches)) {
-
-    if (verbose) {
-      message(paste("Updating hyperparameters; batch", i, "/", length(batches)))
-    }
-    
-    # Get background corrected, quantile normalized, and logged probe-level matrix
-    batch <- NULL
-    if (load.batches) {
-      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, "-", names(batches)[[i]], ".RData", sep = "")      
-      if (verbose) { message(paste("Load batch from file:", batch.file)) }
-      load(batch.file) # batch
-    }
-
-    if (verbose) { message("Pick probe-level values") }
-    
-    q <- get.probe.matrix(cels = batches[[i]], cdf, quantile.basis,
-                          bg.method, normalization.method, batch,
-                          verbose = verbose)
-    
-    # Get probes x samples matrix of probe-wise fold-changes
-    # Select one of the arrays as a reference at
-    # random for each batch. Choice of the reference array does not notably affect
-    # the results in experiments as the control effect is marginalized
-    # out in the treatment. Note that in rpa.online implementation,
-    # cind is specific to each batch but it is only used to in
-    # hyperparameter estimation step to cancel probe affinity effects;
-    # in probeset summarization no reference sample is needed. Whether
-    # cind is the same for the overall data collection or
-    # batch-specific should not notably affect the results, either.
-
-    cind <- sample(ncol(q), 1)
-    q <- matrix(q[, -cind] - q[, cind], nrow(q))
-    # T <- ncol(q) # Number of arrays expect reference
-
-    if (verbose) { message("Get probes x samples matrices for each probeset") }
-    q <- mclapply(set.inds, function (pmis) { matrix(q[pmis,], length(pmis)) }, mc.cores = mc.cores)
-    names(q) <- sets	    
-
-    if (verbose) { message("Update probe parameters") }
-    s2s <- mclapply(sets, function (set) {
-      s2.update(q[[set]], alpha, betas[[set]], s2.init = betas[[set]]/alpha, th = epsilon)
-    }, mc.cores = mc.cores) 
-    names(s2s) <- sets
-
-    #if (verbose) {message("Update alpha and beta")}    
-    # Update alpha, beta (variance = beta/alpha at mode with large T =  ncol(q))
-    alpha <- update.alpha(length(batches[[i]]), alpha)
-    # When calculating point estimates it is ok to fit variance first, then
-    # check what beta is at the optimal point estimate 
-    betas <- mclapply(s2s, function (s2) { s2 * alpha }, mc.cores = mc.cores)
-
-    if (save.hyperparameter.batches) {
-      batch.file <- paste(save.batches.dir, "/", unique.run.identifier, names(batches)[[i]], "-hyper.RData", sep = "")
-      if (verbose) {message(paste("Save hyperparameters into file:", batch.file))}    
-      save(alpha, betas, file = batch.file)
-    }
-        
-  }
-
-  # Get final estimated variances for each probeset based on hyperparameter posteriors
-  # variances <- mclapply(betas, function (beta) {beta/alpha}, mc.cores = mc.cores)
-  # names(variances) <- names(betas) 
-
-  list(alpha = alpha, betas = betas, tau2 = s2s)  
-
-}
+#' hyperparameter.update
+#' Update hyperparameters Update shape (alpha) and scale (beta) parameters of the inverse gamma distribution.
+#'
+#' @param dat A probes x samples matrix (probeset).
+#' @param alpha Shape parameter of inverse gamma density for the probe variances.
+#' @param beta Scale parameter of inverse gamma density for the probe variances.
+#' @param th Convergence threshold.
+#'
+#' @details Shape update: alpha <- alpha + T/2; Scale update: beta <- alpha * s2 where s2 is the updated variance for each probe (the mode of variances is given by beta/alpha). The variances (s2) are updated by EM type algorithm, see s2.update.
+#'
+#'@return A list with elements alpha, beta (corresponding to the shape and scale parameters of inverse gamma distribution, respectively).
+#'
+#' @seealso s2.update, rpa.online
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#'## Generate and fit toydata, learn hyperparameters
+#'#set.seed(11122)
+#'#P <- 11   # number of probes
+#'#N <- 5000 # number of arrays
+#'#real <- sample.probeset(P = P, n = N, shape = 3, scale = 1, mu.real = 4)
+#'#dat <- real$dat # probes x samples#
+#'#
+#'## Set priors
+#'#alpha <- 1e-2
+#'#beta  <- rep(1e-2, P)
+#'## Operate in batches
+#'#step <- 1000
+#'#for (ni in seq(1, N, step)) {
+#'#  batch <- ni:(ni+step-1)  
+#'#  hp <- hyperparameter.update(dat[,batch], alpha, beta, th = 1e-2)
+#'#  alpha <- hp$alpha
+#'#  beta <- hp$beta
+#'#}
+#'## Final variance estimate
+#'#s2 <- beta/alpha
+#'#
+#'## Compare real and estimated variances
+#'#plot(sqrt(real$variance), sqrt(s2), main = cor(sqrt(real$variance), sqrt(s2))); abline(0,1)
+#'
+#' @export
+#' @keywords utilities
 
 hyperparameter.update <- function (dat, alpha, beta, th = 1e-2) {
   
@@ -129,7 +77,7 @@ update.alpha <- function (T, alpha) { alpha + T/2 }
 
 update.beta <- function (R, beta, mode = "robust") {
 
-  # FIXME: define separate funcs for modes to speed up?
+  # FIXME: mode = "approx" into default if considerable speedups without remarkable compromises
 
   if (mode == "approx") {
     # ML estimate, see for instance Bishop p. 100, eqs. 2.150-2.151
@@ -157,7 +105,7 @@ betahat.f <- function (beta, R) {
     # vrt. (N/2)*var = 0.5*(N * var) = 0.5 * sum(s^2)
 }
 
-s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2) {
+s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2, maxloop = 1e6) {
 
   if (is.null(s2.init)) { s2.init <- rep(1, length(beta)) }
 
@@ -167,13 +115,15 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
   ndot <- n-1
   #n.sqrt <- sqrt(n)
   
-  while (epsilon > th) {
+  loopcnt <- 0
+
+  while (epsilon > th && loopcnt < maxloop) {
 
     s2.old <- s2
 
     # Generalized EM; should be sufficient to improve by using the
     # mode of d (mu.hat) instead of sampling from d (d is a long
-    # vector anyway, giving sufficiently many instants); updating with
+    # vector anyway, giving sufficiently many instances); updating with
     # the mode here as complete sampling would slow down computation
     # considerably, probably without much gain in performance in this
     # case.
@@ -195,13 +145,14 @@ s2.update <- function (dat, alpha = 1e-2, beta = 1e-2, s2.init = NULL, th = 1e-2
     # FIXME: check if 'optimize' would be faster?
     epsilon <- max(abs(s2 - s2.old))
 
+    loopcnt <- loopcnt + 1
+
   }
 
   s2
 
 }
 
-# FIXME: could be utilized in d.update.fast.c to speed up
 s2hat <- function (s2) { 1 / sum(1 / s2) }
 
 

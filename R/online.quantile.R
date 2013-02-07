@@ -12,17 +12,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 2, verbose = TRUE, save.batches.dir = ".", unique.run.identifier = NULL) {
+qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 3, verbose = TRUE, save.batches.dir = ".", unique.run.identifier = NULL) {
 
-  # cel.files = batches; save.batches = batch.file.id
-  
+  message("Calculating the basis for quantile normalization")    
+
+
   # Estimate basis for quantile normalization 
 
-  # FIXME: add option to calculate only based on subset of data (as
-  # now in online.quantile function; merge these two)
+  # FIXME: to speed up, add option to calculate only based on subset of data (as
+  # in online.quantile function; merge these two)
   
   # Split CEL file list into batches
   if (length(cel.files[[1]]) == 1) {
+
     # Assume cel.files is a character vector listing CEL files
     # Create batches
     batches <- get.batches(cel.files, batch.size, shuffle = TRUE)
@@ -38,7 +40,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
     names(batches) <- paste("batch", 1:length(batches), sep = "-")
   }
   
-  if (!is.null(save.batches)) {
+  if (save.batches) {
     message(paste("Saving background corrected data for quantile normalization into temporary files to speed up preprocessing in later steps.", sep = ""))
   }
 
@@ -90,6 +92,24 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
   basis <- log2(qs/length(cel.files))
 
 }
+
+
+
+#' online.quantile
+#' Quantile normalization tools for online preprocessing. Estimate quantiles for quantile normalization based on subset of the data (random, or specified by the user).
+#'
+#' @param abatch AffyBatch
+#' @param n Numeric: number of random samples to use to define quantile basis. Vector: specify samples to be used in quantile basis calculation.
+#'
+#' @details "online.quantile": Ordinary quantile normalization is exhaustively memory-consuming in alrge data sets. Then the quantiles can be calculated based on subset of the data to allow efficient normalization. This function can also be used to investigate effect of subset size to convergence of the quantile estimates;"qnorm.basis.online": sweeps through the data in batches to calculate the basis for quantile normalization (average over sorted profiles).
+#'
+#' @return "online.quantile": AffyBatch; "qnorm.basis.online": a vector containing the basis for quantile normalization.
+#'
+#' @export
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords utilities
 
 online.quantile <- function (abatch, n) {
 

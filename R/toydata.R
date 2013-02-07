@@ -11,6 +11,30 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+#' sample.probeset
+#' Toydata generator for probeset data.
+#'
+#' @param P Number of probes.
+#' @param n Number of samples.
+#' @param shape Shape parameter of the inverse Gamma function used to generate the probe-specific variances.
+#' @param scale Scale parameters of the inverse Gamma function used to generate the probe-specific variances.
+#' @param mu.real Absolute signal level of the probeset.
+#'
+#' @details Generate random probeset with varying probe-specific affinities and variances. The toy data generator follows distributional assumptions of the RPA model and allows quantitative estimation of model accuracy with different options, noise levels and sample sizes. Probeset-level summary estimate is obtained as mu.real + d.
+#'
+#' @return A list with the following elements:
+#' \item{dat }{Probeset data: probes x samples}
+#' \item{variance }{Probe variances.}
+#' \item{affinity }{Probe affinities.}
+#' \item{d }{Probeset-level signal shape.}
+#' \item{mu.real }{Probeset-level absolute signal level.}
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # real <- sample.probeset(P = 10, n = 20, shape = 1, scale = 1, mu.real = 2)
+#' @keywords utilities
 
 sample.probeset <- function (P = 10, n = 20, shape = 1, scale = 1, mu.real = 2) {
 

@@ -11,53 +11,57 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-  # To estimate means in the original data domain let us assume that
-  # each probe-level observation x is of the following form:
-  # x = d + a + noise,
-  # where x and d are vectors over samples,
-  # a is a scalar (vector with identical elements)
-  # noise is Gaussian with zero mean and probe-specific variance parameters tau2 
-  # Then the parameter a will indicate how much probe-level observation
-  # deviates from the estimated signal shape d.
-  # This deviation is further decomposed as
-  # a = a.real + mu.probe, where
-  # a.real describes the 'real' signal level, common for all probes
-  # mu.probe describes probe affinity effect
-  # Let us now assume that mu.probe ~ N(0, sigma.probe).
-  # This encodes the assumption that in general the affinity
-  # effect of each probe tends to be close to zero.
+#' estimate.affinities
+#'
+#' Probe affinity estimation. Estimates probe-specific affinity parameters.
+#' 
+#' @param dat Input data set: probes x samples.
+#' @param a Estimated expression signal from RPA model.
+#'
+#' @export
+#'
+#' @details 
+#'  To estimate means in the original data domain let us assume that
+#'  each probe-level observation x is of the following form:
+#'  x = d + v + noise,
+#'  where x and d are vectors over samples,
+#'  v is a scalar (vector with identical elements)
+#'  noise is Gaussian with zero mean and probe-specific variance parameters tau2 
+#'  Then the parameter mu will indicate how much probe-level observation
+#'  deviates from the estimated signal shape d.
+#'  This deviation is further decomposed as
+#'  mu = mu.real + mu.probe, where
+#'  mu.real describes the 'real' signal level, common for all probes
+#'  mu.probe describes probe affinity effect
+#'  Let us now assume that mu.probe ~ N(0, sigma.probe).
+#'  This encodes the assumption that in general the affinity
+#'  effect of each probe tends to be close to zero.
+#'  Then we just calculate ML estimates of mu.real and mu.probe
+#'  based on particular assumptions.
+#'  Note that this part of the algorithm has not been defined
+#'  in full probabilistic terms yet, just calculating the point estimates.
 
-  # if identical sigma.probe is used for all probes then a.real is
-  # estimated by the average of the probe effects a. Note that then
-  # probe-specific affinities mu.probe will sum to exactly zero, which
-  # gives an analogous model than used in RMA, which uses this
-  # assumption to fit medianpolish.
-
-  # Probes can also be weighted by setting probe-specific sigmas.  In
-  # "rpa" option, set sigma.probe to the tau2 value of the probe
-  # estimated by RPA.  Note that while tau2 in RPA measures
-  # stochastic noise, and NOT the affinity effect, we can use it
-  # also to weigh the probes according to how much
-  # they contribute to the overall signal shape. Then probes
-  # that have little effect on the signal shape (i.e. are very noisy
-  # and likely to be contaminated by many unrelated signals) 
-  # also contribute less to the absolute signal estimate. If no other
-  # prior information is available, using stochastic parameters tau2
-  # to determine probe weights is likely to work better than simple
-  # averaging of the probes without weights. Also in this case the
-  # probe affinities sum close to zero but there is some flexibility,
-  # and more noisy probes can be downweighted.
-
-  # Mean level for each probe after extracting the
-  # signal shape. This is the ML estimate for mu = mu.real + mu.probe
-  # after ignoring the negligible extra variance from the measurement noise
-  # averaged over all probes and samples (converges rapidly to zero)
-  # a <- colMeans(t(dat) - d)
-
-  # weighted mean, weighted by probe-specific affinity priors
-  # a.real <- sum(a/sigmas)/sum(1/sigmas)
-  
-  # FIXME: add other ways to define affinity priors later
+#'  Note that while tau2 in RPA measures stochastic noise, and NOT the
+#'  affinity effect, we use it here as a heuristic solution to weigh the
+#'  probes according to how much they contribute to the overall signal
+#'  shape. Intuitively, probes that have little effect on the signal
+#'  shape (i.e. are very noisy and likely to be contaminated by many
+#'  unrelated signals) should also contribute less to the absolute
+#'  signal estimate. If no other prior information is available, using
+#'  stochastic parameters tau2 to determine probe weights is likely to
+#'  work better than simple averaging of the probes without
+#'  weights. Also in this case the probe affinities sum close to zero
+#'  but there is some flexibility, and more noisy probes can be
+#'  downweighted.
+#'
+#' @returns A vector with probe-specific affinities.
+#'
+#' @seealso rpa.fit
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples #  mu <- estimate.affinities(dat, a)
+#' @keywords utilities
 
 estimate.affinities <- function (dat, a) {
 

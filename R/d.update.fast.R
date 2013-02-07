@@ -16,7 +16,7 @@ d.update.fast <- function (St, s2) {
   # St: probes x arrays  
 
   # With large sample sizes when T -> Inf
-  # the d converges to the weighted mean 
+  # d converges to the weighted mean 
   # over the probes, weighted by probe variances	 
   colSums(St / s2) / sum(1 / s2)
 

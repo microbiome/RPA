@@ -11,6 +11,16 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+rpa.impute <- function (dat) {
+  if (sum(is.na(dat)) > 0) {
+    warning(paste("Data has ", mean(is.na(dat)), " fraction of missing values: imputing"))
+    dat <- t(apply(dat, 1, function (x) { y <- x; y[is.na(y)] <- rnorm(sum(is.na(y)), mean(y, na.rm = T), sd(y, na.rm = T)); y}))
+  }
+
+  dat
+}
+
+
 set.alpha <- function (alpha = NULL, tau2.method, P){ 
   
   # set uninformative prior if not given

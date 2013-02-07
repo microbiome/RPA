@@ -11,10 +11,43 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+#' rpa.plot
+#' Plot RPA results and probe-level data for a specified probeset.
+#'
+#' @param dat Original data: probes x samples.
+#' @param rpa.fit.object An instance of the 'rpa.fit' class.
+#' @param toydata.object Optional. Output from sample.probeset toydata generator function. Can be used to compare (toy)data with known ground truth to RPA estimates from rpa.fit.object.
+#' @param highlight.probes Optionally highlight some of the probes (with dashed line)
+#' @param pcol Color for probe signal visualization.
+#' @param mucol Color for summary estimate.
+#' @param ecol Color for external signal.
+#' @param cex.lab Label size adjustment parameters.
+#' @param cex.axis Axis size adjustment parameters.
+#' @param cex.main Title size adjustment parameters.
+#' @param cex.names Names size adjustment parameters.
+#' @param external.signal Plot external signal on the probeset. For instance, an alternative summary estimate from another preprocessing methods
+#' @param main Title text.
+#' @param plots "all": plot data and summary, noise and affinity; "data": plot data and summary
+#' @param ... Other parameters to pass for plot function.
+#'
+#' @details Plots the preprocessed probe-level observations, estimated probeset-level signal, and probe-specific variances. It is also possible to highlight individual probes and external summary measures.
+#'
+#'@return Used for its side-effects. Returns probes x samples matrix of probe-level data plotted on the image.
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords methods
+
 rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
+
+  # rpa.fit.object = estimated; toydata.object = real; plots = "toydata"; highlight.probes = NULL; pcol = "darkgrey"; mucol = "black"; ecol = "red"; cex.lab = 1.5; cex.axis = 1; cex.main = 1; cex.names = 1; external.signal = NULL; main = ""
 
   # If no model given, calculate fit a new model on the data
   if (is.null(rpa.fit.object)) { rpa.fit.object <- rpa.fit(dat) }
+
   # Override given data with the one in rpa.fit object
   dat <- rpa.fit.object$data
   

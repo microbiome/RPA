@@ -11,15 +11,39 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+#' RPA.preprocess
+#' Preprocess AffyBatch object for RPA.
+#'
+#' @param abatch An AffyBatch object. 
+#' @param bg.method Specify background correction method. See bgcorrect.methods(abatch) for options.
+#' @param normalization.method Specify normalization method. See normalize.methods(abatch) for options. For memory-efficient online version, use "quantiles.online".
+#' @param cdf The CDF environment used in the analysis. 
+#' @param cel.files List of CEL files to preprocess.
+#' @param cel.path Path to CEL file directory.
+#' @param quantile.basis Optional. Basis for quantile normalization.
+#
+#' @details Background correction, quantile normalization and log2-transformation for probe-level raw data in abatch. Then probe-level differential expression is computed between the specified 'reference' array (cind) and the other arrays. Probe-specific variance estimates are robust against the choice of reference array.
+#'
+#' @returns 
+#'  fcmat: Probes x arrays preprocessed differential expression matrix.
+#'  cind: Specifies which array in abatch was selected as a reference in calculating probe-level differential expression.
+#'  cdf: The CDF environment used in the analysis.
+#'  set.inds: Indices for probes in each probeset, corresponding to the rows of fcmat.
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords methods
 
 RPA.preprocess <- function (abatch, 
                             bg.method = "rma",
                             normalization.method = "quantiles.robust",
-                            cdf = NULL, cel.files = NULL, cel.path = NULL)
+                            cdf = NULL, cel.files = NULL, cel.path = NULL, quantile.basis = NULL)
 {
 
   # Getting affybatch
-
   if (is.null(abatch) && (!is.null(cel.files) || !is.null(cel.path))) {
     if (is.null(cel.files) && !is.null(cel.path)) {
        cel.files <- list.celfiles(cel.path, full.names = TRUE)
@@ -42,8 +66,13 @@ RPA.preprocess <- function (abatch,
   # for defected affybatch
   
   message("Normalizing...") 
-  abatch <- normalize(abatch, method = normalization.method)
-  
+  if (is.null(quantile.basis)) {
+    abatch <- normalize(abatch, method = normalization.method)
+  } else {
+    # Normalize by forcing the pre-calculated quantile basis
+    pm(abatch) <- set.quantiles(pm(abatch), quantile.basis)
+  }
+
   # Log transformation
   message("Logging PM values...")
   q <- log2(pm(abatch))
@@ -56,6 +85,9 @@ RPA.preprocess <- function (abatch,
   return(list(q = q, set.inds = set.inds, cdf = cdf))
 
 }
+      
+
+
 
 get.set.inds <- function (cel.files, cdf = NULL, sets = NULL) {
 
@@ -80,11 +112,42 @@ get.set.inds <- function (cel.files, cdf = NULL, sets = NULL) {
  
 }
 
-get.batches <- function (items, batch.size, shuffle = FALSE) {
 
-  
+determine.batch.size <- function (N, batch.size, verbose) {
+
+  if ( is.null(batch.size) ) {
+    batch.size <- min(N, 100)
+  }
+  if (batch.size < 3) {
+    warning("Minimum batch.size is 3. Setting batch.size = 3.")
+    batch.size <- 3
+  }
+
+  batch.size
+
+}
+
+#' get.batches
+#' Split data into batches
+#'
+#' @param items A vector of items to be splitted into batches.
+#' @param batch.size Batch size. The last batch may contain less elements than the other batches which have batch.size elements each.
+#' @param shuffle Split the elements randomly in the batches.
+#'
+#' @returns A list. Each element corresponds to one batch and contains a vector listing the elements in that batch.
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords utilities
+
+get.batches <- function (items, batch.size = NULL, shuffle = FALSE) {
+
+  # If batch size not given, or too small, determine automatically:	    
+  batch.size <- determine.batch.size(length(items), batch.size)
+
   # Random ordering for the items?
-  if (shuffle) {items <- sample(items)}
+  if ( shuffle ) { items <- sample(items) }
 
   # N elements into batches of size batch.size
   # last batch can be smaller

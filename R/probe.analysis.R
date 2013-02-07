@@ -17,7 +17,6 @@
 #'
 #' @param rpa.object Object of the rpa class (output from functions rpa or rpa.online)
 #' @param abatch Optional: Affybatch for the rpa object, if not provided in the rpa project.
-#  @param sort Sort the probes according to their stochastic noise level
 #' @param sets Specify the probesets to include in the output. Default: All probesets
 #' @return Data frame of probe-level parameter estimates
 #' @export
@@ -127,57 +126,67 @@ get.probe.parameters <- function (affinities, unique.run.identifier, save.batche
 #'
 #' Collect probe-level parameters during online-learning from the batch files.
 #' 
+#' @param batches batch list
 #' @param unique.run.identifier Batch file identifier string
 #' @param save.batches.dir Batch file directory
-#' @param batch.size batch size
+#' @param save.batches Logical. Determines whether batches are available.
+#' @param verbose verbose
 #'
 #' @export
 #'
 #' @references
 #' See citation("RPA") 
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
-#' @examples # hpe <- collect.hyperparameters(unique.run.identifier, save.batches.dir, batch.size)
+#' @examples # hpe <- collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, save.batches)
 #' @keywords utilities
   
-collect.hyperparameters <- function (batches, unique.run.identifier, save.batches.dir, batch.size) {
+collect.hyperparameters <- function (batches, unique.run.identifier, save.batches.dir, save.batches, verbose = TRUE) {
 
-  alpha <- NULL
-  betas <- NULL			
+  if ( verbose ) { message("Collect hyperparameters..") } # from batch files
 
-  # Hyperparameter files
-  fs <- list.files(save.batches.dir, pattern = unique.run.identifier, full.names = TRUE)
-  fs <- fs[grep("hyper.RData", fs)]
-  o <- order(as.numeric(sapply(strsplit(unlist(strsplit(fs, "-hyper.RData")), "-"), function (x) {x[[length(x)]]})))
-  fs <- fs[o]
+  evolution <- NULL
 
-  # Final estimated hyperparameters
+  if (is.null(save.batches)) {
+
+    alpha <- NULL
+    betas <- NULL			
+
+    # Hyperparameter files
+    fs <- list.files(save.batches.dir, pattern = unique.run.identifier, full.names = TRUE)
+    fs <- fs[grep("hyper.RData", fs)]
+    o <- order(as.numeric(sapply(strsplit(unlist(strsplit(fs, "-hyper.RData")), "-"), function (x) {x[[length(x)]]})))
+    fs <- fs[o]
+
+    # Final estimated hyperparameters
   final.hp <- paste(save.batches.dir, "/", unique.run.identifier, "-RPA-hyperparameters.RData", sep = "") # hyper.parameters
-  load(final.hp)
+    load(final.hp)
 
-  # Hyperparameter evolution
-  alphas <- c()
-  betamat <- NULL
-  for (f in fs) {
-    load(f)
-    alphas[[f]] <- alpha  
-    betamat <- cbind(betamat, unlist(betas)) 
-  }
-  # varmat <- t(t(betamat)/alphas)
+    # Hyperparameter evolution
+    alphas <- c()
+    betamat <- NULL
+    for (f in fs) {
+      load(f)
+      alphas[[f]] <- alpha  
+      betamat <- cbind(betamat, unlist(betas)) 
+    }
+    # varmat <- t(t(betamat)/alphas)
 
-  colnames(betamat) <- names(alphas)
+    colnames(betamat) <- names(alphas)
 
-  # cumulative sample size from batches
-  cumulative.N <- batch.size * (1:length(fs))
-  cumulative.N[[length(cumulative.N)]] <- length(unlist(batches)) # alpha = N/2 + prior
-  names(cumulative.N) <- names(alpha)
+    # cumulative sample size from batches
+    batch.size <- length(batches[[1]])
+    cumulative.N <- batch.size * (1:length(fs))
+    cumulative.N[[length(cumulative.N)]] <- length(unlist(batches)) # alpha = N/2 + prior
+    names(cumulative.N) <- names(alpha)
 
-  # Parameter evolution
-  evolution <- list()
-  evolution$alpha <- alphas
-  evolution$beta <- betamat
-  #evolution$tau2 <- varmat
-  evolution$N <- cumulative.N
+    # Parameter evolution
+    evolution <- list()
+    evolution$alpha <- alphas
+    evolution$beta <- betamat
+    #evolution$tau2 <- varmat
+    evolution$N <- cumulative.N
+
+  } 
 
   evolution
-
 }

@@ -6,23 +6,23 @@
 }
 \arguments{
   \item{rpa.object}{Object of the rpa class (output from
-  function RPA.pointestimate)}
+  functions rpa or rpa.online)}
 
   \item{abatch}{Optional: Affybatch for the rpa object, if
   not provided in the rpa project.}
 
-  \item{sets}{Optional: Specify the inspected probesets.}
-
+  \item{sets}{Specify the probesets to include in the
+  output. Default: All probesets}
 }
 \value{
   Data frame of probe-level parameter estimates
 }
 \description{
   Provide a table of probe-level parameter estimates
-  (affinity and stochastic noise) for rpa class object.
+  (affinity and stochastic noise) for RPA output.
 }
 \examples{
-# library(affydata) data(Dilution); rpa.results <- RPA.pointestimate(Dilution); tab <- probe.parameters(rpa.results)
+# library(affydata) data(Dilution); rpa.results <- RPA.pointestimate(Dilution); tab <- probe.parameters(rpa.results); df <- df[order(abs(df$variance), decreasing = TRUE),]
 }
 \author{
   Leo Lahti \email{leo.lahti@iki.fi}

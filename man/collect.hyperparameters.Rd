@@ -2,22 +2,28 @@
 \alias{collect.hyperparameters}
 \title{collect.hyperparameters}
 \usage{
-  collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, batch.size)
+  collect.hyperparameters(batches, unique.run.identifier,
+    save.batches.dir, save.batches, verbose = TRUE)
 }
 \arguments{
   \item{batches}{batch list}
-  \item{unique.run.identifier}{unique run identifier}
-  \item{save.batches.dir}{Batch data file directory}
-  \item{batch.size}{Batch size}
-}
-\value{
-  List; one element for each parameter. With updated parameter values at each batch.
+
+  \item{unique.run.identifier}{Batch file identifier
+  string}
+
+  \item{save.batches.dir}{Batch file directory}
+
+  \item{save.batches}{Logical. Determines whether batches
+  are available.}
+
+  \item{verbose}{verbose}
 }
 \description{
-  Use this function to investigation parameter evolution during online-learning.
+  Collect probe-level parameters during online-learning
+  from the batch files.
 }
 \examples{
-# hpe <- collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, batch.size)
+# hpe <- collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, save.batches)
 }
 \author{
   Leo Lahti \email{leo.lahti@iki.fi}

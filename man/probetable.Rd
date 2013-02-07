@@ -5,10 +5,13 @@
   probetable(hyper.parameters)
 }
 \arguments{
-  \item{hyper.parameters}{A list with alpha, betas, variances and affinities}
+  \item{hyper.parameters}{A list with alpha, betas,
+  variances and affinities}
 }
-\value{Data frame}
-\description{Convert probe-level hyperparameter lists into a table format}
+\description{
+  Convert probe-level hyperparameter lists into a table
+  format.
+}
 \examples{
 # df <- probetable(hyper.parameters)
 }

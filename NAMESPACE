@@ -1,55 +1,23 @@
-import(affy)
-
-##export everything that does not start with a .
-##exportPattern("^[^\\.]")
-export(
-       collect.hyperparameters,
-       estimate.affinities,
-       estimate.hyperparameters,       
-       get.batches,
-       get.probe.noise.estimates,
-       get.probe.parameters,
-       #get.set.inds,
-       hyperparameter.update,
-       online.quantile,
-       plot.rpa,          
-       probe.performance,    
-       probetable,    
-       qnorm.basis.online,
-       rpa,
-       RPA.dcost,
-       rpa.fit,
-       RPA.iteration,
-       rpa.online,
-       rpa.plot,
-       RPA.pointestimate,
-       RPA.preprocess,
-       rpa2eset,
-       sample.probeset,
-       summarize.batches,
-       s2.update
-)
-
-#RPA.tau2.update,              
-#initialize.priors,                                        
-#d.update.fast
-
-exportClasses(
-"rpa",
-"rpa.fit",
-"rpa.list"
-#"rpa.priors"
-)
-
-importFrom(methods, show)
-
-S3method(plot, rpa.list)
-
-exportMethods(
-"[", 
-"[[",
-show
-)
-
-
-
+export(RPA.iteration)
+export(RPA.pointestimate)
+export(RPA.preprocess)
+export(collect.hyperparameters)
+export(estimate.affinities)
+export(estimate.hyperparameters)
+export(get.probe.matrix)
+export(get.probe.noise.estimates)
+export(get.probe.parameters)
+export(hyperparameter.update)
+export(online.quantile)
+export(probe.performance)
+export(probetable)
+export(rpa)
+export(rpa.fit)
+export(rpa.online)
+export(rpa.plot)
+export(rpa.summarize)
+export(rpa2eset)
+export(sample.probeset)
+export(summarize.batch)
+export(summarize.batches)
+export(updating.hyperparameters)

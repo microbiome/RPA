@@ -1,8 +1,8 @@
-Package: RPA
+Package: RPA2
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.15.14
-Date: 2013-01-27
+Version: 1.15.16
+Date: 2013-02-07
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
 Depends:
@@ -20,3 +20,36 @@ Description: Probabilistic analysis of probe reliability and
     http://doi.ieeecomputersociety.org/10.1109/TCBB.2009.38
 License: FreeBSD
 LazyLoad: yes
+Collate:
+    'AllClasses.R'
+    'AllGenerics.R'
+    'd.update.fast.R'
+    'estimate.affinities.R'
+    'firstlib.R'
+    'get.probe.noise.estimates.R'
+    'initialize.priors.R'
+    'internals.R'
+    'online.quantile.R'
+    'plot-methods.R'
+    'probe.analysis.R'
+    'rpa-accessors.R'
+    'rpa.R'
+    'rpa.fit.R'
+    'rpa.online.R'
+    'rpa.plot.R'
+    'rpa.summarize.R'
+    'rpa2eset.R'
+    'RPA.dcost.R'
+    'RPA.iteration.R'
+    'RPA-package.R'
+    'RPA.pointestimate.R'
+    'RPA.preprocess.R'
+    'RPA.tau2.update.R'
+    'show-methods.R'
+    'summarize.batches.R'
+    'toydata.R'
+    'update.hyperparameters.R'
+    'get.probe.matrix.R'
+    'summarize.batch.R'
+    'estimate.hyperparameters.R'
+    'updating.hyperparameters.R'

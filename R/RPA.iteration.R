@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -52,7 +52,7 @@
 #'
 #' @details Finds point estimates of the model parameters d (estimated true signal underlying probe-level observations), and tau2 (probe-specific variances). Assuming data set S with P observations of signal d with Gaussian noise that is specific for each observation (specified by a vector tau2 of length P), this method gives a point estimate of d and tau2. Probe-level variance priors alpha, beta can be used with tau2.methods 'robust', 'mode', and 'mean'.  The d.method = "fast" is the recommended method for point computing point estimates with large samples size.
 #'
-#' @returns A list with the following elements: d:  A vector. Estimated 'true' signal underlying the noisy probe-level observations.; tau2: A vector. Estimated variances for each measurement (or probe).
+#' @return A list with the following elements: d:  A vector. Estimated 'true' signal underlying the noisy probe-level observations.; tau2: A vector. Estimated variances for each measurement (or probe).
 #'
 #' @export
 #'

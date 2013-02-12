@@ -61,7 +61,7 @@
 #'
 #' @details Returns an expressionSet object preprocessed with RPA. If 'cind' is not specified, uses the first array of affybatch as the reference. RPA preprocessing function. Gives an estimate of the probeset-level mean parameter d of the RPA model, and returns these in an expressionSet object. The choices tau2.method = "robust" and d.method = "fast" are recommended. With small sample size and informative prior, d.method = "basic" may be preferable. For very large expression data collections, see rpa.online function.
 #'
-#' @returns An instance of the 'expressionSet' class
+#' @return An instance of the 'expressionSet' class
 #'
 #' @seealso rpa.online, RPA.pointestimate, set.priors, AffyBatch, ExpressionSet, estimate.affinities, rpa.fit
 #' @export

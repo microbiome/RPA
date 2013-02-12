@@ -1,7 +1,7 @@
 # This file is a part of the RPA (Robust Probabilistic Averaging)
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -53,7 +53,7 @@
 #'
 #' @details Fits the RPA model, including estimation of probe-specific affinity parameters. First learns a point estimate for the RPA model in terms of differential expression values w.r.t. reference sample. After this, probe affinities are estimated by comparing original data and differential expression shape, and setting prior assumptions concerning probe affinities.
 #'
-#' @returns mu: Fitted signal in original data: mu.real + d; mu.real: Shifting parameter of the reference sample; tau2: Probe-specific stochastic noise; affinity: Probe-specific affinities; data: Probeset data matrix; alpha, beta: prior parameters
+#' @return mu: Fitted signal in original data: mu.real + d; mu.real: Shifting parameter of the reference sample; tau2: Probe-specific stochastic noise; affinity: Probe-specific affinities; data: Probeset data matrix; alpha, beta: prior parameters
 #'
 #' @seealso rpa, RPA.pointestimate, estimate.affinities
 #' @export

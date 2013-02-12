@@ -11,6 +11,9 @@
 
   \item{variances}{Probe variances}
 }
+\value{
+  A vector. Probeset-level summary signal.
+}
 \description{
   rpa.summarize
 }

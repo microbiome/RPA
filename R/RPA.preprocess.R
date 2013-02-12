@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2012 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -24,11 +24,11 @@
 #
 #' @details Background correction, quantile normalization and log2-transformation for probe-level raw data in abatch. Then probe-level differential expression is computed between the specified 'reference' array (cind) and the other arrays. Probe-specific variance estimates are robust against the choice of reference array.
 #'
-#' @returns 
-#'  fcmat: Probes x arrays preprocessed differential expression matrix.
-#'  cind: Specifies which array in abatch was selected as a reference in calculating probe-level differential expression.
-#'  cdf: The CDF environment used in the analysis.
-#'  set.inds: Indices for probes in each probeset, corresponding to the rows of fcmat.
+#' @return 
+#'   fcmat: Probes x arrays preprocessed differential expression matrix.
+#'   cind: Specifies which array in abatch was selected as a reference in calculating probe-level differential expression.
+#'   cdf: The CDF environment used in the analysis.
+#'   set.inds: Indices for probes in each probeset, corresponding to the rows of fcmat.
 #'
 #' @export
 #'
@@ -134,7 +134,7 @@ determine.batch.size <- function (N, batch.size, verbose) {
 #' @param batch.size Batch size. The last batch may contain less elements than the other batches which have batch.size elements each.
 #' @param shuffle Split the elements randomly in the batches.
 #'
-#' @returns A list. Each element corresponds to one batch and contains a vector listing the elements in that batch.
+#' @return A list. Each element corresponds to one batch and contains a vector listing the elements in that batch.
 #'
 #' @references See citation("RPA") 
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}

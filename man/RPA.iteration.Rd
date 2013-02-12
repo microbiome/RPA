@@ -62,6 +62,12 @@ Estimating model parameters d and tau2.}
   \item{maxloop}{Maximum number of iterations in the
   estimation process.}
 }
+\value{
+  A list with the following elements: d: A vector.
+  Estimated 'true' signal underlying the noisy probe-level
+  observations.; tau2: A vector. Estimated variances for
+  each measurement (or probe).
+}
 \description{
   RPA.iteration Estimating model parameters d and tau2.
 }

@@ -9,6 +9,9 @@
 
   \item{a}{Estimated expression signal from RPA model.}
 }
+\value{
+  A vector with probe-specific affinities.
+}
 \description{
   Probe affinity estimation. Estimates probe-specific
   affinity parameters.

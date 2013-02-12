@@ -59,6 +59,13 @@
   et al. TCBB/IEEE; relatively slow; preferred with small
   sample size.}
 }
+\value{
+  mu: Fitted signal in original data: mu.real + d; mu.real:
+  Shifting parameter of the reference sample; tau2:
+  Probe-specific stochastic noise; affinity: Probe-specific
+  affinities; data: Probeset data matrix; alpha, beta:
+  prior parameters
+}
 \description{
   rpa.fit
 }

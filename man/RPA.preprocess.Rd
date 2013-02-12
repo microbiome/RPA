@@ -27,6 +27,14 @@ Preprocess AffyBatch object for RPA.}
   \item{quantile.basis}{Optional. Basis for quantile
   normalization.}
 }
+\value{
+  fcmat: Probes x arrays preprocessed differential
+  expression matrix.  cind: Specifies which array in abatch
+  was selected as a reference in calculating probe-level
+  differential expression.  cdf: The CDF environment used
+  in the analysis.  set.inds: Indices for probes in each
+  probeset, corresponding to the rows of fcmat.
+}
 \description{
   RPA.preprocess Preprocess AffyBatch object for RPA.
 }

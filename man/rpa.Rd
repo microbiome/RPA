@@ -100,6 +100,9 @@ RPA for preprocessing.}
   \item{mc.cores}{Number of cores for parallelized
   processing.}
 }
+\value{
+  An instance of the 'expressionSet' class
+}
 \description{
   rpa RPA for preprocessing.
 }

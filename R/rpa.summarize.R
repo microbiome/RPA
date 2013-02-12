@@ -19,7 +19,7 @@
 #'
 #' @details Summarizes the probes in a probe set according to the RPA model based on the given affinity and variance parameters.
 #'
-#' @returns A vector. Probeset-level summary signal.
+#' @return A vector. Probeset-level summary signal.
 #'
 #' @seealso rpa, RPA.pointestimate
 #' @export

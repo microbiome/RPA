@@ -16,6 +16,10 @@ Split data into batches}
   \item{shuffle}{Split the elements randomly in the
   batches.}
 }
+\value{
+  A list. Each element corresponds to one batch and
+  contains a vector listing the elements in that batch.
+}
 \description{
   get.batches Split data into batches
 }

@@ -34,8 +34,13 @@ d.update.fast <- function (St, s2) {
   # With large sample sizes when T -> Inf
   # d converges to the weighted mean 
   # over the probes, weighted by probe variances	 
-  colSums(St / s2) / sum(1 / s2)
+  if (nrow(St) == 1) {
+    v <- St[1,]
+  } else {
+    v <- colSums(St / s2) / sum(1 / s2)
+  }
+
+  v
 
 }
-
 

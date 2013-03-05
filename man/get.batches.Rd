@@ -1,0 +1,36 @@
+\name{get.batches}
+\alias{get.batches}
+\title{get.batches
+Split data into batches}
+\usage{
+  get.batches(items, batch.size = NULL, shuffle = FALSE)
+}
+\arguments{
+  \item{items}{A vector of items to be splitted into
+  batches.}
+
+  \item{batch.size}{Batch size. The last batch may contain
+  less elements than the other batches which have
+  batch.size elements each.}
+
+  \item{shuffle}{Split the elements randomly in the
+  batches.}
+}
+\value{
+  A list. Each element corresponds to one batch and
+  contains a vector listing the elements in that batch.
+}
+\description{
+  get.batches Split data into batches
+}
+\examples{
+#
+}
+\author{
+  Leo Lahti \email{leo.lahti@iki.fi}
+}
+\references{
+  See citation("RPA")
+}
+\keyword{utilities}
+

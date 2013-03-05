@@ -1,8 +1,8 @@
 Package: RPA
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.15.19
-Date: 2013-02-13
+Version: 1.15.34
+Date: 2013-03-05
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
 Depends:
@@ -26,23 +26,20 @@ Collate:
     'd.update.fast.R'
     'estimate.affinities.R'
     'firstlib.R'
-    'get.probe.noise.estimates.R'
+    'frpa.R'
     'initialize.priors.R'
     'internals.R'
     'online.quantile.R'
     'plot-methods.R'
     'probe.analysis.R'
-    'rpa-accessors.R'
     'rpa.R'
     'rpa.fit.R'
     'rpa.online.R'
     'rpa.plot.R'
     'rpa.summarize.R'
-    'rpa2eset.R'
     'RPA.dcost.R'
     'RPA.iteration.R'
     'RPA-package.R'
-    'RPA.pointestimate.R'
     'RPA.preprocess.R'
     'RPA.tau2.update.R'
     'show-methods.R'

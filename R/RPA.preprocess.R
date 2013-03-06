@@ -76,8 +76,8 @@ RPA.preprocess <- function (abatch,
   }
 
   # Store corresponding quantile.basis in log2 domain if not given already
+  pma <- pm(abatch)
   if (is.null(quantile.basis)) {
-    pma <- pm(abatch)
     quantile.basis <- log2(rowMeans(apply(pma, 2, sort)))
   }
 

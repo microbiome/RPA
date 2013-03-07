@@ -104,10 +104,14 @@ rpa.online <- function (
     if (speedup) {
 
       nq <- 500
-      message(paste("Estimating quantiles based on random subset of", nq, "CEL files to speed up preprocessing.."))
       nbs <- min(nq, length(cel.files))
+
+      if (nq < length(cel.files)) {
+        message(paste("Estimating quantiles based on random subset of", nbs, "CEL files to speed up preprocessing.."))
+      } 	
+
+      message("Estimating quantiles...")
       qbatches <- get.batches(sample(cel.files, nbs), batch.size, shuffle)
-      #qbatches <- list(qbatch = sample(cel.files, nbs))
       probe.parameters$quantile.basis <- qnorm.basis.online(qbatches, bg.method, cdf, save.batches = FALSE, verbose = verbose)
       
     } else {

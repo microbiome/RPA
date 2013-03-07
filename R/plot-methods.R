@@ -28,37 +28,3 @@ plot.rpa.list <- function (x, y, ...) {
 }
 
 
-plot.rpa <- function (x, y = NULL, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.names = 1, cex.main = 1, external.signal = NULL, main = NULL, plots = "all", ...) {
-                                      
-  # x: 'rpa' object to plot  
-  # set: probeset
-
-  # get the associated affybatch
-  abatch <- x$abatch
-  
-  # Use alternative CDF environment if given                                        
-  if (!is.null(x$cdf)) { abatch@cdfName <- x$cdf }
-
-  # Find probe (pm) indices for this set
-  pmindices <- which(probeNames(abatch) == set)
-  
-     d <- x[[set]]$d
-    s2 <- x[[set]]$tau2
-  cind <- x[[set]]$cind
-   dat <- x$data[pmindices,]
-  mu.real <- x[[set]]$mu.real
-  affinity <- x[[set]]$affinity
-  
-  rpa.fit.object <- new("rpa.fit", list(mu = d, mu.real = mu.real, tau2 = s2, affinity = affinity, data = dat))
-
-  if (is.null(main)) {
-    main <- paste("Probe signals and the summary estimate (", set, ")", sep = "")
-  }
-  rpa.plot(dat, rpa.fit.object, cex.lab = cex.lab, cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main, main = main, plots = plots, external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol)
-
-  dat
-}
-
-
-
-

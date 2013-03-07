@@ -87,14 +87,13 @@ rpa.fit <- function (dat, epsilon = 1e-2, alpha = NULL, beta = NULL, tau2.method
 
   # Accommodate single-probe probesets
   if (nrow(dat) == 1) {  
-    return(new("rpa.fit",
-		list(mu = as.vector(dat), 
+    return(list(mu = as.vector(dat), 
 		mu.real = as.vector(dat)[[cind]], 
            	tau2 = 0, 
            	affinity = 0, 
            	data = dat,
 	   	alpha = ncol(dat)/2,
-           	beta = 0)))
+           	beta = 0))
   }
 
   # Fit RPA
@@ -133,13 +132,11 @@ rpa.fit <- function (dat, epsilon = 1e-2, alpha = NULL, beta = NULL, tau2.method
   # model: x_p = mu + affinity_p + noise_p; 
   # noise ~ N(0, tau2_p)
 
-  new("rpa.fit",
-      list(mu = mu.final, # Final expression estimate
+  list(mu = mu.final, # Final expression estimate
       mu.real = mu.abs, 
          tau2 = estimated$tau2, 
      affinity = affinity, 
          data = dat,
 	alpha = estimated$alpha,
-         beta = estimated$beta))
-  
+         beta = estimated$beta) 
 }

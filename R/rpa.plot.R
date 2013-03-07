@@ -11,12 +11,70 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+
 #' rpa.plot
 #' Plot RPA results and probe-level data for a specified probeset.
 #'
-#' @param dat Original data: probes x samples.
-#' @param rpa.fit.object An instance of the 'rpa.fit' class.
-#' @param toydata.object Optional. Output from sample.probeset toydata generator function. Can be used to compare (toy)data with known ground truth to RPA estimates from rpa.fit.object.
+#' @param x Output from rpa.complete function
+#' @param set probeset
+#' @param highlight.probes mark probes for highlight
+#' @param pcol probe color
+#' @param mucol probeset signal color
+#' @param ecol external signal color
+#' @param external.signal external signal to be plotted on top 
+#' @param main title
+#' @param plots plot type
+#' @param ... other arguments to be passed
+#'
+#' @details Plots the preprocessed probe-level observations, estimated probeset-level signal, and probe-specific variances. It is also possible to highlight individual probes and external summary measures.
+#'
+#'@return Used for its side-effects. Returns probes x samples matrix of probe-level data plotted on the image.
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords methods
+
+rpa.plot <- function (x, set, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", external.signal = NULL, main = NULL, plots = "all", ...) {
+                                      
+  # get the associated affybatch
+  # Use alternative CDF environment if given                                        
+
+  abatch <- x$abatch
+  if (!is.null(x$cdf)) { abatch@cdfName <- x$cdf }
+
+  # Find probe (pm) indices for this set
+  pmindices <- which(probeNames(abatch) == set)
+
+  # Pick all model parameters
+      tau2 <- x$probe.parameters$tau2[[set]]
+  affinity <- x$probe.parameters$affinity[[set]]
+        mu <- exprs(x$eset)[set,]
+       dat <- x$probedata[pmindices,]
+ 
+  if (is.null(main)) {
+    main <- paste("Probe signals and the summary estimate (", set, ")", sep = "")
+  }
+
+  rpaplot(dat, mu, tau2, affinity, main = main, plots = plots, external.signal = external.signal, pcol = pcol, ecol = ecol, mucol = mucol, ...)
+
+  dat
+}
+
+
+
+
+
+
+#' rpaplot
+#' Plot RPA results and probe-level data for a specified probeset.
+#'
+#' @param dat Background-corrected and normalized data: probes x samples.
+#' @param mu probeset signal
+#' @param tau2 probe variances
+#' @param affinity probe affinities
 #' @param highlight.probes Optionally highlight some of the probes (with dashed line)
 #' @param pcol Color for probe signal visualization.
 #' @param mucol Color for summary estimate.
@@ -41,20 +99,13 @@
 #' @examples # 
 #' @keywords methods
 
-rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
+rpaplot <- function (dat, mu = NULL, tau2 = NULL, affinity = NULL, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", plots = "all", ...) {
 
-  # If no model given, calculate fit a new model on the data
-  if (is.null(rpa.fit.object)) { rpa.fit.object <- rpa.fit(dat) }
+  sd <- sqrt(tau2)
 
-  # Override given data with the one in rpa.fit object
-  dat <- rpa.fit.object$data
-  
   # number of probes
   Np <- nrow(dat)
-  mu <- rpa.fit.object$mu
-  sd <- sqrt(rpa.fit.object$tau2)
-  af <- rpa.fit.object$affinity
-  
+
   # image limits
   ylims <- range(c(as.vector(dat), mu))
 
@@ -98,31 +149,15 @@ rpa.plot <- function (dat, rpa.fit.object = NULL, toydata.object = NULL, highlig
           cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main)
 
     # Plot probe affinities
-    barplot(af, main = "Fixed probe effect (affinity)",
-          ylab = "Affinity (mu)", xlab = "Probe index",
-          names.arg = 1:length(af),
+    barplot(affinity, main = "Fixed probe effect (affinity)",
+          ylab = "Affinity", xlab = "Probe index",
+          names.arg = 1:length(affinity),
           las = 1,
           cex.lab = cex.lab, 
           cex.axis = cex.axis, cex.names = cex.names, cex.main = cex.main)  
 
-  } else if (plots == "toydata") {
-
-    estimated <- rpa.fit.object
-    real <- toydata.object
-
-    plot(real$d + real$mu.real, estimated$mu, 
-    	          main = "Signal", xlab = "Real", ylab = "Estimated")
-    abline(0,1)
-    barplot(rbind(real$affinity, estimated$affinity), 
-                  beside = TRUE, main = "Probe affinity", xlab = "Probe index", ylab = "Affinity")
-
-    tab <- rbind(real = real$tau2, estimated = estimated$tau2)
-    barplot(tab, beside = TRUE, 
-            main = "Probe variance", 
-            xlab = "Probe index", ylab = "Variance", legend = TRUE)
-
-  }
+  } 
   
-  rpa.fit.object
+  NULL
 
 }

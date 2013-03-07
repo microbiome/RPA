@@ -25,9 +25,10 @@
 #' @return A list with the following elements:
 #' \item{dat }{Probeset data: probes x samples}
 #' \item{tau2 }{Probe variances.}
-#' \item{mu }{Probe affinities.}
-#' \item{d }{Probeset-level signal shape.}
-#' \item{mu.real }{Probeset-level absolute signal level.}
+#' \item{affinity }{Probe affinities.}
+#' \item{d }{Probeset signal shape.}
+#' \item{mu.real }{Probeset signal level.}
+#' \item{mu }{Probeset-level total signal.}
 #'
 #' @export
 #'
@@ -62,7 +63,7 @@ sample.probeset <- function (P = 10, n = 20, shape = 1, scale = 1, mu.real = 2) 
                         sd = sqrt(probe.variance[[p]]))
   }
 
-  list(dat = dat, tau2 = probe.variance, affinity = probe.affinity, d = d, mu.real = mu.real)
+  list(dat = dat, tau2 = probe.variance, affinity = probe.affinity, d = d, mu.real = mu.real, mu = mu.real + d)
 
 }
 

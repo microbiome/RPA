@@ -118,7 +118,7 @@ rpa <- function (abatch = NULL,
 #'
 #' @details RPA preprocessing function. Gives an estimate of the probeset-level mean parameter d of the RPA model, and returns these in an expressionSet object. The choices tau2.method = "robust" and d.method = "fast" are recommended. With small sample size and informative prior, d.method = "basic" may be preferable. For very large expression data collections, see rpa.online function.
 #'
-#' @return List with preprocessed expression matrix and corresponding probe parameters
+#' @return List with preprocessed expression matrix, corresponding probe parameters, AffyBatch and CDF
 #'
 #' @export
 #' @references See citation("RPA") 
@@ -172,7 +172,7 @@ rpa.complete <- function (abatch = NULL,
        summarize.with.affinities = summarize.with.affinities) 
 
   # Convert expression matrix into expressionSet format before returning
-  list(eset = new("ExpressionSet", assayData = list(exprs = res$exprs)), probe.parameters = res$probe.parameters)
+  list(eset = new("ExpressionSet", assayData = list(exprs = res$exprs)), probe.parameters = res$probe.parameters, abatch = abatch, cdf = cdf, probedata = preproc$q)
 		
 }
 

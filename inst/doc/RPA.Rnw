@@ -84,28 +84,25 @@
  
 \Rpackage{RPA} (Robust Probabilistic
 Averaging)\footnote{\url{http://bioconductor.org/packages/release/bioc/html/RPA.html}}
-provides tools for probe reliability analysis and gene expression
-preprocessing for (Affymetrix and other) short oligonucleotide arrays,
-and more generally to summarize normally distributed multivariate
-observations that target the same object with varying degrees of
-reliability.  RPA provides explicit data-driven estimates of probe
-performance, i.e. affinity and probe-specific noise level
-\cite{Lahti11}, and a fully scalable approach for preprocessing
-arbitrarily large collections of CEL files. It has been shown to
-outperform the standard RMA algorithm \cite{Irizarry03rma} in various benchmarking tests \cite{Lahti11, Lahti12} and in contrast to fRMA \cite{McCall2011} it
-is readily applicable to all Affymetrix platforms.
+provides tools for fully scalable preprocessing of arbitrarily large
+short oligonucleotide microarray atlases. It outperforms the standard
+RMA algorithm \cite{Irizarry03rma} on moderately sized data sets
+\cite{Lahti11, Lahti12} and in contrast to the another scalable
+alternative, fRMA \cite{McCall2011}, Online-RPA is applicable to all
+short oligonucleotide platforms. In addition, RPA can be used for
+probe reliability analysis, and more generally to summarize normally
+distributed multivariate observations that target the same object with
+varying degrees of reliability.
+
 
 \section{Usage examples}
 
-For usage examples, see https://github.com/microbiome/microbiome/wiki/RPA
+For usage examples on-line, see https://github.com/antagomir/RPA/wiki
 
-\section{Methodology}
+\section{Methodology and Citations}
 
-For details, see \cite{Lahti11, Lahti12}.
+For details, see \cite{Lahti11, Lahti12}. Kindly cite these documents if you find the method useful.
 
-\section{Citing RPA}
-
-Please cite \cite{Lahti11, Lahti12}.
 
 \section{Details}
 

@@ -1,3 +1,7 @@
+Changes in 1.15.34 (2013-03-07)
+  o rpa.online has been added and benchmarked
+  o vignette contents moved to online wiki
+
 Changes in 1.13.06 (2012-09-09)
 
   o affinity estimates storing option added to rpa.online

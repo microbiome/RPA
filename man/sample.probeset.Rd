@@ -22,9 +22,9 @@ Toydata generator for probeset data.}
 \value{
   A list with the following elements: \item{dat }{Probeset
   data: probes x samples} \item{tau2 }{Probe variances.}
-  \item{mu }{Probe affinities.} \item{d }{Probeset-level
-  signal shape.} \item{mu.real }{Probeset-level absolute
-  signal level.}
+  \item{affinity }{Probe affinities.} \item{d }{Probeset
+  signal shape.} \item{mu.real }{Probeset signal level.}
+  \item{mu }{Probeset-level total signal.}
 }
 \description{
   sample.probeset Toydata generator for probeset data.

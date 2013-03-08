@@ -3,51 +3,32 @@
 \title{rpa.plot
 Plot RPA results and probe-level data for a specified probeset.}
 \usage{
-  rpa.plot(dat, rpa.fit.object = NULL,
-    toydata.object = NULL, highlight.probes = NULL,
+  rpa.plot(x, set, highlight.probes = NULL,
     pcol = "darkgrey", mucol = "black", ecol = "red",
-    cex.lab = 1.5, cex.axis = 1, cex.main = 1,
-    cex.names = 1, external.signal = NULL, main = "",
-    plots = "all", ...)
+    external.signal = NULL, main = NULL, plots = "all",
+    ...)
 }
 \arguments{
-  \item{dat}{Original data: probes x samples.}
+  \item{x}{Output from rpa.complete function}
 
-  \item{rpa.fit.object}{An instance of the 'rpa.fit'
-  class.}
+  \item{set}{probeset}
 
-  \item{toydata.object}{Optional. Output from
-  sample.probeset toydata generator function. Can be used
-  to compare (toy)data with known ground truth to RPA
-  estimates from rpa.fit.object.}
+  \item{highlight.probes}{mark probes for highlight}
 
-  \item{highlight.probes}{Optionally highlight some of the
-  probes (with dashed line)}
+  \item{pcol}{probe color}
 
-  \item{pcol}{Color for probe signal visualization.}
+  \item{mucol}{probeset signal color}
 
-  \item{mucol}{Color for summary estimate.}
+  \item{ecol}{external signal color}
 
-  \item{ecol}{Color for external signal.}
+  \item{external.signal}{external signal to be plotted on
+  top}
 
-  \item{cex.lab}{Label size adjustment parameters.}
+  \item{main}{title}
 
-  \item{cex.axis}{Axis size adjustment parameters.}
+  \item{plots}{plot type}
 
-  \item{cex.main}{Title size adjustment parameters.}
-
-  \item{cex.names}{Names size adjustment parameters.}
-
-  \item{external.signal}{Plot external signal on the
-  probeset. For instance, an alternative summary estimate
-  from another preprocessing methods}
-
-  \item{main}{Title text.}
-
-  \item{plots}{"all": plot data and summary, noise and
-  affinity; "data": plot data and summary}
-
-  \item{...}{Other parameters to pass for plot function.}
+  \item{...}{other arguments to be passed}
 }
 \value{
   Used for its side-effects. Returns probes x samples

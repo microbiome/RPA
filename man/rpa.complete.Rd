@@ -96,8 +96,8 @@ RPA preprocessing, also returns probe parameters}
   in probe summarization step. Default: FALSE.}
 }
 \value{
-  List with preprocessed expression matrix and
-  corresponding probe parameters
+  List with preprocessed expression matrix, corresponding
+  probe parameters, AffyBatch and CDF
 }
 \description{
   rpa.complete RPA preprocessing, also returns probe

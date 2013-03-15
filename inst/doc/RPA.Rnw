@@ -84,20 +84,21 @@
  
 \Rpackage{RPA} (Robust Probabilistic
 Averaging)\footnote{\url{http://bioconductor.org/packages/release/bioc/html/RPA.html}}
-provides tools for fully scalable preprocessing of arbitrarily large
-short oligonucleotide microarray atlases. It outperforms the standard
-RMA algorithm \cite{Irizarry03rma} on moderately sized data sets
-\cite{Lahti11, Lahti12} and in contrast to the another scalable
-alternative, fRMA \cite{McCall2011}, Online-RPA is applicable to all
-short oligonucleotide platforms. In addition, RPA can be used for
-probe reliability analysis, and more generally to summarize normally
-distributed multivariate observations that target the same object with
-varying degrees of reliability.
+is a fully scalable preprocessing method for arbitrarily large short
+oligonucleotide microarray atlases. It outperforms the standard RMA
+model \cite{Irizarry03rma} on moderately sized data sets
+\cite{Lahti11, Lahti12} and unlike the another scalable alternative,
+fRMA \cite{McCall2011}, it is applicable to all short oligonucleotide
+platforms. RPA can be additionally used for probe reliability
+analysis, and for general summarization of normally distributed
+multivariate observations that target the same object with varying
+degrees of noise and bias.
 
 
 \section{Usage examples}
 
 For usage examples on-line, see https://github.com/antagomir/RPA/wiki
+
 
 \section{Methodology and Citations}
 
@@ -133,7 +134,7 @@ L.~Lahti, L.~L. Elo, T.~Aittokallio, and S.~Kaski.
 \bibitem{Lahti12}
 L.~Lahti, A. Torrente, L.~L. Elo, A. Brazma, J. Rung.
 \newblock A fully scalable online-preprocessing algorithm for short oligonucleotide microarray atlases
-\newblock In review. arXiv preprint available at: http://arxiv.org/abs/1212.5932
+\newblock {\it Nucl. Acids Res.} 2013. In press. Preprint available at http://arxiv.org/abs/1212.5932
 
 \bibitem{McCall2011}
 MN McCall and RA Irizarry.

@@ -1,13 +1,32 @@
 citHeader("To cite RPA in publications use:")
 
+citEntry(entry="article",
+         title = "A fully scalable online-preprocessing algorithm for short oligonucleotide microarray atlases",
+         author = personList(
+	 	person(given ="Leo", family="Lahti", email = "leo.lahti@iki.fi"),
+		person(given ="Aurora", family="Torrente"),
+		person(given ="Laura L.", family="Elo"),
+	 	person(given ="Alvis", family="Brazma"),
+	 	person(given ="Johan", family="Rung")
+	 	  ),
+	 journal = "Nucleic Acids Research",
+	 year = "2013",
+         note         = "In press.",
+
+         textVersion =
+         paste("Leo Lahti et al. ",
+               "A fully scalable online-preprocessing algorithm for short oligonucleotide microarray atlases. ",
+               "Nucleic Acids Research 2013. In press.",
+               sep="")
+         )
 
 citEntry(entry="article",
          title = "Analysis of Probe Reliability in Differential Gene Expression Studies with Short Oligonucleotide Arrays",
          author = personList(
-	 	person(first ="Leo", last="Lahti", email = "leo.lahti@iki.fi"),
-	 	person(first ="Laura", last="Elo", middle = "L."),
-	 	person(first ="Tero", last="Aittokallio"),
-	 	person(first ="Samuel", last="Kaski")
+	 	person(given ="Leo", family="Lahti", email = "leo.lahti@iki.fi"),
+	 	person(given ="Laura L.", family="Elo"),
+	 	person(given ="Tero", family="Aittokallio"),
+	 	person(given ="Samuel", family="Kaski")
 	 	  ),
 	 journal = "TCBB/IEEE",
 	 year = "2011",
@@ -24,8 +43,6 @@ citEntry(entry="article",
                "See http://www.computer.org/portal/web/csdl/doi/10.1109/TCBB.2009.38",
                sep="")
          )
+	 
+	 
 
-#citFooter("We have invested a lot of time and effort in creating R,",
-#          "please cite it when using it for data analysis.",
-#          "See also", sQuote("citation(\"pkgname\")"),
-#          "for citing R packages.")

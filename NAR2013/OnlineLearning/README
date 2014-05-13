@@ -1,0 +1,14 @@
+
+
+# Compare classification performance of the methods
+#main.R  # deeper convergence (more trees, more genes) but slow; no size limit for a class
+main2.R # brief overview with lighter model optimization and multiple class min sizes
+main2ENSG.R # brief overview with lighter model optimization and multiple class min sizes
+
+Final image for publication:
+classification-plot.R
+
+
+
+
+

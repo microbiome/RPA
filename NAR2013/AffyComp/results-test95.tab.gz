@@ -1,0 +1,5 @@
+Median SD null log-fc IQR null log-fc 99.9% Signal detect R2 Signal detect slope low.slope med.slope high.slope Obs-intended-fc slope Obs-(low)int-fc slope low AUC med AUC high AUC weighted avg AUC Average ranking
+(perfection) 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1
+RPA/leo.lahti 0.1 0.17 0.52 0.8 0.64 0.37 0.79 0.48 0.63 0.39 0.47 0.92 0.54 0.58 2.5
+MAS_5.0/rafa 0.63 0.85 4.48 0.86 0.71 0.69 0.81 0.45 0.69 0.65 0 0 0 0 3.14
+RMA/rafa 0.11 0.19 0.57 0.8 0.63 0.35 0.76 0.47 0.61 0.36 0.4 0.87 0.46 0.52 3.36

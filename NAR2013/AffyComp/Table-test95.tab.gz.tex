@@ -1,0 +1,14 @@
+% latex.table(x = res.tab, file = paste("Table-", testfile, sep = ""),      digits = 2, lines.page = 40) 
+%
+\begin{table}[hptb]
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} \hline
+\multicolumn{1}{|l||}{Table-test95.tab.gz}&\multicolumn{1}{c|}{Median SD}&\multicolumn{1}{c|}{null log-fc IQR}&\multicolumn{1}{c|}{null log-fc 99.9%}&\multicolumn{1}{c|}{Signal detect R2}&\multicolumn{1}{c|}{Signal detect slope}&\multicolumn{1}{c|}{low.slope}&\multicolumn{1}{c|}{med.slope}&\multicolumn{1}{c|}{high.slope}&\multicolumn{1}{c|}{Obs-intended-fc slope}&\multicolumn{1}{c|}{Obs-(low)int-fc slope}&\multicolumn{1}{c|}{low AUC}&\multicolumn{1}{c|}{med AUC}&\multicolumn{1}{c|}{high AUC}&\multicolumn{1}{c|}{weighted avg AUC}&\multicolumn{1}{c|}{Average ranking}\\ \hline
+(perfection)&0.00&0.00&0.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00&1.00\\ 
+RPA/leo.lahti&0.10&0.17&0.52&0.80&0.64&0.37&0.79&0.48&0.63&0.39&0.47&0.92&0.54&0.58&2.50\\ 
+MAS_5.0/rafa&0.63&0.85&4.48&0.86&0.71&0.69&0.81&0.45&0.69&0.65&0.00&0.00&0.00&0.00&3.14\\ 
+RMA/rafa&0.11&0.19&0.57&0.80&0.63&0.35&0.76&0.47&0.61&0.36&0.40&0.87&0.46&0.52&3.36\\ 
+\hline
+\end{tabular}
+\end{center}
+\end{table}

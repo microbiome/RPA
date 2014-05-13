@@ -77,6 +77,15 @@ RPA.preprocess <- function (abatch,
 
   # Store corresponding quantile.basis in log2 domain if not given already
   pma <- pm(abatch)
+  
+  # Quality check
+  inds <- which(colMeans(is.nan(pma)) == 1)
+  if (length(inds) > 0) {
+    warning(paste("The following files are corrupted and removed from the analysis:", names(inds)))
+    pma <- pma[, -inds]
+  }    
+
+
   if (is.null(quantile.basis)) {    
     quantile.basis <- log2(rowMeans(apply(pma, 2, sort)))
   }

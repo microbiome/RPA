@@ -1,0 +1,22 @@
+25.4.2012
+
+fRMA could not be tested on spikein as it does not have 
+probe effect vectors for the spikein CDFs (hgu133atag)
+
+14.5.2011
+
+* Preprocessing for AffyCompII: affycomp.R
+* Evaluating the results: comparison.tables.R
+
+For RPA application note.
+
+13.3.2011 Performed AffyComp comparisons 
+
+with affycomp.R script and spike-in data sets from AffyComp website 
+http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html
+
+# NOTE: test95.tab and test133.tab manually copy-pasted for the
+comparisons from the
+# result site:
+# http://affycomp.jhsph.edu/AFFY2/TABLES.hgu/0.html
+

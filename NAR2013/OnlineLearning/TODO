@@ -1,0 +1,14 @@
+* Tests
+
+1) sample size vs. quantile convergence: select training size based on this analysis
+   -> qnorm-tests.R
+
+2) sample size vs. rpa.online convergence
+   -> online-tests.R
+ 
+3) combine quantiles.online + rpa.online -> compare to RMA and standard RPA
+   -> qtest.R
+
+
+
+

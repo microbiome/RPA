@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -103,32 +103,11 @@ rpaplot <- function (dat, mu = NULL, tau2 = NULL, affinity = NULL, highlight.pro
 
   sd <- sqrt(tau2)
 
-  # number of probes
-  Np <- nrow(dat)
-
-  # image limits
-  ylims <- range(c(as.vector(dat), mu))
-
   if (plots == "all") { par(mfrow = c(3, 1)) }
   if (plots == "toydata") { par(mfrow = c(2, 2)) }
   
-  # expression figure
-  plot(c(1,2,3), type = 'n',
-       xlim = c(1, ncol(dat)),
-       ylim = ylims,
-       xlab = "Samples",
-       ylab = "Signal",
-       cex.lab = cex.lab,
-       cex.axis = cex.axis,
-       cex.main = cex.main,
-       main = main,
-       las = 1, xaxt = 'n', ...)
-
-  for (i in 1:Np) { lines(dat[i, ], col = pcol, lwd = 2) }
-
-  if (!is.null(highlight.probes)) {
-    lines(dat[highlight.probes, ], lty = 2, lwd = 2) 
-  }
+  # Plot the probes
+  tmp <- probeplot(dat, highlight.probes = NULL, pcol = "darkgrey", mucol = "black", ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, external.signal = NULL, main = "", ...)
 
   # Plot the summary
   lines(mu, col = mucol, lwd = 2)
@@ -161,3 +140,67 @@ rpaplot <- function (dat, mu = NULL, tau2 = NULL, affinity = NULL, highlight.pro
   NULL
 
 }
+
+
+
+
+
+
+
+#' probeplot
+#' Plot RPA results and probe-level data for a specified probeset.
+#'
+#' @param dat Background-corrected and normalized data: probes x samples.
+#' @param highlight.probes Optionally highlight some of the probes (with dashed line)
+#' @param pcol Color for probe signal visualization.
+#' @param hcol Color for probe highlight
+#' @param cex.lab Label size adjustment parameters.
+#' @param cex.axis Axis size adjustment parameters.
+#' @param cex.main Title size adjustment parameters.
+#' @param cex.names Names size adjustment parameters.
+#' @param main Title text.
+#' @param ... Other parameters to pass for plot function.
+#'
+#' @details Plots the preprocessed probe-level observations, estimated probeset-level signal, and probe-specific variances. It is also possible to highlight individual probes and external summary measures.
+#'
+#'@return Used for its side-effects. Returns probes x samples matrix of probe-level data plotted on the image.
+#'
+#' @export
+#'
+#' @references See citation("RPA") 
+#' @author Leo Lahti \email{leo.lahti@@iki.fi}
+#' @examples # 
+#' @keywords methods
+
+probeplot <- function (dat, highlight.probes = NULL, pcol = "darkgrey", hcol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, main = "", ...) {
+
+  # highlight.probes = NULL; pcol = "darkgrey"; hcol = "red"; cex.lab = 1.5; cex.axis = 1; cex.main = 1; cex.names = 1; main = "";
+
+  # image limits
+  ylims <- range(c(as.vector(dat)))
+
+  # expression figure
+  plot(c(1,2,3), type = 'n',
+       xlim = c(1, ncol(dat)),
+       ylim = ylims,
+       xlab = "Samples",
+       ylab = "Signal",
+       cex.lab = cex.lab,
+       cex.axis = cex.axis,
+       cex.main = cex.main,
+       main = main,
+       las = 1, xaxt = 'n', ...)
+
+  for (i in 1:nrow(dat)) { 
+    lines(dat[i, ], col = pcol, lwd = 2) 
+  }
+
+  for (probe in highlight.probes) {
+    lines(dat[probe, ], lty = 2, lwd = 1, col = hcol) 
+  }
+
+  NULL
+
+}
+
+

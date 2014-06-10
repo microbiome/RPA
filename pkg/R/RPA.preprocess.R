@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -31,6 +31,8 @@
 #'  set.inds: Indices for probes in each probeset, corresponding to the rows of fcmat.
 #'
 #' @export
+#' @import affy
+#' @import methods
 #'
 #' @references See citation("RPA") 
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
@@ -68,7 +70,7 @@ RPA.preprocess <- function (abatch,
   
   if (is.null(quantile.basis) || length(quantile.basis) == 0) {
     message("Normalizing...")       
-    abatch <- affy::normalize(abatch, method = normalization.method)
+    abatch <- normalize(abatch, method = normalization.method)
   } else {
     message("Normalizing with pre-calculated quantile.basis...")   
     # Normalize by forcing the pre-calculated quantile basis
@@ -107,7 +109,7 @@ RPA.preprocess <- function (abatch,
       
 
 
-
+#' @import affy
 get.set.inds <- function (cel.files, cdf = NULL, sets = NULL) {
 
   # Get probe position indices

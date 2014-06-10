@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2011-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2011-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -11,7 +11,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-
+#' @import affy
 qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.batches = FALSE, batch.size = 3, verbose = TRUE, save.batches.dir = ".", unique.run.identifier = NULL) {
 
   message("Calculating the basis for quantile normalization")    
@@ -105,6 +105,7 @@ qnorm.basis.online <- function (cel.files, bg.method = "rma", cdf = NULL, save.b
 #' @return "online.quantile": AffyBatch; "qnorm.basis.online": a vector containing the basis for quantile normalization.
 #'
 #' @export
+#' @import affy
 #' @references See citation("RPA") 
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
 #' @examples # 

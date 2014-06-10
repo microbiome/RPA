@@ -2,7 +2,7 @@
 # (Robust Probabilistic Averaging) 
 # http://bioconductor.org/packages/release/bioc/html/RPA.html
 
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
+# Copyright (C) 2008-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the FreeBSD License.
@@ -20,7 +20,7 @@
 #' @param beta beta prior for inverse Gamma distribution of probe-specific variances. Noninformative prior is obtained with alpha, beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta are specify equal inverse Gamma prior for all probes to regularize the solution. The defaults depend on the method.
 #' @param tau2.method Optimization method for tau2 (probe-specific variances).
 #'
-#'	"robust": (default) update tau2 by posterior mean,
+#'     "robust": (default) update tau2 by posterior mean,
 #'		regularized by informative priors that are identical
 #'		for all probes (user-specified by
 #'		setting scalar values for alpha, beta). This
@@ -31,7 +31,7 @@
 #'		default values alpha = 2; beta = 1 are
 #'	        used if alpha and beta are not specified.
 #' 
-#'        "mode": update tau2 with posterior mean
+#'      "mode": update tau2 with posterior mean
 #'
 #'	"mean": update tau2 with posterior mean
 #'	

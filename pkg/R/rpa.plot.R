@@ -196,7 +196,7 @@ probeplot <- function (dat, highlight.probes = NULL, pcol = "darkgrey", hcol = "
   }
 
   for (probe in highlight.probes) {
-    lines(dat[probe, ], lty = 2, lwd = 1, col = hcol) 
+    lines(dat[probe, ], lwd = 1, col = hcol) 
   }
 
   NULL

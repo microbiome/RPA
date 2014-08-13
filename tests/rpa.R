@@ -1,0 +1,5 @@
+library(affy)
+library(affydata)
+library(RPA)
+data(Dilution)
+eset <- rpa(Dilution)

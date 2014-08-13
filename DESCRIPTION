@@ -10,6 +10,8 @@ Depends:
     parallel,
     affy,
     methods
+Suggests:
+    affydata
 biocViews: GeneExpression, Microarray, Preprocessing, QualityControl
 Description: Probabilistic analysis of probe reliability and
     differential gene expression on short oligonucleotide

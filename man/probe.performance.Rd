@@ -19,7 +19,7 @@ Data frame of probe-level parameter estimates
 Provide a table of probe-level parameter estimates (affinity and stochastic noise) for RPA output.
 }
 \examples{
-# library(affydata) data(Dilution); rpa.results <- rpa.complete(Dilution); tab <- probe.parameters(rpa.results); df <- df[order(abs(df$tau2), decreasing = TRUE),]
+# library(affydata); data(Dilution); rpa.results <- rpa.complete(Dilution); tab <- probe.parameters(rpa.results); df <- df[order(abs(df$tau2), decreasing = TRUE),]
 }
 \author{
 Leo Lahti \email{leo.lahti@iki.fi}

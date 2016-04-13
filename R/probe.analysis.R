@@ -1,20 +1,5 @@
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-#' probe.performance
-#'
-#' Provide a table of probe-level parameter estimates (affinity and stochastic noise) for RPA output.
-#'
+#' @title Probe performance
+#' @description Provide a table of probe-level parameter estimates (affinity and stochastic noise) for RPA output.
 #' @param probe.parameters List with affinities and variances for the probesets
 #' @param abatch Affybatch used in the analysis
 #' @param sets Specify the probesets to include in the output. Default: All probesets

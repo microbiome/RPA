@@ -1,19 +1,5 @@
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-#' frpa
-#' frozen-RPA preprocessing using precalculated probe parameters
-#'
+#' @title frpa
+#' @description Frozen-RPA preprocessing using precalculated probe parameters.
 #' @param abatch An AffyBatch object.
 #' @param probe.parameters A list with tau2 (probe variance), quantile.basis (basis for quantile normalization in log2 domain), and optionally affinity (probe affinities). The probe.parameters$tau2 and probe.parameters$affinity are lists, each element corresponding to a probeset and containing a parameter vector over the probes. The quantile.basis is a vector over the probes, the probes need to be listed in the same order as in tau2 and affinity. probe.parameters can be optionally provided as a data frame.
 #' @param verbose Print progress information during computation.

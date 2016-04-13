@@ -1,19 +1,5 @@
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-#' RPA.iteration
-#' Estimating model parameters d and tau2.
-#'
+#' @title RPA iteration
+#' @description Estimating model parameters d and tau2.
 #' @param S Matrix of probe-level observations for a single probeset: samples x probes.
 #' @param epsilon Convergence tolerance. The iteration is deemed converged when the change in all parameters is < epsilon.
 #' @param alpha alpha prior for inverse Gamma distribution of probe-specific variances. Noninformative prior is obtained with alpha, beta -> 0.  Not used with tau2.method 'var'. Scalar alpha and beta are specify equal inverse Gamma prior for all probes to regularize the solution. The defaults depend on the method.

@@ -1,19 +1,5 @@
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2014 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-#' RPA.preprocess
-#' Preprocess AffyBatch object for RPA.
-#'
+#' @title RPA preprocessing
+#' @description Preprocess AffyBatch object for RPA.
 #' @param abatch An AffyBatch object. 
 #' @param bg.method Specify background correction method. See bgcorrect.methods(abatch) for options.
 #' @param normalization.method Specify normalization method. See normalize.methods(abatch) for options. For memory-efficient online version, use "quantiles.online".
@@ -38,7 +24,6 @@
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
 #' @examples # 
 #' @keywords methods
-
 RPA.preprocess <- function (abatch, 
                             bg.method = "rma",
                             normalization.method = "quantiles.robust",
@@ -69,8 +54,10 @@ RPA.preprocess <- function (abatch,
   # for defected affybatches
   
   if (is.null(quantile.basis) || length(quantile.basis) == 0) {
-    message("Normalizing...")       
-    abatch <- normalize(abatch, method = normalization.method)
+    message("Normalizing...")
+    if (ncol(exprs(abatch)) > 1) {
+      abatch <- normalize(abatch, method = normalization.method)
+    }
   } else {
     message("Normalizing with pre-calculated quantile.basis...")   
     # Normalize by forcing the pre-calculated quantile basis
@@ -86,7 +73,6 @@ RPA.preprocess <- function (abatch,
     warning(paste("The following files are corrupted and removed from the analysis:", names(inds)))
     pma <- pma[, -inds]
   }    
-
 
   if (is.null(quantile.basis)) {    
     quantile.basis <- log2(rowMeans(apply(pma, 2, sort)))

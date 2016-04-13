@@ -1,20 +1,5 @@
-# This file is a part of the RPA (Robust Probabilistic Averaging)
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-#      vec <- rpa.fit(dat, tau2.method = "robust", alpha = 1 + 0.1*ncol(oligo.data)/2, beta = 1 + 0.1*ncol(oligo.data)*nPhylotypesPerOligo[probes]^2)$mu
-
-
-#' rpa.fit
-#'
+#' @title RPA fit
+#' @description Fit the RPA model.
 #' @param dat Original data: probes x samples.
 #' @param epsilon Convergence tolerance. The iteration is deemed converged when the change in all parameters is < epsilon.
 #' @param alpha alpha prior for inverse Gamma distribution of probe-specific variances. Noninformative prior is obtained with alpha, beta -> 0. Not used with tau2.method 'var'. Scalar alpha and beta are specify equal inverse Gamma prior for all probes to regularize the solution. The defaults depend on the method.
@@ -49,9 +34,7 @@
 #'  "basic": optimization scheme to find a mode used in Lahti
 #'  et al. TCBB/IEEE; relatively slow; preferred with small
 #' sample size.
-#'
-#'  @param summarize.with.affinities Use affinity estimates in probe summarization step. Default: FALSE.
-#' 
+#' @param summarize.with.affinities Use affinity estimates in probe summarization step. Default: FALSE.
 #' @details Fits the RPA model, including estimation of probe-specific affinity parameters. First learns a point estimate for the RPA model in terms of differential expression values w.r.t. reference sample. After this, probe affinities are estimated by comparing original data and differential expression shape, and setting prior assumptions concerning probe affinities.
 #'
 #' @return mu: Fitted signal in original data: mu.real + d; mu.real: Shifting parameter of the reference sample; tau2: Probe-specific stochastic noise; affinity: Probe-specific affinities; data: Probeset data matrix; alpha, beta: prior parameters
@@ -63,7 +46,6 @@
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
 #' @examples # res <- rpa.fit(dat, epsilon, alpha, beta, tau2.method, d.method, affinity.method)
 #' @keywords utilities
-
 rpa.fit <- function (dat, epsilon = 1e-2, alpha = NULL, beta = NULL, tau2.method = "robust", d.method = "fast", summarize.with.affinities = FALSE) {
 
   # dat = q[[set]]; epsilon = 1e-2; tau2.method = "robust"; d.method = "fast"; alpha = probe.parameters$alpha; beta = probe.parameters$beta[[set]]

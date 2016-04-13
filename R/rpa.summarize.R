@@ -1,23 +1,9 @@
-# This file is a part of the RPA (Robust Probabilistic Averaging)
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-#' rpa.summarize
-#'
+#' @title rpa.summarize
+#' @description RPA summarization.
 #' @param dat Original data: probes x samples.
 #' @param affinities Probe affinities
 #' @param variances Probe variances
 #' @param summarize.with.affinities Use affinity estimates in probe summarization step. Default: FALSE.
-
 #' @details Summarizes the probes in a probe set according to the RPA model based on the given affinity and variance parameters.
 #'
 #' @return A vector. Probeset-level summary signal.

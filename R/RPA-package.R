@@ -4,7 +4,7 @@
 #' Package: \tab RPA\cr
 #' Type: \tab Package\cr
 #' Version: \tab See sessionInfo() or DESCRIPTION file\cr
-#' Date: \tab 2008-2013\cr
+#' Date: \tab 2008-2016\cr
 #' License: \tab FreeBSD\cr
 #' LazyLoad: \tab yes\cr
 #' }

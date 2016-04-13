@@ -1,19 +1,5 @@
-# This file is a part of the RPA program
-# (Robust Probabilistic Averaging) 
-# http://bioconductor.org/packages/release/bioc/html/RPA.html
-
-# Copyright (C) 2008-2013 Leo Lahti <leo.lahti@iki.fi>. All rights reserved.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the FreeBSD License.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-#' summarize.batch
-#'
+#' @title summarize.batch
+#' @description Summarize batch.
 #' @param q Background corrected, quantile-normalized, log2 probes x samples matrix
 #' @param set.inds Indices for each probeset, corresponding to q matrix
 #' @param probe.parameters A list, each element corresponding to a probe set. Each probeset element has the following elements: affinity, variance and optionally alpha and beta priors. Each of these elements contains a vector over the probeset probes, specifying the probe parameters according to the RPA model. If variances are given, that overrides the priors.

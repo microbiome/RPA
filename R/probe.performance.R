@@ -5,13 +5,18 @@
 #' @param sets Specify the probesets to include in the output. Default: All probesets
 #' @return Data frame of probe-level parameter estimates
 #' @export
-#'
 #' @references
 #' See citation("RPA") 
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
-#' @examples # library(affydata); data(Dilution); rpa.results <- rpa.complete(Dilution); tab <- probe.parameters(rpa.results); df <- df[order(abs(df$tau2), decreasing = TRUE),]
+#' @examples 
+#' \dontrun{
+#'   library(affydata); 
+#'   data(Dilution); 
+#'   rpa.results <- rpa.complete(Dilution); 
+#'   tab <- probe.parameters(rpa.results); 
+#'   df <- df[order(abs(df$tau2), decreasing = TRUE),]
+#' }
 #' @keywords utilities
-
 probe.performance <- function (probe.parameters, abatch, sets = NULL) {
 
   if (is.null(sets)) {

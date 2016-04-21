@@ -3,9 +3,13 @@
 [Robust Probabilistic Averaging
 (RPA)](http://bioconductor.org/packages/release/bioc/html/RPA.html) is
 a fully scalable algorithm for probe-level preprocessing and analysis
-of short oligonucleotide gene expression microarray collections of any
-size, from moderately sized standard data sets to arbitrarily large
-microarray atlases involving tens of thousands of samples, or more.
+of short oligonucleotide microarray collections of any size, from
+moderately sized standard data sets to arbitrarily large microarray
+atlases involving tens of thousands of samples, or more.
+
+Special wrappers are available for Affymetrix gene expression arrays
+and phylogenetic micoarrays (HITChip).
+
 RPA also provides explicit data-driven estimates of probe-specific
 affinity and noise based on a rigorous probabilistic model and
 significantly outperforms the standard RMA model in benchmarking tests

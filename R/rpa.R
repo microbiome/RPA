@@ -40,8 +40,8 @@ rpa <- function (abatch = NULL,
 
   if (ncol(abatch) <= 1) {
     warning("RPA is a multi-array preprocessing method. The input affybatch has at most a single array, however. Returning expressionSet with no background correction or normalization.")
-    res = list(eset = affy::rma(abatch, background = FALSE, normalize = FALSE))
-    return(res)
+    eset <- affy::rma(abatch, background = FALSE, normalize = FALSE)
+    return(eset)
   }
 
   # RPA analysis	

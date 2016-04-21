@@ -1,3 +1,6 @@
+Changes in 1.27.41 (2016-04-14)
+  o Functions for phylogenetic microarray data added
+
 Changes in 1.15.34 (2013-03-07)
   o rpa.online has been added and benchmarked
   o vignette contents moved to online wiki

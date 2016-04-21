@@ -1,17 +1,19 @@
 Package: RPA
 Type: Package
 Title: RPA: Robust Probabilistic Averaging for probe-level analysis
-Version: 1.27.1
-Date: 2016-10-13
+Version: 1.27.41
+Date: 2016-04-14
 Author: Leo Lahti <leo.lahti@iki.fi>
 Maintainer: Leo Lahti <leo.lahti@iki.fi>
 Depends:
     R (>= 3.1.1),
-    parallel,
     affy,
-    methods
+    BiocGenerics,
+    methods,
+    phyloseq
 Suggests:
-    affydata
+    affydata,
+    parallel    
 biocViews: GeneExpression, Microarray, Preprocessing, QualityControl
 Description: Probabilistic analysis of probe reliability and
     differential gene expression on short oligonucleotide
@@ -23,3 +25,4 @@ License: BSD_2_clause + file LICENSE
 URL: https://github.com/antagomir/RPA
 BugReports: https://github.com/antagomir/RPA
 LazyLoad: yes
+RoxygenNote: 5.0.1

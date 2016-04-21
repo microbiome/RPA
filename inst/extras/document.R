@@ -1,2 +1,2 @@
 library(devtools)
-document("../../", clean = TRUE)
+document("../../")

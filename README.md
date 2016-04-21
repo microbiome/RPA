@@ -2,9 +2,14 @@ RPA
 ===
 
 Robust Probabilistic Averaging (RPA) is a Bioconductor R package for
-probe-level preprocessing and analysis of Affymetrix and other short
-oligonucleotide arrays. This Github repository is the home for the
-latest development version. For the release version, see [RPA Bioconductor page](http://bioconductor.org/packages/release/bioc/html/RPA.html)
+probe-level preprocessing and analysis of short oligonucleotide
+arrays. The tools are generic but special wrappers are available for
+Affymetrix gene expression arrays as well as phylogenetic microarrays
+(HITChip in particular). 
+
+This Github repository is the home for the latest development version.
+For the release version, see [RPA Bioconductor
+page](http://bioconductor.org/packages/release/bioc/html/RPA.html)
 
 
 ### Installation and use
@@ -32,6 +37,11 @@ appropriate:
 
  * [Robust Probabilistic Analysis (RPA)](http://bioconductor.org/packages/release/bioc/html/RPA.html). Bioconductor package. Leo Lahti, 2013. URL: http://bioconductor.org/packages/release/bioc/html/RPA.html 
 
+
+RPA has also been used in the context of phylogenetic microarrays, see
+for instance:
+
+  * [Tipping elements in the human intestinal ecosystem](http://www.nature.com/ncomms/2014/140708/ncomms5344/full/ncomms5344.html)
 
 
 

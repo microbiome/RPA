@@ -23,11 +23,10 @@ List probes for each probeset in taxonomic data.
   #tax.table <- GetPhylogeny('HITChip')
   #sets <- retrieve.probesets(tax.table, 'species', 'Weissella confusa')
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation('microbiome')
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{internal}
-

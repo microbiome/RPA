@@ -15,11 +15,10 @@ Convert probe-level hyperparameter lists into a table format.
 \examples{
 # df <- probetable(probe.parameters)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

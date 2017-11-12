@@ -38,11 +38,10 @@ Background correction, quantile normalization and log2-transformation for probe-
 \examples{
 # 
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{methods}
-

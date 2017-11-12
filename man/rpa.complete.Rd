@@ -79,11 +79,10 @@ RPA preprocessing function. Gives an estimate of the probeset-level mean paramet
 \examples{
 # eset <- rpa(abatch)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{methods}
-

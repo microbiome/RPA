@@ -37,14 +37,13 @@ fRPA function to preprocess Affymetrix CEL files with RPA using precalculated (f
 \examples{
 # eset <- frpa(abatch, probe.parameters)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
 \seealso{
 rpa, AffyBatch, ExpressionSet
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{methods}
-

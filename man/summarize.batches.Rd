@@ -54,11 +54,10 @@ Sweeps through the batches. Summarizes the probesets within each batch based on 
 \examples{
 # 
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

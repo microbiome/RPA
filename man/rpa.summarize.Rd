@@ -27,14 +27,13 @@ Summarizes the probes in a probe set according to the RPA model based on the giv
 \examples{
 # res <- rpa.summarize(dat, affinities, variances, summarize.with.affinities = FALSE)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
 \seealso{
 rpa
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

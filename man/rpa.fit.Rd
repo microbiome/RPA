@@ -62,14 +62,13 @@ Fits the RPA model, including estimation of probe-specific affinity parameters. 
 \examples{
 # res <- rpa.fit(dat, epsilon, alpha, beta, tau2.method, d.method, affinity.method)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
 \seealso{
 rpa, estimate.affinities
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

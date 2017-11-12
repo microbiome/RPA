@@ -17,11 +17,10 @@ number of matching phylotypes for each probe
 \description{
 Check number of matching phylotypes for each probe
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation("microbiome")
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{utilities}
-

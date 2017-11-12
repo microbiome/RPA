@@ -27,11 +27,10 @@ List with two elements: abundance.table (summarized data matrix in absolute scal
 \description{
 Probeset summarization with RPA for taxonomic data.
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation("microbiome")
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{utilities}
-

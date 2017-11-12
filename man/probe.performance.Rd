@@ -28,11 +28,10 @@ Provide a table of probe-level parameter estimates (affinity and stochastic nois
   df <- df[order(abs(df$tau2), decreasing = TRUE),]
 }
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

@@ -30,11 +30,10 @@ Get probeset matrix.
   #probedata <- read_hitchip(data.dir, "rpa")$probedata
   #ps <- get.probeset('Akkermansia', 'L2', taxonomy, probedata)
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation('microbiome')
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{utilities}
-

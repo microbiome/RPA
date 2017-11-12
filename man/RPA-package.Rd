@@ -2,8 +2,8 @@
 % Please edit documentation in R/RPA-package.R
 \docType{package}
 \name{RPA-package}
-\alias{RPA}
 \alias{RPA-package}
+\alias{RPA}
 \title{RPA: probabilistic analysis of probe reliability and gene expression}
 \description{
 Brief summary of the RPA package
@@ -21,11 +21,10 @@ LazyLoad: \tab yes\cr
 \examples{
 #
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{package}
-

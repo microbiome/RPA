@@ -35,11 +35,10 @@ Generate random probeset with varying probe-specific affinities and variances. T
 \examples{
 # real <- sample.probeset(P = 10, n = 20, shape = 1, scale = 1, mu.real = 2)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

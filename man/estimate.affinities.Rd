@@ -53,14 +53,13 @@ To estimate means in the original data domain let us assume that
 \examples{
 #  mu <- estimate.affinities(dat, a)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
 \seealso{
 rpa.fit
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

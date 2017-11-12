@@ -15,11 +15,10 @@ Convert probe parameter table into a list format
 \examples{
 # df <- probe.parameters.tolist(probe.parameters.table)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

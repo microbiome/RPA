@@ -44,11 +44,10 @@ Summarize phylogenetic microarray probe-level data from given input folder.
 #		 level = "species")
 #}
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation('microbiome')
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{utilities}
-

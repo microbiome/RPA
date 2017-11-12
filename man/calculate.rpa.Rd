@@ -19,11 +19,10 @@ RPA preprocessed data
 \description{
 Fit RPA for HITChip.
 }
-\author{
-Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
-}
 \references{
 See citation("microbiome")
 }
+\author{
+Contact: Leo Lahti \email{microbiome-admin@googlegroups.com}
+}
 \keyword{utilities}
-

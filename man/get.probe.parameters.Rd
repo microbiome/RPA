@@ -22,11 +22,10 @@ Get probe-level hyperparameter from batch files
 \examples{
 # df <- get.probe.parameters(unique.run.identifier, save.batches.dir = ".", mode = "list")
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

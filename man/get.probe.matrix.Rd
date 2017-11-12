@@ -31,11 +31,10 @@ Returns background-corrected, quantile normalized log2 probes x samples matrix
 \examples{
 # 
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{methods}
-

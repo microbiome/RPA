@@ -61,14 +61,13 @@ rpa.online is used to preprocess very large expression data collections based on
 \examples{
 # eset <- rpa.online(cel.file.path) 
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
 \seealso{
 rpa, AffyBatch, ExpressionSet
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{methods}
-

@@ -24,11 +24,10 @@ Collect probe-level parameters during online-learning from the batch files.
 \examples{
 # hpe <- collect.hyperparameters(batches, unique.run.identifier, save.batches.dir, save.batches)
 }
-\author{
-Leo Lahti \email{leo.lahti@iki.fi}
-}
 \references{
 See citation("RPA")
 }
+\author{
+Leo Lahti \email{leo.lahti@iki.fi}
+}
 \keyword{utilities}
-

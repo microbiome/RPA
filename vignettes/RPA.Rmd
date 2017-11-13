@@ -16,8 +16,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-
 # Robust Probabilistic Averaging (RPA)
 
 [Robust Probabilistic Averaging

@@ -1,5 +1,7 @@
-Changes in 1.35.1 (2017-11-12)
+Changes in 1.35.2 (2017-11-12)
   o phyloseq moved from dependency to import
+  o vignette format updated
+  o explicitly imported all functions
 
 Changes in 1.27.41 (2016-04-14)
   o Functions for phylogenetic microarray data added

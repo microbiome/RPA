@@ -1,8 +1,20 @@
-#' @importFrom parallel mclapply
 #' @import affy
 #' @importFrom BiocGenerics normalize
+#' @importFrom graphics par
+#' @importFrom graphics plot
+#' @importFrom graphics lines
+#' @importFrom parallel mclapply
+#' @importFrom stats sd
+#' @importFrom stats rnorm
+#' @importFrom stats dchisq
+#' @importFrom stats dgamma
+#' @importFrom stats rgamma
+#' @importFrom stats optim
+#' @importFrom stats na.omit
+#' @importFrom utils read.csv
+#' @importFrom utils sessionInfo
 
 .onAttach <- function(lib, pkg)
 {
-   packageStartupMessage("\nRPA Copyright (C) 2008-2017 Leo Lahti.\nThis program comes with ABSOLUTELY NO WARRANTY.\nThis is free software, and you are welcome to redistribute it under the FreeBSD open source license.\n")
+   packageStartupMessage("\nRPA Copyright (C) 2008-2017 Leo Lahti. See http://microbiome.github.io/\n")
 }

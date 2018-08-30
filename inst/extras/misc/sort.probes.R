@@ -1,8 +1,9 @@
 # (C) Leo Lahti 2012. FreeBSD license.
 
 # Install libraries
-source("http://www.bioconductor.org/biocLite.R")
-biocLite(c("affy", "affydata", "RPA"))
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("affy", "affydata", "RPA"))
 
 # Load libraries
 require(affy)

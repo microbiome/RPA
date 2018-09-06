@@ -1,5 +1,6 @@
-#source("http://www.bioconductor.org/biocLite.R")
-#biocLite("hgu133plus2hsensgcdf")
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+    #install.packages("BiocManager")
+#BiocManager::install("hgu133plus2hsensgcdf")
 #library("hgu133plus2hsensgcdf")
 #cel.files = cels; mc.cores = 4; batch.size = 4; batch.file.id = "batch"; 
 #cdf = cdf; cel.path = NULL; sets = NULL; bg.method = "rma"; 

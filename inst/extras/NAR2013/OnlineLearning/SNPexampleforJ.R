@@ -2,9 +2,10 @@ library(CustomCDF)
 require(RPA)
 
 # Load altCDF for ENSG and ENST
-#source("http://www.bioconductor.org/biocLite.R")
-#biocLite("hgu133ahsensgcdf")
-#biocLite("hgu133ahsenstcdf")
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+    #install.packages("BiocManager")
+#BiocManager::install("hgu133ahsensgcdf")
+#BiocManager::install("hgu133ahsenstcdf")
 
 # Read Affybatch
 set.seed(11122) 

@@ -4,7 +4,8 @@
 
 require(affy)
 library(RPA)
-#source("http://bioconductor.org/biocLite.R"); biocLite("hgu133atagcdf")
+#if (!requireNamespace("BiocManager", quietly=TRUE)); BiocManager::install("hgu133atagcdf")
+    #install.packages("BiocManager"); BiocManager::install("hgu133atagcdf")
 library("hgu133atagcdf")
 
 # get affybatch

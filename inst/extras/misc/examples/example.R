@@ -1,6 +1,7 @@
 library(RPA)
-#source("http://www.bioconductor.org/biocLite.R")
-#biocLite("ALLMLL")
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+    #install.packages("BiocManager")
+#BiocManager::install("ALLMLL")
 library(ALLMLL)
 data(MLL.A)
 abatch <- MLL.A

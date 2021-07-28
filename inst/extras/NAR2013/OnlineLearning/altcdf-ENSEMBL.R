@@ -1,9 +1,10 @@
 library(CustomCDF)
 require(RPA)
 
-#source("http://www.bioconductor.org/biocLite.R")
-#biocLite("hgu133ahsensgcdf")
-#biocLite("hgu133ahsenstcdf")
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+    #install.packages("BiocManager")
+#BiocManager::install("hgu133ahsensgcdf")
+#BiocManager::install("hgu133ahsenstcdf")
 
 set.seed(11122) 
 #cels <- list.celfiles("/share/mi/data/GSE3526/CEL/", full.names = T)[1:3]

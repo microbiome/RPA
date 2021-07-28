@@ -4,8 +4,15 @@
 \alias{updating.hyperparameters}
 \title{updating hyperparameters}
 \usage{
-updating.hyperparameters(q, set.inds, verbose, mc.cores = 1, alpha, betas,
-  epsilon)
+updating.hyperparameters(
+  q,
+  set.inds,
+  verbose,
+  mc.cores = 1,
+  alpha,
+  betas,
+  epsilon
+)
 }
 \arguments{
 \item{q}{probes x samples matrix}

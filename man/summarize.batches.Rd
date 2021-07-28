@@ -4,12 +4,23 @@
 \alias{summarize.batches}
 \title{summarize.batches}
 \usage{
-summarize.batches(sets = NULL, probe.parameters = list(), batches,
-  load.batches = FALSE, mc.cores = 1, cdf = NULL, bg.method = "rma",
-  normalization.method = "quantiles", verbose = TRUE,
-  save.batches.dir = ".", unique.run.identifier = NULL,
-  save.batches = FALSE, set.inds, speedup = FALSE,
-  summarize.with.affinities = FALSE)
+summarize.batches(
+  sets = NULL,
+  probe.parameters = list(),
+  batches,
+  load.batches = FALSE,
+  mc.cores = 1,
+  cdf = NULL,
+  bg.method = "rma",
+  normalization.method = "quantiles",
+  verbose = TRUE,
+  save.batches.dir = ".",
+  unique.run.identifier = NULL,
+  save.batches = FALSE,
+  set.inds,
+  speedup = FALSE,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{sets}{Probesets to summarize}

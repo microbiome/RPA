@@ -4,8 +4,15 @@
 \alias{summarize.batch}
 \title{summarize.batch}
 \usage{
-summarize.batch(q, set.inds, probe.parameters = list(), epsilon,
-  verbose = FALSE, mc.cores = 1, summarize.with.affinities = FALSE)
+summarize.batch(
+  q,
+  set.inds,
+  probe.parameters = list(),
+  epsilon,
+  verbose = FALSE,
+  mc.cores = 1,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{q}{Background corrected, quantile-normalized, log2 probes x samples matrix}

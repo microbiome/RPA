@@ -4,9 +4,15 @@
 \alias{rpa.fit}
 \title{RPA fit}
 \usage{
-rpa.fit(dat, epsilon = 0.01, alpha = NULL, beta = NULL,
-  tau2.method = "robust", d.method = "fast",
-  summarize.with.affinities = FALSE)
+rpa.fit(
+  dat,
+  epsilon = 0.01,
+  alpha = NULL,
+  beta = NULL,
+  tau2.method = "robust",
+  d.method = "fast",
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{dat}{Original data: probes x samples.}

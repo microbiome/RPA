@@ -5,9 +5,18 @@
 \title{probeplot
 Plot RPA results and probe-level data for a specified probeset.}
 \usage{
-probeplot(dat, highlight.probes = NULL, pcol = "darkgrey", hcol = "red",
-  cex.lab = 1.5, cex.axis = 1, cex.main = 1, cex.names = 1, main = "",
-  ...)
+probeplot(
+  dat,
+  highlight.probes = NULL,
+  pcol = "darkgrey",
+  hcol = "red",
+  cex.lab = 1.5,
+  cex.axis = 1,
+  cex.main = 1,
+  cex.names = 1,
+  main = "",
+  ...
+)
 }
 \arguments{
 \item{dat}{Background-corrected and normalized data: probes x samples.}

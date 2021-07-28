@@ -4,8 +4,13 @@
 \alias{summarize.sum}
 \title{Sum-based probe summarization}
 \usage{
-summarize.sum(taxonomy, level, probedata, verbose = TRUE,
-  downweight.ambiguous.probes = TRUE)
+summarize.sum(
+  taxonomy,
+  level,
+  probedata,
+  verbose = TRUE,
+  downweight.ambiguous.probes = TRUE
+)
 }
 \arguments{
 \item{taxonomy}{oligo - phylotype matching data.frame}

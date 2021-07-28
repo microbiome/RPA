@@ -4,10 +4,18 @@
 \alias{rpa}
 \title{rpa}
 \usage{
-rpa(abatch = NULL, verbose = FALSE, bg.method = "rma",
-  normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL,
-  cel.path = NULL, probe.parameters = NULL, mc.cores = 1,
-  summarize.with.affinities = FALSE)
+rpa(
+  abatch = NULL,
+  verbose = FALSE,
+  bg.method = "rma",
+  normalization.method = "quantiles.robust",
+  cdf = NULL,
+  cel.files = NULL,
+  cel.path = NULL,
+  probe.parameters = NULL,
+  mc.cores = 1,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{abatch}{An AffyBatch object.}

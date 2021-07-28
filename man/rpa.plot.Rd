@@ -4,9 +4,18 @@
 \alias{rpa.plot}
 \title{rpa.plot}
 \usage{
-rpa.plot(x, set, highlight.probes = NULL, pcol = "darkgrey",
-  mucol = "black", ecol = "red", external.signal = NULL, main = NULL,
-  plots = "all", ...)
+rpa.plot(
+  x,
+  set,
+  highlight.probes = NULL,
+  pcol = "darkgrey",
+  mucol = "black",
+  ecol = "red",
+  external.signal = NULL,
+  main = NULL,
+  plots = "all",
+  ...
+)
 }
 \arguments{
 \item{x}{Output from rpa.complete function}

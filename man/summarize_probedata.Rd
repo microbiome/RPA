@@ -4,8 +4,14 @@
 \alias{summarize_probedata}
 \title{Summarize probedata}
 \usage{
-summarize_probedata(data.dir = NULL, probedata = NULL, taxonomy = NULL,
-  level, method, probe.parameters = NULL)
+summarize_probedata(
+  data.dir = NULL,
+  probedata = NULL,
+  taxonomy = NULL,
+  level,
+  method,
+  probe.parameters = NULL
+)
 }
 \arguments{
 \item{data.dir}{Data folder.}

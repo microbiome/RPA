@@ -4,8 +4,13 @@
 \alias{collect.hyperparameters}
 \title{collect.hyperparameters}
 \usage{
-collect.hyperparameters(batches, unique.run.identifier, save.batches.dir,
-  save.batches, verbose = TRUE)
+collect.hyperparameters(
+  batches,
+  unique.run.identifier,
+  save.batches.dir,
+  save.batches,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{batches}{batch list}

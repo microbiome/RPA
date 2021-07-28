@@ -4,12 +4,22 @@
 \alias{estimate.hyperparameters}
 \title{estimate.hyperparameters}
 \usage{
-estimate.hyperparameters(sets = NULL, probe.parameters = list(alpha = 2,
-  beta = 1), batches, cdf = NULL, bg.method = "rma", epsilon = 0.01,
-  load.batches = FALSE, save.hyperparameter.batches = FALSE, mc.cores = 1,
-  verbose = TRUE, normalization.method = "quantiles",
-  save.batches.dir = ".", unique.run.identifier = NULL,
-  set.inds = set.inds)
+estimate.hyperparameters(
+  sets = NULL,
+  probe.parameters = list(alpha = 2, beta = 1),
+  batches,
+  cdf = NULL,
+  bg.method = "rma",
+  epsilon = 0.01,
+  load.batches = FALSE,
+  save.hyperparameter.batches = FALSE,
+  mc.cores = 1,
+  verbose = TRUE,
+  normalization.method = "quantiles",
+  save.batches.dir = ".",
+  unique.run.identifier = NULL,
+  set.inds = set.inds
+)
 }
 \arguments{
 \item{sets}{Probesets to handle. All probesets by default.}

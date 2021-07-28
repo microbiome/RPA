@@ -4,12 +4,22 @@
 \alias{rpa.complete}
 \title{Complete RPA preprocessing}
 \usage{
-rpa.complete(abatch = NULL, sets = NULL, epsilon = 0.01,
-  tau2.method = "robust", d.method = "fast", verbose = FALSE,
-  bg.method = "rma", normalization.method = "quantiles.robust",
-  cdf = NULL, cel.files = NULL, cel.path = NULL,
-  probe.parameters = list(), mc.cores = 1,
-  summarize.with.affinities = FALSE)
+rpa.complete(
+  abatch = NULL,
+  sets = NULL,
+  epsilon = 0.01,
+  tau2.method = "robust",
+  d.method = "fast",
+  verbose = FALSE,
+  bg.method = "rma",
+  normalization.method = "quantiles.robust",
+  cdf = NULL,
+  cel.files = NULL,
+  cel.path = NULL,
+  probe.parameters = list(),
+  mc.cores = 1,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{abatch}{An AffyBatch object.}

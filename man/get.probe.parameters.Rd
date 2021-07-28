@@ -4,8 +4,12 @@
 \alias{get.probe.parameters}
 \title{get.probe.parameters}
 \usage{
-get.probe.parameters(affinities, unique.run.identifier,
-  save.batches.dir = ".", mode = "list")
+get.probe.parameters(
+  affinities,
+  unique.run.identifier,
+  save.batches.dir = ".",
+  mode = "list"
+)
 }
 \arguments{
 \item{affinities}{probe affinities}

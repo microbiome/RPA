@@ -4,8 +4,15 @@
 \alias{get.probe.matrix}
 \title{get.probe.matrix}
 \usage{
-get.probe.matrix(cels, cdf = NULL, quantile.basis, bg.method = "rma",
-  normalization.method = "quantiles", batch = NULL, verbose = TRUE)
+get.probe.matrix(
+  cels,
+  cdf = NULL,
+  quantile.basis,
+  bg.method = "rma",
+  normalization.method = "quantiles",
+  batch = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{cels}{List of CEL files to preprocess}

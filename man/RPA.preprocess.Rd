@@ -4,9 +4,15 @@
 \alias{RPA.preprocess}
 \title{RPA preprocessing}
 \usage{
-RPA.preprocess(abatch, bg.method = "rma",
-  normalization.method = "quantiles.robust", cdf = NULL, cel.files = NULL,
-  cel.path = NULL, quantile.basis = NULL)
+RPA.preprocess(
+  abatch,
+  bg.method = "rma",
+  normalization.method = "quantiles.robust",
+  cdf = NULL,
+  cel.files = NULL,
+  cel.path = NULL,
+  quantile.basis = NULL
+)
 }
 \arguments{
 \item{abatch}{An AffyBatch object.}

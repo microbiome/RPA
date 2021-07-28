@@ -4,9 +4,16 @@
 \alias{frpa}
 \title{frpa}
 \usage{
-frpa(abatch = NULL, probe.parameters = NULL, verbose = FALSE,
-  cdf = NULL, cel.files = NULL, cel.path = NULL, mc.cores = 1,
-  summarize.with.affinities = FALSE)
+frpa(
+  abatch = NULL,
+  probe.parameters = NULL,
+  verbose = FALSE,
+  cdf = NULL,
+  cel.files = NULL,
+  cel.path = NULL,
+  mc.cores = 1,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{abatch}{An AffyBatch object.}

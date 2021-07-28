@@ -4,8 +4,15 @@
 \alias{RPA.iteration}
 \title{RPA iteration}
 \usage{
-RPA.iteration(S, epsilon = 0.001, alpha = NULL, beta = NULL,
-  tau2.method = "fast", d.method = "fast", maxloop = 1e+06)
+RPA.iteration(
+  S,
+  epsilon = 0.001,
+  alpha = NULL,
+  beta = NULL,
+  tau2.method = "fast",
+  d.method = "fast",
+  maxloop = 1e+06
+)
 }
 \arguments{
 \item{S}{Matrix of probe-level observations for a single probeset: samples x probes.}

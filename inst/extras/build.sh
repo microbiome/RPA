@@ -1,5 +1,7 @@
-/usr/bin/R CMD BATCH document.R
-/usr/bin/R CMD build ../../
-/usr/bin/R CMD check RPA_1.35.2.tar.gz
-/usr/bin/R CMD INSTALL RPA_1.35.2.tar.gz
-
+#~/bin/R-patched/bin/R CMD BATCH document.R
+~/bin/R-4.1.0/bin/R CMD build ../../ --resave-data #--no-examples  --no-build-vignettes 
+~/bin/R-4.1.0/bin/R CMD check RPA_1.35.3.tar.gz #--no-build-vignettes --no-examples
+#~/bin/R-4.1.0/bin/R CMD check --as-cran RPA_1.35.3.tar.gz
+~/bin/R-4.1.0/bin/R CMD BiocCheck RPA_1.35.3.tar.gz
+~/bin/R-4.1.0/bin/R CMD INSTALL RPA_1.35.3.tar.gz 
+#~/bin/R-4.1.0/bin/R CMD BiocCheck RPA_1.17.13.tar.gz 

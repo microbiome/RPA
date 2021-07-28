@@ -4,13 +4,26 @@
 \alias{rpa.online}
 \title{rpa.online}
 \usage{
-rpa.online(cel.path = NULL, cel.files = NULL, sets = NULL, cdf = NULL,
-  bg.method = "rma", probe.parameters = list(alpha = 1, beta = 1),
-  epsilon = 0.01, mc.cores = 1, verbose = TRUE, shuffle = TRUE,
-  batch.size = 100, batches = NULL, save.batches.dir = ".",
-  keep.batch.files = FALSE, unique.run.identifier = paste("RPA-run-id-",
-  rnorm(1), sep = ""), rseed = 23, speedup = TRUE,
-  summarize.with.affinities = FALSE)
+rpa.online(
+  cel.path = NULL,
+  cel.files = NULL,
+  sets = NULL,
+  cdf = NULL,
+  bg.method = "rma",
+  probe.parameters = list(alpha = 1, beta = 1),
+  epsilon = 0.01,
+  mc.cores = 1,
+  verbose = TRUE,
+  shuffle = TRUE,
+  batch.size = 100,
+  batches = NULL,
+  save.batches.dir = ".",
+  keep.batch.files = FALSE,
+  unique.run.identifier = paste("RPA-run-id-", rnorm(1), sep = ""),
+  rseed = 23,
+  speedup = TRUE,
+  summarize.with.affinities = FALSE
+)
 }
 \arguments{
 \item{cel.path}{Path to CEL file directory}

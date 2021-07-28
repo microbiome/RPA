@@ -5,10 +5,24 @@
 \title{rpaplot
 Plot RPA results and probe-level data for a specified probeset.}
 \usage{
-rpaplot(dat, mu = NULL, tau2 = NULL, affinity = NULL,
-  highlight.probes = NULL, pcol = "darkgrey", mucol = "black",
-  ecol = "red", cex.lab = 1.5, cex.axis = 1, cex.main = 1,
-  cex.names = 1, external.signal = NULL, main = "", plots = "all", ...)
+rpaplot(
+  dat,
+  mu = NULL,
+  tau2 = NULL,
+  affinity = NULL,
+  highlight.probes = NULL,
+  pcol = "darkgrey",
+  mucol = "black",
+  ecol = "red",
+  cex.lab = 1.5,
+  cex.axis = 1,
+  cex.main = 1,
+  cex.names = 1,
+  external.signal = NULL,
+  main = "",
+  plots = "all",
+  ...
+)
 }
 \arguments{
 \item{dat}{Background-corrected and normalized data: probes x samples.}

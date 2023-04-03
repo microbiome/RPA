@@ -10,11 +10,11 @@
 #' @author Leo Lahti \email{leo.lahti@@iki.fi}
 #' @examples 
 #' \dontrun{
-#'   library(affydata); 
-#'   data(Dilution); 
-#'   rpa.results <- rpa.complete(Dilution); 
-#'   tab <- probe.parameters(rpa.results); 
-#'   df <- df[order(abs(df$tau2), decreasing = TRUE),]
+#'   #library(affydata); 
+#'   #data(Dilution); 
+#'   #rpa.results <- rpa.complete(Dilution); 
+#'   #tab <- probe.parameters(rpa.results); 
+#'   #df <- df[order(abs(df$tau2), decreasing = TRUE),]
 #' }
 #' @keywords utilities
 probe.performance <- function (probe.parameters, abatch, sets = NULL) {

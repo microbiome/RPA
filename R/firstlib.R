@@ -16,5 +16,5 @@
 
 .onAttach <- function(lib, pkg)
 {
-   packageStartupMessage("\nRPA Copyright (C) 2008-2022 Leo Lahti. See http://microbiome.github.io/\n")
+   packageStartupMessage("\nRPA Copyright (C) 2008-2023 Leo Lahti. See http://microbiome.github.io/\n")
 }

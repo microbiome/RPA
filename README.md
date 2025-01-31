@@ -14,8 +14,11 @@ page](http://bioconductor.org/packages/release/bioc/html/RPA.html)
 
 ### Installation and use
 
-The installation instructions and working examples are in
-[RPA wiki](https://github.com/antagomir/RPA/wiki).
+Install with:
+BiocManager::install("RPA")
+
+Check function documentation for examples; "rpa" is the main
+function.
 
 
 ### Contents of this directory

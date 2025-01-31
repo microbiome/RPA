@@ -1,3 +1,4 @@
+#' @export
 plot.rpa.list <- function (x, y, ...) {
 
       set <- x$set # probe set

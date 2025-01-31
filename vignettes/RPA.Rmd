@@ -40,8 +40,7 @@ same time achieving a full scalability.
 The method is available in
 [R/Bioconductor](http://bioconductor.org/packages/devel/bioc/html/RPA.html),
 and documented in the publications listed below. For all installation
-and usage instructions, kindly see the [RPA
-wiki](https://github.com/antagomir/RPA/wiki).
+and usage instructions, contact the maintainer.
 
 
 ## Citing RPA

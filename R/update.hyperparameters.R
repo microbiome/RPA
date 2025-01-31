@@ -8,7 +8,7 @@
 #'
 #' @details Shape update: alpha <- alpha + T/2; Scale update: beta <- alpha * s2 where s2 is the updated variance for each probe (the mode of variances is given by beta/alpha). The variances (s2) are updated by EM type algorithm, see s2.update.
 #'
-#'@return A list with elements alpha, beta (corresponding to the shape and scale parameters of inverse gamma distribution, respectively).
+#' @return A list with elements alpha, beta (corresponding to the shape and scale parameters of inverse gamma distribution, respectively).
 #'
 #' @seealso s2.update, rpa.online
 #'
@@ -58,9 +58,10 @@ hyperparameter.update <- function (dat, alpha, beta, th = 1e-2) {
 }
 
 
-
+#' @export
 update.alpha <- function (T, alpha) { alpha + T/2 }
 
+#' @export
 update.beta <- function (R, beta, mode = "robust") {
 
   # FIXME: mode = "approx" into default if considerable speedups without remarkable compromises
